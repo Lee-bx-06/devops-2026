@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job-draft-002",
+  "trace_id": "trace-pairXX-002",
+  "job_type": "DRAFT",
+  "status": "FAILED",
+  "execution": {
+    "started_at": "2026-09-21T00:10:00+08:00",
+    "finished_at": "2026-09-21T00:12:00+08:00"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/example/project.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567"
+    },
+    "build": {
+      "command": "make",
+      "verify_command": "make test"
+    },
+    "max_iterations": 5,
+    "execution": {
+      "timeout_seconds": 900
+    }
+  },
+  "output": null,
+  "error": {
+    "code": "ENV_3002",
+    "message": "Image build failed"
+  }
+}

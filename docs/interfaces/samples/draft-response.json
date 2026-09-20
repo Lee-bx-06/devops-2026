@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "job_id": "job-draft-001",
+  "trace_id": "trace-pairXX-001",
+  "job_type": "DRAFT",
+  "status": "SUCCEEDED",
+  "execution": {
+    "started_at": "2026-09-21T00:00:00+08:00",
+    "finished_at": "2026-09-21T00:05:00+08:00"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/example/project.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567"
+    },
+    "build": {
+      "command": "make",
+      "verify_command": "make test"
+    },
+    "max_iterations": 5,
+    "execution": {
+      "timeout_seconds": 900
+    }
+  },
+  "output": {
+    "environment": {
+      "configuration_id": "draft-gcc-default-001",
+      "image_reference": "example/project:01234567",
+      "project_root": "/workspace/project",
+      "clean_build_command": "make clean && make"
+    },
+    "dockerfile": {
+      "artifact_id": "dockerfile-001",
+      "type": "DOCKERFILE",
+      "uri": "artifact://pairXX/draft001/Dockerfile",
+      "media_type": "text/plain",
+      "producer_job_id": "job-draft-001"
+    },
+    "iterations": [
+      {
+        "iteration": 1,
+        "result": "FAILED",
+        "change": "Added missing build dependency",
+        "reason": "Initial build failed because a dependency was unavailable",
+        "log": {
+          "artifact_id": "draft-log-001",
+          "type": "BUILD_LOG",
+          "uri": "artifact://pairXX/draft001/logs/iteration-1.txt",
+          "media_type": "text/plain",
+          "producer_job_id": "job-draft-001"
+        }
+      },
+      {
+        "iteration": 2,
+        "result": "SUCCEEDED",
+        "change": "Kept updated dependency configuration",
+        "reason": "Build command and verification command both succeeded",
+        "log": {
+          "artifact_id": "draft-log-002",
+          "type": "BUILD_LOG",
+          "uri": "artifact://pairXX/draft001/logs/iteration-2.txt",
+          "media_type": "text/plain",
+          "producer_job_id": "job-draft-001"
+        }
+      }
+    ],
+    "final_result": {
+      "build_succeeded": true,
+      "verification_succeeded": true
+    }
+  },
+  "error": null
+}
