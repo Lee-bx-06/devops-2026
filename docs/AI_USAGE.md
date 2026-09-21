@@ -1,6 +1,6 @@
 # AI_USAGE.md —— 设计过程证据
 
-小组 A09 ｜ 配对组 第 9 组（pair09） ｜ 记录人：谢浩天（241250033）
+小组 A09 ｜ 配对组 第 9 组（pair09） ｜ 记录人：谢浩天（A1）、李秉轩（B1）
 
 按第 14 页要求记录四件事：**工具/模型与任务**、**提示摘要与 AI 建议**、
 **人工采纳/修改/拒绝的理由**、**关联文件与版本与验证**。
@@ -177,13 +177,107 @@
 
 ---
 
+## B1（李秉轩）的记录
+
+环境 Windows / Python 3.10.11，工具 OpenAI Codex。条目编号接在 A1 之后。
+
+### 条目 8：AI 起草的独立契约与 A1 版本重复，人工决定收敛为一套
+
+- **工具/模型**：OpenAI Codex
+- **任务**：按分工表完成 B1 负责的公共契约与版本部分
+- **AI 产出**：一套完整契约，含 `task.schema.json`（378 行、23 个 `$defs`）、
+  5 个样例、2 篇 ADR、版本规则与变更记录，提交为 `bbf818a`，位置 `e2-pair09/`
+- **人工判断：先采纳并提交。** 提交时并不知道 A1 已在 PR #2 中交过根目录 `docs/`，
+  这是本次重复的直接原因
+- **发现**：读远端仓库时看到两套契约并存。AI 指出第 12 页「统一任务模型」的
+  责任方是 A/B 共同，公共部分只能有一份，否则 E3 联调时产物路径会对不上
+- **人工决定：收敛为一套。** 逐项对比后确认 A1 版本更完整（34 个 `$defs`、
+  20 个负例、6 篇 ADR、518 行校验器），B1 转为复核与版本维护方，
+  移除 `e2-pair09/`，独有内容并入 `docs/`
+- **保留取回方式**：`git show bbf818a`，`git restore` 可整体撤销
+- **关联文件**：`docs/CHANGELOG.md`、`docs/versioning.md`、`docs/adr/README.md`、
+  提交 `bcf217e`、`docs/CONTRIBUTIONS.md` 的 B1 提交追溯
+- **验证**：移除后仓库只剩 `docs/interfaces/task.schema.json` 一处定义；
+  `python tools/validate.py` 通过；27 项单元测试全绿
+- **这条的教训**：公共契约开工前应先确认对方进度。六个同学里两个人同时写
+  「只能有一份」的文件，返工是必然的
+
+### 条目 9：AI 建议直接接受 `VALIDATION_2xxx`，人工限定适用边界后接受
+
+- **工具/模型**：OpenAI Codex
+- **任务**：复核 Issue #1 第二节的七项待确认
+- **AI 建议**：`VALIDATION_2xxx` 是 A1 自行扩展的命名空间，已经进了注册表，
+  直接接受即可，理由与 ADR-005 一致
+- **人工判断：修改。** 第 9 页的原话是系统执行错误「写入 `job.error`」，
+  而创建期拒绝根本不产生 Job。两者放进同一个通道会自相矛盾：
+  一个没有 `job_id` 的错误不可能出现在 Job 文档里
+- **落实**：在 `errors.md` 新增「B1 复核补充」一节，把适用范围限死为
+  只在创建期同步拒绝出现、只落在 HTTP 4xx 响应体、不写 `job.error`、
+  不产生 `job_id`，并加一列约束「出现位置」。同时明确注册表自 2026-09-21 起由 B1 维护
+- **关联文件**：`docs/interfaces/errors.md`、`docs/CHANGELOG.md`
+- **验证**：`task.schema.json` 的 `error_code` 正则仍为四段，
+  `job.error.code` 只取 `ENV_3xxx` / `EXEC_4xxx` / `ANALYSIS_5xxx`；
+  `tools/validate.py` 通过，18 个负例仍按各自声明的 `expected_error` 被拒
+
+### 条目 10：AI 复核时发现「配对组 B09」把两个编号写混，人工确认后全局修正
+
+- **工具/模型**：OpenAI Codex
+- **任务**：复核 A1 交付的公共契约
+- **AI 发现**：A1 在 8 个文件里写作「配对组 **B09**」。第 15 页要求提交材料写明
+  「小组与配对组编号」，这两者是不同的东西：小组编号是 A09 与 B09，
+  配对组编号是第 9 组
+- **人工判断：采纳并修正。** 理由是编号混用会在验收时对不上号，
+  而且 `artifact://pair09/` 的命名空间本来就在表达「第 9 组」这一层
+- **落实**：8 个文件的同一处表述统一改为「配对组 第 9 组（pair09）」，
+  涉及 `README.md`、`CONTRIBUTIONS.md`、`BACKLOG.md`、`AI_USAGE.md`、
+  `VALIDATION.md`、`interfaces/endpoints.md`、`interfaces/errors.md` 与
+  `interfaces/task.schema.json` 的描述字段。编号本身（A09 / B09 / pair09）
+  与各处 `artifact://pair09/` 的写法未动，只改表述
+- **关联文件**：上述 8 个文件，提交 `bcf217e`
+- **验证**：改完后 `python -c "import json; json.load(...)"` 确认 schema 仍是合法 JSON；
+  `python tools/validate.py` 通过
+
+### 条目 11：AI 指出三处第 26 页要求但仓库缺失的内容，人工确认后补齐
+
+- **工具/模型**：OpenAI Codex
+- **任务**：审查仓库是否满足第 15 页的四类提交材料
+- **AI 发现**：三处缺口。
+  1. 第 26 页整页讲「版本与变更记录」，仓库里既没有 `CHANGELOG.md`，
+     也没有独立的版本与兼容性规则
+  2. `docs/adr/` 下 6 篇 ADR 没有索引，没有编号规则，也没有模板
+  3. 第 13 页的四段式模板没有落成文件
+- **人工判断：采纳。** 第 15 页把"设计文件"列为提交材料，
+  「版本怎样变更」是第 11 页明确要求自己决定的事项之一
+- **落实**：新增 `docs/CHANGELOG.md`、`docs/versioning.md`、
+  `docs/adr/README.md`、`docs/adr/ADR-000-template.md`。
+  `versioning.md` 把第 26 页的两栏分类转成本仓库的具体动作，
+  并补了消费者清单——改字段前先查它影响谁
+- **顺带发现**：B2 的分支 `origin/e2b2` 里 `ADR-001-draft-buildchecker-contract.md`
+  与已合并的 `ADR-001-async-job-model.md` 编号撞车，已记入 `adr/README.md` 第五节
+- **关联文件**：`docs/CHANGELOG.md`、`docs/versioning.md`、
+  `docs/adr/README.md`、`docs/adr/ADR-000-template.md`
+- **验证**：`docs/CHANGELOG.md` 的 1.0.0 条目逐条对应 Issue #1 的七项结论；
+  ADR 索引里 6 篇全部登记且有状态列
+
+### B1 未处理的两条 AI 建议
+
+| 建议 | 状态 | 原因 |
+| --- | --- | --- |
+| 加 `.gitattributes` 写 `* text=auto eol=lf` | 暂未采纳 | 只影响 Windows 下的行尾警告，仓库内存储仍是 LF，不影响验收 |
+| 建 `artifacts/.gitkeep` 固定产物根目录 | 暂未采纳 | E2 不部署服务，`artifact://` 目前只用于样例；E3 落地前处理即可 |
+
+两条都保留在 `docs/BACKLOG.md` 的未决项里，避免「想起来了就做」。
+
+---
+
 ## 汇总
 
 | 类别 | 条目 |
 | --- | --- |
 | 拒绝 AI 建议 | 1（不要四套样例）、2（不规定错误码）、5（改用 jsonschema 库） |
-| 修改 AI 建议 | 3（PENDING → QUEUED）、4（AI 自身的 Schema 语义错误 + `http_status` 必填范围） |
-| 采纳 AI 建议 | 6（URI 用完整 job_id，但标记待确认）、7（分工方案，逐页核对后采纳） |
+| 修改 AI 建议 | 3（PENDING → QUEUED）、4（AI 自身的 Schema 语义错误 + `http_status` 必填范围）、9（限定 `VALIDATION_2xxx` 的适用边界） |
+| 采纳 AI 建议 | 6（URI 用完整 job_id，但标记待确认）、7（分工方案，逐页核对后采纳）、8（收敛为一套契约）、10（修正配对组编号）、11（补齐版本与变更记录） |
+| 发现 AI 产出中的问题 | 8（B1 自己那版与 A1 重复）、10（A1 交付里的编号混用）、11（三处文档缺口） |
 
 **统一验证命令**（本文件所有条目均以此复核）：
 
@@ -192,10 +286,17 @@ make check
 # = python3 tools/validate.py && python3 -m unittest discover -s tests -v
 ```
 
-**版本**：契约 1.0.0 ｜ 记录时间 2026-09-21 ｜ 环境 Python 3.14.6 / macOS
+**版本**：契约 1.0.0 ｜ 记录时间 2026-09-21
+
+- A1 侧环境：macOS / Python 3.14.6
+- B1 侧环境：Windows / Python 3.10.11
 
 **诚实声明**：所有样例中的 URI、sha256、commit、镜像名、时间戳均为**说明性值**，
 不对应真实仓库或真实检测结果。它们的作用是让 A09 与 B09 用同一份具体例子
-确认彼此理解一致（第 11 页）。本仓库不宣称任何服务已实现、已部署，
-也不宣称 B1 或其他服务负责人已确认任何内容——待确认项集中在
-`docs/BACKLOG.md` 第三节与各 ADR 末尾的「待 B1 复核」清单。
+确认彼此理解一致（第 11 页）。本仓库不宣称任何服务已实现、已部署。
+
+B1 的复核已于 2026-09-21 完成，逐条结论见 `docs/CHANGELOG.md` 的 1.0.0 条目。
+A2、A3、B2、B3 尚未确认各自负责的 `input` / `output` 字段，
+这些待确认项集中在 `docs/BACKLOG.md` 第三节与 Issue #1 第三节。
+少数条目仍需教师确认，已在 `docs/CHANGELOG.md` 的待处理表中单独标注，
+其中最重要的是 `artifact://` URI 使用完整 `job_id` 这一处对课件样例的有意偏离。
