@@ -40,6 +40,9 @@
 | 005 | 创建期拒绝与运行期失败的边界 | Accepted | A1 |
 | 006 | 校验器零依赖，从 schema 读常量 | Accepted | A1 |
 | 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Proposed | B2 |
+| 010 | [状态迁移规则的形式化，兼修正 ADR-005 的判据表述](ADR-010-transition-timing-and-baseline-ownership.md) | Proposed | A1 |
+
+008 与 009 仍按下表预留给 A3 与 B3，A1 未占用。
 
 预计需要但尚未认领的 ADR：
 

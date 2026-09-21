@@ -61,6 +61,35 @@ python3 tools/validate.py ../B09/their-response.json
 
 **检出 MD 仍是 `SUCCEEDED`**，findings 放 `output`，绝不放 `error`（第 8、9 页）。
 
+### 状态迁移的计时痕迹（B1 迁移表 + ADR-010）
+
+迁移本身是文档序列上的性质，单文档校验器看不到；但每次迁移都会在 `execution`
+留下必然痕迹，这些痕迹可校验：
+
+| `status` | `started_at` | `finished_at` |
+| --- | --- | --- |
+| `QUEUED` | 必须 `null` | 必须 `null` |
+| `RUNNING` | 必须是时间戳 | 必须 `null` |
+| `SUCCEEDED` | 必须是时间戳 | 必须是时间戳 |
+| `TIMED_OUT` | 必须是时间戳 | 必须是时间戳 |
+| `FAILED` | **允许 `null`** | 必须是时间戳 |
+| `CANCELLED` | **允许 `null`** | 必须是时间戳 |
+
+`FAILED` / `CANCELLED` 允许 `started_at` 为 `null`，对应 B1 迁移表里
+`QUEUED → FAILED`（受理后环境准备失败）与 `QUEUED → CANCELLED`（队列中取消）
+这两条从未进入 `RUNNING` 的路径。论证见 ADR-010 第二节。
+
+### 错误码命名空间（第 9 页 + B1 于 2026-09-21 的边界限定）
+
+`error.code` 拆成两个互斥的正则：
+
+| 定义 | 正则 | 用在哪 |
+| --- | --- | --- |
+| `job_error_code` | `^(ENV_3[0-9]{3}\|EXEC_4[0-9]{3}\|ANALYSIS_5[0-9]{3})$` | `job.error`，即 `FAILED` / `TIMED_OUT` |
+| `request_error_code` | `^VALIDATION_2[0-9]{3}$` | 创建期 HTTP 4xx 响应体，不产生 Job |
+
+因此把 `VALIDATION_2001` 写进 `job.error` 会被拒（ADR-010、`errors.md` 第二节）。
+
 ### 服务专有 input（第 20–23 页，按 `job_type` 分叉）
 
 | `job_type` | 必填 |
@@ -90,7 +119,8 @@ python3 tools/validate.py ../B09/their-response.json
 
 ### error（第 9 页）
 
-`code` 必须落在命名空间正则内（见 `errors.md`），`message` 必填。
+`code` 必须落在 `job_error_code` 的三段命名空间内（见 `errors.md`），`message` 必填。
+`VALIDATION_2xxx` 属创建期 HTTP 4xx 码段，写进 `job.error` 会被拒。
 `error` 对象严格封闭，不接受未定义字段。
 
 ## 四、已知边界：这不是通用 JSON Schema 引擎
@@ -110,21 +140,30 @@ python3 tools/validate.py ../B09/their-response.json
 因此：**schema 是权威定义，validate.py 是它的可执行镜像。**
 若两者出现分歧，以 schema 为准并修 validate.py。
 
-尚未由校验器强制、需人工或 B1 复核的约束：
+尚未由校验器强制、需人工或运行期处理的约束：
 
-- `base_commit` 与 `baseline.commit` 语义上应一致——但**故意不**在校验期拒绝，
-  因为这是运行期才能确认的语义问题，落为 `FAILED` + `ENV_3003`（见 ADR-005、
-  `samples/job.baseline-mismatch-failed.json`）。
+- `base_commit` 与 `baseline.commit` 是否相等、`baseline.configuration_id` 与
+  `environment.configuration_id` 是否相等——**故意不**在校验期比对。
+  第 5 页把「基线版本和配置匹配」列为**接收方检查**，属运行期职责，
+  由 EChecker 落为 `FAILED` + `ENV_3003`。
+  `tests/…TestBaselineConsistencyIsRuntimeNotContract` 钉住这条边界，
+  防止后来者误收紧。论证见 ADR-010 第三节；ADR-005 原来给的理由
+  （「需要读产物才能比对」）不成立，已由 ADR-010 第四节修正。
+- 「终态不可再迁移」需要 Job 文档**序列**才能验证，单文档校验器看不到。
+  已覆盖的是它在每个状态上留下的计时痕迹（见第三节迁移表）。
 - `output.artifacts[]` 与 `ERROR_REPORT` 内联 findings 的一致性。
 - `trace_id` 在跨服务调用链上的实际串联。
 - `sha256` 与产物本体是否真的匹配（需下载后计算）。
+- DRAFT 输出的 `configuration_id` 与下游 `FULL_CHECK` / `INCREMENTAL_CHECK`
+  输入里引用的值是否逐字一致（跨文档一致性，当前两组取值不同，见 BACKLOG）。
 
 ## 五、样例清单
 
-正例 16 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
-六种 `status` 各至少一个、一个独立 `artifact_record`。
+正例 19 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
+六种 `status` 各至少一个、一个独立 `artifact_record`，以及 B2 补的三个 DRAFT 样例。
+命名规范与 DRAFT 两套样例并存的处理方案见 `interfaces/samples/README.md`。
 
-负例 18 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
+负例 19 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，
 否则报「被拒原因与 expected_error 不符」。这样负例不会因为契约收紧而
 「碰巧仍然被拒」地失去意义。
@@ -135,3 +174,4 @@ python3 tools/validate.py ../B09/their-response.json
 > 所有 URI、SHA、commit、镜像名、时间戳均为**说明性值**，不对应真实仓库或真实
 > 检测结果。它们的作用是让 A09 与 B09 能用同一份具体例子确认彼此理解一致
 > （第 11 页：「用自己的例子证明双方理解一致」）。
+

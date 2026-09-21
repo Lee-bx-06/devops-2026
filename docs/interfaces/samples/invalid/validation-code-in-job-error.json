@@ -1,0 +1,38 @@
+{
+  "expected_error": "不得写入 job.error",
+  "_note": "B1 于 2026-09-21 在 errors.md 第二节限定：VALIDATION_2xxx 只出现在创建期 HTTP 4xx 响应体，不写入 job.error；job.error.code 只取 ENV_3xxx / EXEC_4xxx / ANALYSIS_5xxx 三段。理由见 ADR-005——这类请求根本不产生 Job，没有 job_id，因此不可能有 job.error。本负例把这条文档规则变成机器可校验的约束。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-018",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": "2026-09-20T09:20:04Z",
+    "duration_ms": 1000,
+    "worker_id": null
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "VALIDATION_2001",
+    "message": "请求体缺少必填字段"
+  }
+}

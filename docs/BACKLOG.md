@@ -60,36 +60,47 @@
 | 让 B 组真的下载一次 artifact | ⬜ 未做 | 需要产物存储与 `GET /v1/artifacts/{id}` 实现，E2 不部署 | 第 24 页把它列为 E12 要求；本轮先冻结契约（ADR-003） |
 | 用 `jsonschema` 库替代手写校验器 | ⬜ 未做 | 本机实测未安装；第 2 页课堂仅 150 分钟且与 E3 共享，无法现场装包 | 若课前确认环境具备，按 ADR-006 的备选方案替换 |
 | 校验 `sha256` 与产物本体是否真的相符 | ⬜ 未做 | 样例中的哈希是说明性值，无对应真实文件 | 联调时对真实产物计算并比对 |
-| 校验 `base_commit == baseline.commit` | ⬜ **故意不做** | ADR-005：语义真值属运行期，契约校验器只管形状 | 由 EChecker 在运行期落为 `FAILED` + `ENV_3003` |
+| 校验 `base_commit == baseline.commit` 与 `baseline.configuration_id == environment.configuration_id` | ⬜ **故意不做** | 第 5 页把这两项列为「接收方检查」，属运行期职责；ADR-005 的判据表述有误，已由 ADR-010 第四节修正 | 由 EChecker 在运行期落为 `FAILED` + `ENV_3003`；`tests/…TestBaselineConsistencyIsRuntimeNotContract` 钉住此边界 |
 | 与 B09 的三轮课堂交换 | ⬜ 未做 | 需课堂现场进行（第 16 页） | 每轮结束把结论写进 ADR、未决项写进本文件 |
 | Issue + PR 关联 | ✅ 已完成 | 走 fork 流程（A1 对上游无推送权限） | Issue #1 列出 11 项待确认；PR #2 承载全部 A1 交付物 |
 | B1 独立契约与 A1 版本重复 | ✅ 已收敛 | 两人同时在写「只能有一份」的公共契约 | 已移除 `e2-pair09/`，B1 转为复核方；原文可 `git show bbf818a` 取回 |
 | 加 `.gitattributes` 统一行尾 | ⬜ 未做 | 只影响 Windows 下的 LF/CRLF 警告，仓库内存储仍是 LF | 不影响验收，随时可加 |
 | 建 `artifacts/.gitkeep` 固定产物根目录 | ⬜ 未做 | E2 不部署服务，`artifact://` 目前只用于样例 | E3 落地产物存储前处理 |
-| B2 分支 `origin/e2b2` 合并 | ⬜ **不可直接合并** | 三个样例全部通不过 `tools/validate.py`；分支基于 `a48d53e`，落后 main 三个合并 | 见下方专项说明 |
+| B2 分支 `origin/e2b2` 合并 | ✅ **已合并，前置条件已失效** | B2 已按 schema 重写三个样例并合入 main | 见下方更正说明 |
+| DRAFT 样例两套并存、命名不统一 | 🟡 待 B2 处理 | B2 用连字符命名，与 A1 的点号规范冲突 | 见 `interfaces/samples/README.md` 第五节，由 B2 执行改名 |
+| `configuration_id` 取值两组不一致 | ⬜ 未定 | A1 用第 22 页原文的 `cc-MODE0`，B2 用 `draft-gcc13-release-9f8e7d6c` | 需 B2 定格式、A2 定消费方式，见 `interfaces/samples/README.md` 第四节 |
+| `job.error.code` 排除 `VALIDATION_2xxx` | ✅ 已完成 | B1 在 `errors.md` 定了规则，但 schema 的正则写宽了，文档禁止的事契约放行 | 已拆为 `job_error_code` / `request_error_code`，见 ADR-010 |
+| B1 迁移表内 `QUEUED→FAILED` 与硬规则 2 冲突 | 🟡 待 B1 确认 | 表允许从 QUEUED 直达 FAILED，硬规则 2 却说 RUNNING 不可跳过 | A1 建议收窄硬规则 2，见 ADR-010 第二节 |
+| `schema_version` 是否因收紧 `error.code` 而递增 | 🟡 待 B1 裁定 | A1 判断不递增（是修 schema 与已定稿规范的偏差，非改规范） | 版本号归 B1 维护，见 ADR-010 第五节 |
 
-### B2 分支的合并前置条件
+### 更正：B2 分支的合并前置条件已失效（A1，2026-09-21）
 
-`origin/e2b2` 的提交 `38f6694` 基于最初的 `a48d53e`，早于 A1 的 PR #2 与 B1 的两轮复核。
-它的三个样例没有按 `docs/interfaces/task.schema.json` 写，用当前校验器逐个试的结果如下
-（B1 于 2026-09-21 用 `tools/validate.py` 单文件模式实测）：
+上方「B2 分支 `origin/e2b2` 合并」一行原为 ⬜ **不可直接合并**，并附有一节
+「B2 分支的合并前置条件」，列出三个样例的八类问题、称提交 `38f6694` 基于 `a48d53e`。
+该判断由 B1 于 2026-09-21 作出，**现已失效**。A1 实测证据如下：
 
-| 问题 | 出现的文件 | 说明 |
+| 核查项 | 命令 | 结果 |
 | --- | --- | --- |
-| 缺 `kind` 字段 | 3 个全部 | schema 顶层用 `kind` 区分 `create_request` / `job` / `artifact_record`，缺失无法判定对象类型 |
-| `schema_version` 写成 `"1.0"` | 3 个全部 | 契约要求三段式 `1.0.0`，见 `versioning.md` 第一节 |
-| `trace_id` 是占位符 `trace-pairXX-001` | 3 个全部 | 未替换的占位符导致格式校验不过 |
-| 请求缺 `idempotency_key` | `draft-request.json` | 第 7 页要求创建请求携带幂等键 |
-| `execution` 缺 `attempt` 与 `queued_at` | 2 个响应 | 第 19 页公共字段，定义见 ADR-001 |
-| `input` 缺 DRAFT 必填字段 `limits` | 3 个全部 | DRAFT 的服务专有输入 |
-| `output` 缺 `build_result`，失败响应里 `output` 不是对象 | 2 个响应 | DRAFT 的服务专有输出 |
-| ADR 编号 `ADR-001` 与已合并的 `ADR-001-async-job-model` 撞车 | 1 个 | 建议改为 `ADR-007-draft-buildchecker-contract.md` 并登记进 `adr/README.md` 索引 |
+| `e2b2` 是否还有未合并提交 | `git log origin/main..origin/e2b2` | **空** —— `e2b2` 的所有提交都已在 main |
+| `e2b2` 是否为 main 的祖先 | `git merge-base --is-ancestor origin/e2b2 origin/main` | **是** |
+| `e2b2` 当前指向 | `git log -1 origin/e2b2` | `e04364f`（= main 的 HEAD） |
+| 提交 `38f6694` 是否存在 | `git cat-file -t 38f6694` | **`fatal: Not a valid object name`** —— 仓库内无此对象 |
+| 三个样例是否通过校验 | `python3 tools/validate.py docs/interfaces/samples/draft-{request,response,failed-response}.json` | **三个全部通过** |
+| 全量校验 | `make check` | 通过，39 项测试全绿 |
 
-合并前 B2 需要做三件事：按 schema 重写三个样例并让 `make check` 通过、
-ADR 改号并登记、从最新 main 变基。完成后再提 PR 走评审，不要直接推 main。
+结论：B2 已经按 `task.schema.json` 重写了三个样例（`d05ee38`「对齐 DRAFT 样例与
+环境交接契约」、`e04364f`），ADR 也已改号为 `ADR-007` 并登记进 `adr/README.md` 索引。
+B1 列出的八类问题在当前 main 上**一个都不存在**。
 
-另外记一条澄清：B2 并未修改根 `README.md`（分支上仍是最初的 32 字节版本），
-因此不存在 README 冲突。B1 早前在对话中提过这一点，是判断错误，在此更正。
+保留这段更正而不是直接删掉原文，是因为：助教或教师若读到「B2 分支不可合并、
+三个样例通不过校验」，会误判 B2 尚未交付；而 B1 的原始核查在**当时**是成立的
+（针对的是已被 force-push 或改写掉的旧提交）。原文可在 `git show 8eb7b4c` 取回。
+
+**遗留的真实问题不在合法性，在一致性**：B2 的三个文件用连字符命名
+（`draft-request.json`），与 A1 的点号规范（`draft.request.json`）并存，
+导致 DRAFT 有两套请求/响应样例。处理方案见 `interfaces/samples/README.md`。
+
+B1 原文末尾那条关于根 `README.md` 的澄清（B2 并未修改它）仍然有效，未受影响。
 
 ## 五、变更规则
 

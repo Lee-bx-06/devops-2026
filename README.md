@@ -69,23 +69,31 @@ python3 tools/validate.py path/to/their-file.json
 ```
 docs/interfaces/
   task.schema.json          A1 ★ 公共契约，唯一权威定义
-  errors.md                 A1 ★ 两条错误通道 + 错误码注册表
-  endpoints.md              B1   五端点（A1 起草，待 B1 定稿）
-  samples/                  A1 ★ 16 个正例（四类请求响应 + 六种状态 + 产物记录）
-  samples/invalid/          A1 ★ 18 个负例，每个声明期望的拒绝原因
+  errors.md                 A1 ★ 两条错误通道 + 错误码注册表（注册表由 B1 维护）
+  endpoints.md              B1   五端点 + 状态迁移表（A1 起草，B1 已定稿）
+  samples/README.md         A1   命名规范与 DRAFT 重复样例的处理方案
+  samples/                  A1 ★ 19 个正例（四类请求响应 + 六种状态 + 产物记录 + B2 的 DRAFT）
+  samples/invalid/          A1 ★ 19 个负例，每个声明期望的拒绝原因
 docs/adr/
+  README.md                 B1   ADR 索引与编号规则
+  ADR-000-template.md       B1   模板
   ADR-001  异步 Job 模型与公共信封            A1
   ADR-002  错误与发现双通道分离                A1
-  ADR-003  artifact 命名空间与解析约定         A1（解析端点待 B1）
-  ADR-004  兼容性策略：信封严格、载荷可扩展     A1（B1 汇总）
-  ADR-005  创建期拒绝 vs 运行期失败            A1
+  ADR-003  artifact 命名空间与解析约定         A1（B1 已确认解析端点）
+  ADR-004  兼容性策略：信封严格、载荷可扩展     A1（B1 已确认）
+  ADR-005  创建期拒绝 vs 运行期失败            A1（判据表述由 ADR-010 修正）
   ADR-006  零依赖校验器                       A1
-docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单
-docs/AI_USAGE.md            A1   第 14 页格式，7 条真实判断记录
-docs/CONTRIBUTIONS.md       A1   作者、提交 SHA、Issue/PR
+  ADR-007  DRAFT 与 BuildChecker 环境交接      B2   Proposed
+  ADR-010  状态迁移形式化 + 基线一致性归属      A1   Proposed，待 B1 评审
+  （008 / 009 预留给 A3 与 B3）
+docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
+docs/AI_USAGE.md            A1/B1/B2  第 14 页格式，16 条真实判断记录
+docs/CONTRIBUTIONS.md       A1/B1/B2  作者、提交 SHA、Issue/PR
 docs/VALIDATION.md          A1   校验了什么、**没**校验什么
+docs/versioning.md          B1   版本规则、变更流程、消费者清单
+docs/CHANGELOG.md           B1   契约变更记录与待处理表
 tools/validate.py           A1 ★ 零依赖校验器
-tests/test_validate.py      A1   27 项单元测试
+tests/test_validate.py      A1   39 项单元测试
 ```
 
 ★ = A1 核心交付物。

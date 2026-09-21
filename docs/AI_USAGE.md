@@ -321,3 +321,146 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
 - **关联文件**：`docs/interfaces/samples/draft-*.json`、
   `docs/adr/ADR-007-draft-buildchecker-contract.md`、`docs/adr/README.md`
 - **验证**：`make check`（公共校验器与 27 项单元测试）
+
+---
+
+## A1（谢浩天）第二轮记录（2026-09-21，PR #2 合并后复核）
+
+> 上方「汇总」表覆盖条目 1–11，条目 12 属 B2，以下 13–16 属 A1 第二轮。
+> 本轮起因：PR #2 合并后拉取 main，复核 B1 与 B2 的改动是否与 A1 的契约一致。
+
+### 条目 13：AI 复核发现 B1 的文档规则与 A1 的 schema 相互矛盾，人工确认后收紧 schema
+
+- **工具/模型**：Qoder CLI agent（本会话）
+- **任务**：核对 B1 合并后的 `errors.md` 与 A1 的 `task.schema.json` 是否一致
+- **AI 发现**：B1 在 `errors.md` 第二节新增硬规则——`VALIDATION_2xxx` 只出现在
+  创建期 HTTP 4xx 响应体、**不写入 `job.error`**，`job.error.code` 只取
+  `ENV_3xxx` / `EXEC_4xxx` / `ANALYSIS_5xxx` 三段。但 A1 的 schema 里
+  `error_code` 正则四段全允许，而 `$defs.error` 直接引用它。
+  **文档禁止的事，契约放行。** 更糟的是 A1 自己的
+  `tests/test_validate.py:160` 还专门断言 `VALIDATION_2001` 能进 `job.error`——
+  测试在守护一个错误行为。
+- **人工判断：采纳，并认定这是 A1 的责任而非 B1 的。** B1 只能写文档，
+  改 schema 是 A1 的职责；一份规则如果只写在文档里、契约不强制，
+  等于没写。这也是 A1 上一轮的疏漏：自己定义了四段命名空间，
+  却没有区分「哪段能出现在哪里」。
+- **落实**：`error_code` 拆为 `job_error_code`（三段）与 `request_error_code`
+  （`VALIDATION_2xxx`）；`$defs.error.code` 只引前者；改正那条测试；
+  新增负例 `invalid/validation-code-in-job-error.json`；
+  新增 `test_schema_splits_the_two_code_namespaces` 断言两个正则互斥。
+  校验器的拒绝信息会明确指出「该码属创建期 HTTP 4xx 段，不得写入 job.error」。
+- **未做的事**：没有递增 `schema_version`。A1 判断 1.0.0 的 `errors.md`
+  从未允许过这种写法，是 schema 正则写宽了，属修正实现偏差而非改规范；
+  且仓库内无任何合法样例受影响。但版本号归 B1 维护，
+  已提交 B1 裁定（`CHANGELOG.md` 待处理表第 6 项、ADR-010 第五节）。
+- **关联文件**：`task.schema.json`、`tools/validate.py`、`tests/test_validate.py`、
+  `samples/invalid/validation-code-in-job-error.json`、`errors.md`（A1 补记）、
+  `adr/ADR-010`
+- **验证**：`make check` 全绿，测试由 27 项增至 39 项
+
+### 条目 14：AI 指出 B1 的迁移表自相矛盾，人工选择收窄规则而非删除表行
+
+- **工具/模型**：Qoder CLI agent（本会话）
+- **任务**：把 B1 在 `endpoints.md` 新增的「状态迁移」一节转成可校验约束
+- **AI 发现**：迁移表第三行是 `QUEUED → FAILED`（受理后环境准备失败），
+  但硬规则 2 写「`RUNNING` 不可跳过……从 `QUEUED` 直达终态意味着
+  `execution.started_at` 会缺失」。同一行里 `QUEUED → CANCELLED` 也是同样问题。
+  两处直接冲突，且冲突点落在 `started_at` 能否为 `null` 这个会影响四个服务
+  执行器实现的硬约束上。
+- **人工判断：采纳，但修正方式与 AI 的第一反应不同。** AI 最初倾向把
+  `started_at` 一律要求非空（严格贯彻硬规则 2）。人工否决：那样
+  「镜像拉不下来」这种真实故障就必须伪造一次 `started_at`，
+  或者硬塞进 `RUNNING` 之后再失败，两种做法都污染「任务实际运行时长」这个指标，
+  而 `EXEC_4002` 的超时归属恰恰依赖它。**迁移表是对的，该收窄的是硬规则 2。**
+- **落实**：把六条计时约束写进 `status_matrix` 与 `check_transition_timing()`——
+  `QUEUED` 两者皆 null；`RUNNING` 有 `started_at` 无 `finished_at`；
+  `SUCCEEDED` / `TIMED_OUT` 两者皆有；`FAILED` / `CANCELLED` 必须有 `finished_at`，
+  `started_at` 允许为 null。B1 规则的本意（超时归属可判定）完整保留，
+  因为超时只能是 `TIMED_OUT`，而 `TIMED_OUT` 必须有 `started_at`。
+  建议 B1 据此改述硬规则 2，已记入 `CHANGELOG.md` 待处理表第 7 项。
+- **同时修正 A1 自己上一轮的错误理由**：ADR-005 说
+  `baseline.commit ≠ base_commit` 属运行期，理由是「必须去读产物、比对提交」。
+  **这个理由是错的**——比对请求体里两个字面量不需要任何 I/O。结论对，理由错，
+  而错误理由会误导后来者按「需不需要 I/O」分类，把所有文档内交叉比对都划到创建期。
+  正确判据是**职责归属**：第 5 页把它列为「接收方检查」，所以属运行期。
+  按 B1 在 `adr/README.md` 定的规则（不修改原文，新建并标注替代关系），
+  在 ADR-010 第四节修正，ADR-005 原文未动。
+- **关联文件**：`task.schema.json`（`status_matrix`）、`tools/validate.py`
+  （`check_transition_timing`）、`tests/…TestTransitionTiming`（七条）、
+  `tests/…TestBaselineConsistencyIsRuntimeNotContract`（三条）、
+  `adr/ADR-010`、`VALIDATION.md` 第三节
+- **验证**：`make check` 全绿；`test_failed_without_started_at_is_allowed`
+  专门断言「`FAILED` 且 `started_at` 为 null」合法
+
+### 条目 15：AI 对比两套 DRAFT 样例，发现 B2 有一处比 A1 做得更好，人工采纳并合并
+
+- **工具/模型**：Qoder CLI agent（本会话）
+- **任务**：处理 `samples/` 里 DRAFT 样例两套并存（A1 点号命名 vs B2 连字符命名）
+- **AI 发现**：B2 的 `draft-response.json` 在 `output` 里写了 `environment`
+  （含 `image_uri`、`configuration_id`、`project_root`、`clean_command`），
+  而 A1 的 `draft.job-succeeded.json` **完全没有产出这个字段**。
+- **人工判断：采纳，并认定这是 A1 的疏漏，不是风格差异。**
+  第 21 页规定 `FULL_CHECK` 输入需要「可运行镜像与 `configuration_id`」，
+  第 22 页规定 `INCREMENTAL_CHECK` 的 `baseline` 需要 `configuration_id`，
+  而这些值的**唯一来源**就是 DRAFT 的输出。A1 的样例没有产出它，
+  等于把 DRAFT → BuildChecker 这条交接链断在了契约里——
+  A2 无从得知自己要消费的 `configuration_id` 是谁给的、长什么样。
+  这一条比命名冲突严重得多，而命名冲突是显眼的、这个是隐形的。
+- **落实**：schema 新增 `$defs.produced_environment` 并挂到 `output_draft.environment`；
+  依 ADR-004（`output` 内部属服务负责人）定为**可选而非必填**，
+  是否升为必填请 B2 决定；`draft.job-succeeded.json` 补入该字段；
+  `validate.py` 增加形状检查。
+- **未做的事**：没有删除或改名 B2 的三个文件。它们被 B2 自己的
+  `ADR-007`（第 23、35、69 行）与 `CONTRIBUTIONS.md`（第 102–104 行）引用，
+  擅自改名会连带弄坏 B2 的文档，属 B2 的所有权范围。
+  改为写 `samples/README.md` 定命名规范、列出请 B2 做的三件事，
+  并说明 A1 已把 B2 版本中更好的内容合并进规范版本，所以 B2 删除自己那两个
+  重复文件不会丢失任何信息。
+- **一并发现的分歧**：`configuration_id` 取值两组不一致
+  （A1 用第 22 页原文的 `cc-MODE0`，B2 用 `draft-gcc13-release-9f8e7d6c`）。
+  该值必须全组统一，否则环境交接对不上。A1 建议采用 B2 的描述性格式，
+  但需 B2 定格式、A2 定消费方式，已记入待处理表第 8 项。
+- **关联文件**：`task.schema.json`、`samples/draft.job-succeeded.json`、
+  `tools/validate.py`、`samples/README.md`、`BACKLOG.md`、`CHANGELOG.md`
+- **验证**：`make check` 全绿
+
+### 条目 16：AI 报告 B1 的一条 BACKLOG 判断已过时，人工逐条取证后更正而非静默删除
+
+- **工具/模型**：Qoder CLI agent（本会话）
+- **任务**：核对 `BACKLOG.md` 里「B2 分支 `origin/e2b2` 不可直接合并、
+  三个样例全部通不过 `tools/validate.py`、提交 `38f6694` 基于 `a48d53e`」是否仍成立
+- **AI 发现**：全部不成立。
+- **人工判断：采纳，但要求先取证再更正，且不删原文。** 逐项跑了命令：
+  `git log origin/main..origin/e2b2` 为空；
+  `git merge-base --is-ancestor origin/e2b2 origin/main` 返回真；
+  `origin/e2b2` 指向 `e04364f`（= main HEAD）；
+  `git cat-file -t 38f6694` 报 `Not a valid object name`，**该对象在仓库内不存在**；
+  三个样例单独跑 `validate.py` 全部通过。
+  B2 早已按 schema 重写（`d05ee38`、`e04364f`）并把 ADR 改号为 007。
+- **为什么不静默删除**：助教或教师若读到那条，会误判 B2 尚未交付；
+  而 B1 的原始核实在**当时**是成立的（针对的是已被改写掉的旧提交）。
+  因此保留更正段落 + 六行证据表 + `git show 8eb7b4c` 取回原文的路径，
+  而不是把原文抹掉。这也符合第 15 页「未完成项、失败原因、下一步」要留痕的要求。
+- **顺带区分了两类问题**：B2 样例的**合法性**没有问题（全部通过校验），
+  真正遗留的是**一致性**问题（两套命名并存、`configuration_id` 取值不统一）。
+  B1 的原文把焦点放在合法性上，而那部分已经解决了。
+- **关联文件**：`BACKLOG.md` 第四节、`CHANGELOG.md`
+- **验证**：证据表中六条命令均可复现
+
+---
+
+### A1 第二轮汇总
+
+| 类别 | 条目 |
+| --- | --- |
+| 发现 A1 自己的错误 | 13（schema 与已定稿文档矛盾，且测试在守护错误行为）、14（ADR-005 的理由错误）、15（DRAFT 输出缺 `environment`，断了交接链） |
+| 发现他人的矛盾并给出修正 | 14（B1 迁移表 vs 硬规则 2）、16（B1 的 BACKLOG 判断过时） |
+| 采纳他人更好的做法 | 15（B2 的 `output.environment`） |
+| 明确不做、并说明为什么 | 13（不递增 `schema_version`，交 B1 裁定）、14（不把基线一致性收紧为创建期拒绝）、15（不擅自改名 B2 的文件） |
+
+本轮的一个教训：条目 13、14、15 三处都是 **A1 上一轮自己的疏漏**，
+而且都属于「文档写了但契约没强制」或「契约有但链路断了」这类
+**不会让 `make check` 变红**的问题。校验全绿并不等于契约自洽。
+下一轮复核应优先检查「文档里的每条规则是否都有对应的机器约束」，
+而不是只看测试是否通过。
+
