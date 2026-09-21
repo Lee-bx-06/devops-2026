@@ -66,6 +66,30 @@
 | B1 独立契约与 A1 版本重复 | ✅ 已收敛 | 两人同时在写「只能有一份」的公共契约 | 已移除 `e2-pair09/`，B1 转为复核方；原文可 `git show bbf818a` 取回 |
 | 加 `.gitattributes` 统一行尾 | ⬜ 未做 | 只影响 Windows 下的 LF/CRLF 警告，仓库内存储仍是 LF | 不影响验收，随时可加 |
 | 建 `artifacts/.gitkeep` 固定产物根目录 | ⬜ 未做 | E2 不部署服务，`artifact://` 目前只用于样例 | E3 落地产物存储前处理 |
+| B2 分支 `origin/e2b2` 合并 | ⬜ **不可直接合并** | 三个样例全部通不过 `tools/validate.py`；分支基于 `a48d53e`，落后 main 三个合并 | 见下方专项说明 |
+
+### B2 分支的合并前置条件
+
+`origin/e2b2` 的提交 `38f6694` 基于最初的 `a48d53e`，早于 A1 的 PR #2 与 B1 的两轮复核。
+它的三个样例没有按 `docs/interfaces/task.schema.json` 写，用当前校验器逐个试的结果如下
+（B1 于 2026-09-21 用 `tools/validate.py` 单文件模式实测）：
+
+| 问题 | 出现的文件 | 说明 |
+| --- | --- | --- |
+| 缺 `kind` 字段 | 3 个全部 | schema 顶层用 `kind` 区分 `create_request` / `job` / `artifact_record`，缺失无法判定对象类型 |
+| `schema_version` 写成 `"1.0"` | 3 个全部 | 契约要求三段式 `1.0.0`，见 `versioning.md` 第一节 |
+| `trace_id` 是占位符 `trace-pairXX-001` | 3 个全部 | 未替换的占位符导致格式校验不过 |
+| 请求缺 `idempotency_key` | `draft-request.json` | 第 7 页要求创建请求携带幂等键 |
+| `execution` 缺 `attempt` 与 `queued_at` | 2 个响应 | 第 19 页公共字段，定义见 ADR-001 |
+| `input` 缺 DRAFT 必填字段 `limits` | 3 个全部 | DRAFT 的服务专有输入 |
+| `output` 缺 `build_result`，失败响应里 `output` 不是对象 | 2 个响应 | DRAFT 的服务专有输出 |
+| ADR 编号 `ADR-001` 与已合并的 `ADR-001-async-job-model` 撞车 | 1 个 | 建议改为 `ADR-007-draft-buildchecker-contract.md` 并登记进 `adr/README.md` 索引 |
+
+合并前 B2 需要做三件事：按 schema 重写三个样例并让 `make check` 通过、
+ADR 改号并登记、从最新 main 变基。完成后再提 PR 走评审，不要直接推 main。
+
+另外记一条澄清：B2 并未修改根 `README.md`（分支上仍是最初的 32 字节版本），
+因此不存在 README 冲突。B1 早前在对话中提过这一点，是判断错误，在此更正。
 
 ## 五、变更规则
 
