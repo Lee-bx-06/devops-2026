@@ -116,18 +116,18 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 ## B2 提交追溯
 
-- **Commit SHA**：`<本轮交付提交后回填>`
+- **Commit SHA**：`a587263bd82b88526769732004540c7766bd75b1`
 - **作者**：zrh `<3407953470@qq.com>`
 - **提交说明**：`b2修改`
 - **分支**：`e2b2`
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| canonical DRAFT 链路 | `interfaces/samples/draft.request.json`、`draft.job-succeeded.json`、`full-check.request.json` | `<回填>` | 待创建 | `environment/build` 可从 DRAFT 直接映射到 FULL_CHECK |
-| DRAFT 失败路径 | `interfaces/samples/draft.job-failed.json`、`job.timed-out.json` | `<回填>` | 待创建 | 迭代耗尽、环境失败与超时均有明确状态/错误码 |
-| DRAFT 正式 schema 与校验 | `interfaces/task.schema.json`、`tools/validate.py`、`tests/test_validate.py` | `<回填>` | 待创建 | 缺环境/配置/命令/路径均被拒绝，`make check` 通过 |
-| DRAFT artifact fixture | `interfaces/artifacts/job-draft09/*` | `<回填>` | 待创建 | 四个产物的大小与 SHA-256 由测试重算 |
-| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `<回填>` | 待创建 | 已纳入 A2/B2 v0.1 约定，待 A2 在 PR 中接受 |
+| canonical DRAFT 链路 | `interfaces/samples/draft.request.json`、`draft.job-succeeded.json`、`full-check.request.json` | `a587263` | Issue #4 / PR #5 | `environment/build` 可从 DRAFT 直接映射到 FULL_CHECK |
+| DRAFT 失败路径 | `interfaces/samples/draft.job-failed.json`、`job.timed-out.json` | `a587263` | Issue #4 / PR #5 | 迭代耗尽、环境失败与超时均有明确状态/错误码 |
+| DRAFT 正式 schema 与校验 | `interfaces/task.schema.json`、`tools/validate.py`、`tests/test_validate.py` | `a587263` | Issue #4 / PR #5 | 缺环境/配置/命令/路径均被拒绝，`make check` 通过 |
+| DRAFT artifact fixture | `interfaces/artifacts/job-draft09/*` | `a587263` | Issue #4 / PR #5 | 四个产物的大小与 SHA-256 由测试重算 |
+| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `a587263` | Issue #4 / PR #5 | 已纳入 A2/B2 v0.1 约定，待 A2 在 PR 中接受 |
 
 ## 其它分支
 
