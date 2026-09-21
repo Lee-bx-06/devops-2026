@@ -32,17 +32,41 @@ A1 交付内容集中于一次提交：
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| 公共任务契约 schema | `docs/interfaces/task.schema.json` | `2a9bd2c` | `待补` | `make check` 通过；四类 `job_type` 均可表达 |
-| 错误与发现双通道 | `docs/interfaces/errors.md` | `2a9bd2c` | `待补` | 第 25 页检查 04 有成文答案 + 可执行断言 |
-| 零依赖校验器 | `tools/validate.py` | `2a9bd2c` | `待补` | 16 正例通过、18 负例按声明原因被拒 |
-| 样例套件 | `docs/interfaces/samples/**` | `2a9bd2c` | `待补` | 四类请求响应 + 六状态 + 产物记录齐备 |
-| 单元测试 | `tests/test_validate.py` | `2a9bd2c` | `待补` | 27 项全绿 |
-| 设计记录 | `docs/adr/ADR-001..006` | `2a9bd2c` | `待补` | 六份，第 13 页四段式 |
-| 流程文档 | `docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/VALIDATION.md` | `2a9bd2c` | `待补` | 第 12、14 页格式 |
-| 端点草案（B1 负责） | `docs/interfaces/endpoints.md` | `2a9bd2c` | `待补` | A1 起草，明确标注待 B1 定稿 |
+| 公共任务契约 schema | `docs/interfaces/task.schema.json` | `2a9bd2c` | Issue #1 / PR #2 | `make check` 通过；四类 `job_type` 均可表达 |
+| 错误与发现双通道 | `docs/interfaces/errors.md` | `2a9bd2c` | Issue #1 / PR #2 | 第 25 页检查 04 有成文答案 + 可执行断言 |
+| 零依赖校验器 | `tools/validate.py` | `2a9bd2c` | Issue #1 / PR #2 | 16 正例通过、18 负例按声明原因被拒 |
+| 样例套件 | `docs/interfaces/samples/**` | `2a9bd2c` | Issue #1 / PR #2 | 四类请求响应 + 六状态 + 产物记录齐备 |
+| 单元测试 | `tests/test_validate.py` | `2a9bd2c` | Issue #1 / PR #2 | 27 项全绿 |
+| 设计记录 | `docs/adr/ADR-001..006` | `2a9bd2c` | Issue #1 / PR #2 | 六份，第 13 页四段式 |
+| 流程文档 | `docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/VALIDATION.md` | `2a9bd2c` | Issue #1 / PR #2 | 第 12、14 页格式 |
+| 端点草案（B1 负责） | `docs/interfaces/endpoints.md` | `2a9bd2c` | Issue #1 / PR #2 | A1 起草，明确标注待 B1 定稿 |
 
-> 回填 SHA 本身构成一次追加提交，故上表 SHA 指向**交付内容所在的那次提交**，
-> 不是回填提交。Issue/PR 号在推送到 GitHub 后补入。
+> 回填 SHA 与 Issue/PR 号本身构成追加提交，故上表 SHA 指向**交付内容所在的那次提交**
+> （`2a9bd2c`），不是回填提交。
+
+## 协作方式：fork + PR
+
+A1 对上游仓库没有直接推送权限，因此按第 15 页「Issue 或 PR」的要求走 fork 流程：
+
+| 远端 | 地址 | 用途 |
+| --- | --- | --- |
+| `origin` | https://github.com/Lee-bx-06/devops-2026 | 小组共享仓库（上游），PR 的目标 |
+| `fork` | https://github.com/mcjiansheng/devops-2026 | A1 的 fork，推送工作分支 |
+
+- 工作分支：`a1-public-contract`
+- Issue：https://github.com/Lee-bx-06/devops-2026/issues/1
+  （列出待 B1 与 A2/A3/B2/B3 确认的 11 项）
+- PR：https://github.com/Lee-bx-06/devops-2026/pull/2
+
+推送与开 PR 的命令：
+
+```bash
+git push -u fork a1-public-contract
+gh pr create --repo Lee-bx-06/devops-2026 --base main --head mcjiansheng:a1-public-contract
+```
+
+其他成员请照此模式：各自的分支推到各自的 fork，向上游开 PR，
+**不要**直接推 `main`——公共契约的变更必须经 PR 复核（ADR-004）。
 
 ## 验证记录
 
@@ -72,5 +96,6 @@ OK
 - [ ] A2、A3 的姓名与学号
 - [ ] B09 三位成员的姓名与学号（由 B1 填写）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
-- [ ] Issue 编号与 PR 链接（推送到 GitHub 后补）
+- [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
 - [ ] 三轮课堂交换的结论（第 16 页）落到 ADR 与 BACKLOG
+- [ ] PR #2 合并后，把 B1 复核结论回写到各 ADR 的「待 B1 复核」清单
