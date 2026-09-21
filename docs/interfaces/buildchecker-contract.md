@@ -10,8 +10,8 @@
 
 BuildChecker 在 DRAFT 生成的固定镜像和固定构建配置中执行 clean build，得到：
 
-- 实际依赖图：构建过程中实际访问的文件。
-- 声明依赖图：Makefile 声明的 prerequisite。
+- 实际依赖图：所有新生成文件在构建过程中实际访问的项目内输入文件。
+- 声明依赖图：GNU Make 动态数据库中的 target-prerequisite。
 - ERROR_REPORT：比较两张图后得到的 MD/RD findings。
 
 BuildChecker 不负责生成镜像，也不负责修改 Makefile。
@@ -113,10 +113,13 @@ artifact 元数据：
 
 - `commit`、`configuration_id` 与 Job 输入一致。
 - `project_root` 与 Job 输入一致。
-- `targets[].target` 使用 Makefile target 名。
+- `targets[].target` 表示实际构建中新生成的文件，使用相对 `project_root` 的
+  POSIX 路径；它可以是显式 target，也可以是隐式 target 或中间文件。
 - `dependencies[].path` 使用相对 `project_root` 的 POSIX 路径。
 - `observation` 只允许 `FILE_ACCESS` / `PROCESS_TRACE`。
 - 有进程或文件访问证据时，用 `evidence_uri` 指向 BUILD_LOG 等 artifact。
+- 构建过程中访问到的外部系统头文件（例如 `/usr/include/...`）在比较前过滤，
+  不写入本项目实际依赖图。
 
 ## 五、声明依赖图
 
@@ -141,9 +144,12 @@ artifact 元数据：
 要求：
 
 - `commit`、`configuration_id` 与 Job 输入一致。
-- `targets[].target` 与实际图使用相同命名。
+- 声明信息来自 GNU Make 动态打印的数据库，不是静态解析 Makefile。
+- `targets[].target` 与实际图使用相同命名和路径规范化规则。
 - `prerequisites[].path` 与实际图使用相同路径规范化规则。
 - `makefile_path` 和 `line` 必须能定位声明。
+- 某些实际生成的文件可能没有声明；对应 target 仍可保留，只是 prerequisite
+  为空数组。
 
 ## 六、ERROR_REPORT
 
@@ -180,6 +186,8 @@ artifact 元数据：
 
 - 实际构建访问了依赖。
 - Makefile 没有声明该依赖。
+- MD 通常不会使 clean build 失败，因为 clean build 会重新执行预处理和编译；
+  它主要破坏增量构建的正确性。
 
 `REDUNDANT`：
 
@@ -190,6 +198,9 @@ artifact 元数据：
 
 - `INSTRUCTOR_ORACLE`：教师提供的人工样本。
 - `BUILDCHECKER_DYNAMIC`：BuildChecker 动态检测结果。
+
+实际图来自 ptrace/系统调用跟踪加新文件建模；声明图来自 GNU Make 的内部
+数据库输出。外部系统依赖不参与 MD/RD 判定。
 
 ## 八、失败路径
 

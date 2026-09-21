@@ -28,7 +28,7 @@
         },
         {
           "kind": "FILE_ACCESS",
-          "detail": "编译 main.c 时进程打开 config.h 失败：fatal error: config.h: No such file or directory",
+          "detail": "ptrace 显示编译 main.c 时进程实际读取了 src/config.h；clean build 未失败，但 Makefile 未声明该 prerequisite",
           "artifact_uri": "artifact://pair09/job-full09/proc-trace-main-o.log"
         }
       ],

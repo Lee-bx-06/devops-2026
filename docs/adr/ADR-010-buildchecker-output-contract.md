@@ -33,10 +33,12 @@ artifact 元数据。但实际依赖图、声明依赖图和 ERROR_REPORT 的文
 
 ### 2. 实际图和声明图使用同一套节点、边标识
 
-- target 使用 Makefile target 名。
-- dependency/prerequisite 使用相对 `project_root` 的 POSIX 路径。
+- 实际图建模所有新生成文件，包括显式 target、隐式 target 和中间文件。
+- 声明图来自 GNU Make 动态打印的内部数据库，不做静态 Makefile 解析。
+- target 和 dependency/prerequisite 使用相对 `project_root` 的 POSIX 路径。
 - 实际图记录 observation 和可选证据 URI。
 - 声明图记录 Makefile 路径和行号。
+- 外部系统依赖在 MD/RD 比较前过滤。
 
 ### 3. FULL_CHECK 成功响应强制三份核心 artifact
 
@@ -59,6 +61,11 @@ findings 数。Job 内联 findings 和 ERROR_REPORT 本体应表达同一批结�
 
 检出 MD/RD 时 Job 仍是 `SUCCEEDED`，`error=null`。只有环境、执行或分析器失败
 才进入 `FAILED` / `TIMED_OUT`。
+
+### 6. MD 不应被样例描述成 clean build 失败
+
+真实 MD 通常只破坏增量构建：clean build 仍会通过预处理和编译得到完整依赖。
+样例证据应记录“进程实际访问了项目文件”，而不是把 MD 写成编译失败。
 
 ## Alternatives
 

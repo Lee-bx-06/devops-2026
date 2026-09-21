@@ -192,7 +192,7 @@
     },
 
     "actual_graph_dependency": {
-      "description": "实际依赖图中的一条文件访问。path 统一为相对 project_root 的 POSIX 路径；observation 表示证据来源。",
+      "description": "实际依赖图中的一条项目内文件访问。path 统一为相对 project_root 的 POSIX 路径；外部系统依赖（如 /usr/include）在比较前过滤，不进入本项目依赖图。observation 表示证据来源。",
       "type": "object",
       "additionalProperties": false,
       "required": ["path", "observation"],
@@ -204,6 +204,7 @@
     },
 
     "actual_graph_target": {
+      "description": "实际构建中新生成的文件。它可以是 Makefile 显式 target，也可以是隐式 target 或中间文件。",
       "type": "object",
       "additionalProperties": false,
       "required": ["target", "dependencies"],
@@ -217,7 +218,7 @@
     },
 
     "actual_graph": {
-      "description": "BuildChecker 产出的实际依赖图本体。它描述固定 commit 和 configuration_id 下，各 target 实际访问的文件。",
+      "description": "BuildChecker 产出的实际依赖图本体。它描述固定 commit 和 configuration_id 下，所有新生成文件实际访问的项目内输入文件；隐式/中间目标也要建模。",
       "type": "object",
       "additionalProperties": false,
       "required": ["kind", "schema_version", "commit", "configuration_id", "project_root", "targets"],
@@ -240,7 +241,7 @@
     },
 
     "declared_graph_dependency": {
-      "description": "声明依赖图中的一条 Makefile prerequisite。path 统一为相对 project_root 的 POSIX 路径。",
+      "description": "声明依赖图中的一条 prerequisite，来源是 GNU Make 动态打印的数据库而非静态解析脚本。path 统一为相对 project_root 的 POSIX 路径。",
       "type": "object",
       "additionalProperties": false,
       "required": ["path", "makefile_path", "line"],
@@ -253,6 +254,7 @@
     },
 
     "declared_graph_target": {
+      "description": "GNU Make 数据库中的工作 target。声明为空时也保留该 target。",
       "type": "object",
       "additionalProperties": false,
       "required": ["target", "prerequisites"],
