@@ -106,19 +106,19 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 ## A2 提交追溯
 
-- **作者**：`<待填写>`
+- **作者**：Inxerph（Git 作者；真实姓名与学号待补）
 - **学号**：`<待填写>`
 - **分支**：`a2-full-check-contract`
-- **Commit SHA**：`<待提交后回填>`
+- **Commit SHA**：`1c383934e6a67529fb76609efe8e03e11e36b5a2`
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `<待回填>` | 待创建 | 请求/输出、MD/RD、失败路径和下游交接已定义 |
-| artifact 本体 schema | `interfaces/task.schema.json` | `<待回填>` | 待创建 | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
-| BuildChecker ADR | `adr/ADR-010-buildchecker-output-contract.md` | `<待回填>` | 待创建 | 第 13 页四段式，记录本体与一致性决策 |
-| artifact 正例 | `interfaces/samples/artifact.*.json` | `<待回填>` | 待创建 | 三份本体通过校验 |
-| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `<待回填>` | 待创建 | 零发现正例与五项负例通过校验 |
-| A2 测试 | `tests/test_buildchecker_contract.py` | `<待回填>` | 待创建 | 35 项测试全绿 |
+| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `1c38393` | 待创建 | 请求/输出、MD/RD、失败路径和下游交接已定义 |
+| artifact 本体 schema | `interfaces/task.schema.json` | `1c38393` | 待创建 | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
+| BuildChecker ADR | `adr/ADR-010-buildchecker-output-contract.md` | `1c38393` | 待创建 | 第 13 页四段式，记录本体与一致性决策 |
+| artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | 待创建 | 三份本体通过校验 |
+| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | 待创建 | 零发现正例与五项负例通过校验 |
+| A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | 待创建 | 35 项测试全绿 |
 
 ## 其它分支
 
