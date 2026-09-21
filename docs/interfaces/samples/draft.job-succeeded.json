@@ -1,0 +1,88 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-draft09",
+  "trace_id": "trace-a09-e2-001",
+  "job_type": "DRAFT",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:05:00Z",
+    "started_at": "2026-09-20T09:05:04Z",
+    "finished_at": "2026-09-20T09:17:41Z",
+    "duration_ms": 757000,
+    "worker_id": "b09-draft-worker-2"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "build": {
+      "command": "make all",
+      "verify_command": "make test",
+      "clean_command": "make clean",
+      "project_root": "."
+    },
+    "limits": {
+      "max_iterations": 5,
+      "timeout_seconds": 1800
+    }
+  },
+  "output": {
+    "summary": "第 3 轮迭代生成可构建环境；clean build 与 verify 均通过。",
+    "build_result": {
+      "build_succeeded": true,
+      "verify_succeeded": true,
+      "iterations": 3,
+      "image_ref": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "success_criteria": "make all 退出码 0 且 make test 退出码 0，连续一轮无新增修改"
+    },
+    "rounds": [
+      {
+        "index": 1,
+        "change": "基础镜像从 ubuntu:latest 固定为 ubuntu:22.04，安装 build-essential",
+        "rationale": "latest 不可复现，且目标提交需要 gcc/make 工具链",
+        "log_uri": "artifact://pair09/job-draft09/round-01.log"
+      },
+      {
+        "index": 2,
+        "change": "补充 libssl-dev 到构建依赖",
+        "rationale": "第 1 轮日志显示 openssl/ssl.h 缺失导致 crypto.o 编译失败",
+        "log_uri": "artifact://pair09/job-draft09/round-02.log"
+      },
+      {
+        "index": 3,
+        "change": "将 make test 设为独立阶段并固定工作目录 /workspace",
+        "rationale": "verify_command 与 build 共用缓存目录导致测试读到过期对象文件",
+        "log_uri": "artifact://pair09/job-draft09/round-03.log"
+      }
+    ],
+    "artifacts": [
+      {
+        "artifact_id": "artifact-draft09-dockerfile",
+        "type": "DOCKERFILE",
+        "uri": "artifact://pair09/job-draft09/Dockerfile",
+        "media_type": "text/plain",
+        "producer_job_id": "job-draft09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-MODE0",
+        "sha256": "0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "size_bytes": 1043
+      },
+      {
+        "artifact_id": "artifact-draft09-buildlog",
+        "type": "BUILD_LOG",
+        "uri": "artifact://pair09/job-draft09/final-build.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-draft09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-MODE0",
+        "sha256": "1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a",
+        "size_bytes": 88421
+      }
+    ]
+  },
+  "error": null
+}

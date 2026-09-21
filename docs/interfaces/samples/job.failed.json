@@ -1,0 +1,40 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full10",
+  "trace_id": "trace-a09-e2-004",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T11:00:00Z",
+    "started_at": "2026-09-20T11:00:03Z",
+    "finished_at": "2026-09-20T11:04:47Z",
+    "duration_ms": 284000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:broken-tag",
+      "configuration_id": "cc-MODE1"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": ".",
+      "verify_command": "make test"
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "ENV_3002",
+    "message": "镜像构建失败：registry.pair09.local/draft:broken-tag 无法拉取，检测器未能启动",
+    "retryable": true,
+    "detail": "这是系统执行错误，写入 job.error（第 9 页）。它与「检出 MD」无关：本任务没有产生任何 finding，因为分析根本没有开始。"
+  }
+}

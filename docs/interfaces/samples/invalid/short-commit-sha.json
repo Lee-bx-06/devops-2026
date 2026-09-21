@@ -1,0 +1,24 @@
+{
+  "expected_error": "commit 格式不符",
+  "_note": "第 10、21、22 页反复要求「完整提交 SHA」。短 SHA 在仓库增长后会歧义，且无法跨组核对基线，因此契约层面直接拒绝。",
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "trace_id": "trace-a09-neg-009",
+  "job_type": "FULL_CHECK",
+  "idempotency_key": "a09-neg-009",
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  }
+}

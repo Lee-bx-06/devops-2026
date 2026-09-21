@@ -1,0 +1,34 @@
+{
+  "expected_error": "只消费 MD",
+  "_note": "第 12、23 页：MDFixer 的验收条件是「只消费 MD」。把 ACTUAL_GRAPH 当成修复输入，等于让 B3 自己去推断缺失依赖，职责越界且结果不可复现。",
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "trace_id": "trace-a09-neg-016",
+  "job_type": "REPAIR",
+  "idempotency_key": "a09-neg-016",
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "verify_command": "make test"
+    },
+    "md_report": {
+      "artifact_id": "artifact-full09-actual-graph",
+      "type": "ACTUAL_GRAPH",
+      "uri": "artifact://pair09/job-full09/actual.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full09",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "configuration_id": "cc-MODE0",
+      "sha256": "2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b"
+    },
+    "makefile_path": "src/Makefile"
+  }
+}

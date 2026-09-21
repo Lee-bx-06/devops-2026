@@ -1,0 +1,23 @@
+{
+  "expected_error": "input.baseline 缺失",
+  "_note": "第 25 页检查 03 / 第 12 页：删除增量任务的 baseline，应被拒绝。这是 A3 的验收条件，也是本套件最重要的一条。",
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "trace_id": "trace-a09-neg-002",
+  "job_type": "INCREMENTAL_CHECK",
+  "idempotency_key": "a09-neg-002",
+  "input": {
+    "base_commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all"
+    }
+  }
+}

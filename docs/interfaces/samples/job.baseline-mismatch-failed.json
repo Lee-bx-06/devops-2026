@@ -1,0 +1,46 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-inc10",
+  "trace_id": "trace-a09-e2-007",
+  "job_type": "INCREMENTAL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T14:00:00Z",
+    "started_at": "2026-09-20T14:00:02Z",
+    "finished_at": "2026-09-20T14:00:09Z",
+    "duration_ms": 7000,
+    "worker_id": "a09-echecker-worker-1"
+  },
+  "input": {
+    "base_commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": ".",
+      "verify_command": "make test"
+    },
+    "baseline": {
+      "actual_graph_uri": "artifact://pair09/job-full07/actual.json",
+      "commit": "ffffffffffffffffffffffffffffffffffffffff",
+      "configuration_id": "cc-MODE0"
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "ENV_3003",
+    "message": "基线不匹配：baseline.commit=ffffffff... 与 input.base_commit=a1b2c3d4... 不一致，历史图无法追溯到 base commit",
+    "retryable": false,
+    "detail": "结构上 baseline 三个字段齐全，因此请求通过了 POST 校验并被受理；语义不匹配只能在执行期发现，故落为 FAILED + job.error（见 ADR-005）。这与「删掉 baseline」不同：后者是结构违规，在创建时就被拒，不会产生 Job。"
+  }
+}

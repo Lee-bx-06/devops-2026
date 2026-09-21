@@ -1,0 +1,36 @@
+{
+  "expected_error": "http_status 必须是 202",
+  "_note": "第 7 页：POST 创建任务后立即返回 HTTP 202 与 QUEUED。受理响应写成 200 会让调用方误以为任务已同步完成。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-007",
+  "job_type": "FULL_CHECK",
+  "status": "QUEUED",
+  "http_status": 200,
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": null,
+    "finished_at": null,
+    "duration_ms": null,
+    "worker_id": null
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {},
+  "error": null
+}

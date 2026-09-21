@@ -1,0 +1,36 @@
+{
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "trace_id": "trace-a09-e2-003",
+  "job_type": "REPAIR",
+  "idempotency_key": "a09-repair-md-9f8e7d6c-001",
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "verify_command": "make test",
+      "project_root": "."
+    },
+    "md_report": {
+      "artifact_id": "artifact-full09-error-report",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://pair09/job-full09/error-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full09",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "configuration_id": "cc-MODE0",
+      "sha256": "4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d",
+      "size_bytes": 6712
+    },
+    "makefile_path": "src/Makefile"
+  }
+}

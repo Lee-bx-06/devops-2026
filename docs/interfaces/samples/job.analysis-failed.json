@@ -1,0 +1,40 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full11",
+  "trace_id": "trace-a09-e2-008",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T15:00:00Z",
+    "started_at": "2026-09-20T15:00:03Z",
+    "finished_at": "2026-09-20T15:09:51Z",
+    "duration_ms": 588000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": ".",
+      "verify_command": "make test"
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "ANALYSIS_5001",
+    "message": "分析器失败：依赖图提取器在解析 src/Makefile 的 include 指令时异常退出（exit code 2）",
+    "retryable": false,
+    "detail": "镜像可用、构建也已启动，失败发生在分析阶段，因此用 ANALYSIS_5xxx 而不是 ENV_3xxx（第 9 页）。关键区别：分析器没跑完 = 系统错误；分析器跑完并报告了 MD = SUCCEEDED。本例属前者，output 必须为空。"
+  }
+}

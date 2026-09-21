@@ -1,0 +1,24 @@
+{
+  "expected_error": "schema_version 必须是",
+  "_note": "第 19、26 页：schema_version 是公共字段，消费方靠它判断能否解析。写成 1.0 而不是 1.0.0 会让版本协商失效。",
+  "kind": "create_request",
+  "schema_version": "1.0",
+  "trace_id": "trace-a09-neg-013",
+  "job_type": "FULL_CHECK",
+  "idempotency_key": "a09-neg-013",
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  }
+}

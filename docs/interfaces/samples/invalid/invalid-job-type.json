@@ -1,0 +1,10 @@
+{
+  "expected_error": "job_type 非法",
+  "_note": "第 25 页检查 02：把 job_type 改成 ABC，应被拒绝。",
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "trace_id": "trace-a09-neg-001",
+  "job_type": "ABC",
+  "idempotency_key": "a09-neg-001",
+  "input": {}
+}

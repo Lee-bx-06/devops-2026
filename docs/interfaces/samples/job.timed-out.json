@@ -1,0 +1,40 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-draft10",
+  "trace_id": "trace-a09-e2-005",
+  "job_type": "DRAFT",
+  "status": "TIMED_OUT",
+  "execution": {
+    "attempt": 2,
+    "queued_at": "2026-09-20T11:30:00Z",
+    "started_at": "2026-09-20T11:30:06Z",
+    "finished_at": "2026-09-20T12:00:06Z",
+    "duration_ms": 1800000,
+    "worker_id": "b09-draft-worker-2"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "build": {
+      "command": "make all",
+      "verify_command": "make test",
+      "clean_command": "make clean",
+      "project_root": "."
+    },
+    "limits": {
+      "max_iterations": 5,
+      "timeout_seconds": 1800
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "EXEC_4002",
+    "message": "任务超时：达到 limits.timeout_seconds=1800，第 3 轮迭代未收敛",
+    "retryable": false,
+    "detail": "TIMED_OUT 是终态且必须有 error（第 8 页）。output 必须为空，不得残留部分产物引用；已完成轮次的日志由 worker 侧保留，不通过本 Job 交接。"
+  }
+}

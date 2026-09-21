@@ -1,0 +1,24 @@
+{
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "trace_id": "trace-a09-e2-001",
+  "job_type": "DRAFT",
+  "idempotency_key": "a09-draft-9f8e7d6c-01",
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "build": {
+      "command": "make all",
+      "verify_command": "make test",
+      "clean_command": "make clean",
+      "project_root": "."
+    },
+    "limits": {
+      "max_iterations": 5,
+      "timeout_seconds": 1800
+    }
+  }
+}

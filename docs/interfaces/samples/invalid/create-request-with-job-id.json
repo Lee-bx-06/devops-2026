@@ -1,0 +1,25 @@
+{
+  "expected_error": "job_id",
+  "_note": "第 7 页：job_id 由服务端产生。create_request 里带 job_id 意味着客户端在替服务端分配标识，会破坏幂等键语义。status 同理。",
+  "kind": "create_request",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-012",
+  "job_type": "FULL_CHECK",
+  "idempotency_key": "a09-neg-012",
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  }
+}

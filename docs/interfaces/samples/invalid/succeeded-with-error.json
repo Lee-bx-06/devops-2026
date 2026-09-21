@@ -1,0 +1,40 @@
+{
+  "expected_error": "SUCCEEDED 必须 error=null",
+  "_note": "第 8 页：SUCCEEDED 表示结果可用，此时不得同时携带 error。要么成功（可有 findings），要么失败（必有 error），不能两者并存。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-005",
+  "job_type": "FULL_CHECK",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": "2026-09-20T09:31:12Z",
+    "duration_ms": 669000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {
+    "counts": {"missing": 1, "redundant": 0}
+  },
+  "error": {
+    "code": "ANALYSIS_5001",
+    "message": "分析器部分失败"
+  }
+}

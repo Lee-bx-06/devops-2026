@@ -1,0 +1,41 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-inc09",
+  "trace_id": "trace-a09-e2-002",
+  "job_type": "INCREMENTAL_CHECK",
+  "status": "RUNNING",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T10:02:00Z",
+    "started_at": "2026-09-20T10:02:02Z",
+    "finished_at": null,
+    "duration_ms": null,
+    "worker_id": "a09-echecker-worker-1"
+  },
+  "input": {
+    "base_commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": ".",
+      "verify_command": "make test"
+    },
+    "baseline": {
+      "actual_graph_uri": "artifact://pair09/job-full08/actual.json",
+      "commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+      "configuration_id": "cc-MODE0"
+    }
+  },
+  "output": {},
+  "error": null
+}
