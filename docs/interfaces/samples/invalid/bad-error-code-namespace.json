@@ -1,0 +1,38 @@
+{
+  "expected_error": "'BOOM'",
+  "_note": "第 9 页：系统错误码按命名空间分段（ENV_3xxx 环境 / EXEC_4xxx 执行 / ANALYSIS_5xxx 分析器）。自由文本错误码会让下游无法据码分流重试策略。新增码必须落在已有命名空间内并登记到 docs/interfaces/errors.md。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-014",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": "2026-09-20T09:24:12Z",
+    "duration_ms": 249000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "BOOM",
+    "message": "构建炸了"
+  }
+}

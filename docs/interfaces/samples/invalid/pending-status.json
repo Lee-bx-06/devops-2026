@@ -1,0 +1,37 @@
+{
+  "expected_error": "status 非法",
+  "_note": "第 8 页状态枚举是封闭的。PENDING 是常见误用（也是 AI 常提议的取值），课程规范用 QUEUED。改状态枚举属第 26 页的破坏性变更。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-003",
+  "job_type": "FULL_CHECK",
+  "status": "PENDING",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": null,
+    "finished_at": null,
+    "duration_ms": null,
+    "worker_id": null
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {
+    "counts": {"missing": 0, "redundant": 0}
+  },
+  "error": null
+}

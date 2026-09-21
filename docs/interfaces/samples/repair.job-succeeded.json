@@ -1,0 +1,108 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-repair09",
+  "trace_id": "trace-a09-e2-003",
+  "job_type": "REPAIR",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T10:40:00Z",
+    "started_at": "2026-09-20T10:40:05Z",
+    "finished_at": "2026-09-20T10:52:19Z",
+    "duration_ms": 734000,
+    "worker_id": "b09-mdfixer-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "verify_command": "make test",
+      "project_root": "."
+    },
+    "md_report": {
+      "artifact_id": "artifact-full09-error-report",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://pair09/job-full09/error-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full09",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "configuration_id": "cc-MODE0",
+      "sha256": "4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d",
+      "size_bytes": 6712
+    },
+    "makefile_path": "src/Makefile"
+  },
+  "output": {
+    "summary": "消费 1 条 MD 记录并生成补丁；重检确认该 MD 已消除。另有 1 个候选被拒绝并记录原因。注意：本任务只处理 MISSING，不处理 REDUNDANT（第 12、23 页）。",
+    "declaration_style": "沿用目标 Makefile 既有的显式 prerequisite 风格（tab 缩进、单行依赖、变量引用 $(SRCDIR)），不引入 vpath 或模式规则，以保持补丁最小化并便于人工复核。",
+    "verification": {
+      "build": true,
+      "test": true,
+      "recheck": true
+    },
+    "rejected_candidates": [
+      {
+        "candidate": "在 src/Makefile 顶部加入 -I$(SRCDIR)/include 以绕过 config.h 缺失",
+        "reason": "该候选改变编译搜索路径而非补全依赖声明，重检后 MD 仍存在；且会掩盖其他目标的真实依赖，属无效候选，按第 23 页记录拒绝原因"
+      }
+    ],
+    "findings": [
+      {
+        "id": "md-9f8e7d6c-001",
+        "type": "MISSING",
+        "target": "main.o",
+        "dependency": "config.h",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "detector": "INSTRUCTOR_ORACLE",
+        "location": {
+          "path": "src/Makefile",
+          "line": 12,
+          "column": null
+        },
+        "evidence": [
+          {
+            "kind": "INSTRUCTOR_SAMPLE",
+            "detail": "来自 job-full09 的 ERROR_REPORT，人工来源已标注",
+            "artifact_uri": "artifact://pair09/job-full09/error-report.json"
+          }
+        ],
+        "message": "已修复：为 main.o 补全 config.h 依赖声明，重检未发现该 MD"
+      }
+    ],
+    "patch": {
+      "artifact_id": "artifact-repair09-patch",
+      "type": "GIT_PATCH",
+      "uri": "artifact://pair09/job-repair09/fix-missing-config-h.patch",
+      "media_type": "text/x-diff",
+      "producer_job_id": "job-repair09",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "configuration_id": "cc-MODE0",
+      "sha256": "718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60",
+      "size_bytes": 512
+    },
+    "artifacts": [
+      {
+        "artifact_id": "artifact-repair09-recheck",
+        "type": "RECHECK_REPORT",
+        "uri": "artifact://pair09/job-repair09/recheck.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-repair09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-MODE0",
+        "sha256": "8293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f6071",
+        "size_bytes": 2044
+      }
+    ]
+  },
+  "error": null
+}

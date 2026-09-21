@@ -1,0 +1,14 @@
+{
+  "expected_error": "artifact://pair09",
+  "_note": "第 24 页：URI 形如 artifact://{pair}/{job_id}/{name}。写成别的配对组命名空间（pair01）意味着产物来源不可追溯，也说明两组没对齐命名空间。",
+  "kind": "artifact_record",
+  "schema_version": "1.0.0",
+  "artifact_id": "artifact-full09-error-report",
+  "type": "ERROR_REPORT",
+  "uri": "artifact://pair01/job-full09/error-report.json",
+  "media_type": "application/json",
+  "producer_job_id": "job-full09",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "sha256": "4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d"
+}

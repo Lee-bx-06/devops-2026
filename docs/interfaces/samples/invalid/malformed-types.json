@@ -1,0 +1,33 @@
+{
+  "expected_error": "attempt 必须是",
+  "_note": "类型错误：attempt 写成字符串、trace_id 写成数字。弱类型会让消费方在解析期而非校验期崩溃。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": 12345,
+  "job_type": "FULL_CHECK",
+  "status": "RUNNING",
+  "execution": {
+    "attempt": "1",
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": null
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {},
+  "error": null
+}

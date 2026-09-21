@@ -1,0 +1,52 @@
+{
+  "expected_error": "CANCELLED 状态必须为空对象",
+  "_note": "第 8 页：CANCELLED 是终态，没有可用结果。残留 output 会让下游误以为可以消费半截产物。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-008",
+  "job_type": "FULL_CHECK",
+  "status": "CANCELLED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": "2026-09-20T09:21:12Z",
+    "duration_ms": 69000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {
+    "counts": {"missing": 1, "redundant": 0},
+    "findings": [
+      {
+        "id": "md-9f8e7d6c-001",
+        "type": "MISSING",
+        "target": "main.o",
+        "dependency": "config.h",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "detector": "INSTRUCTOR_ORACLE",
+        "location": {"path": "src/Makefile", "line": 12, "column": null},
+        "evidence": [
+          {"kind": "INSTRUCTOR_SAMPLE", "detail": "教师提供的人工样本", "artifact_uri": null}
+        ],
+        "message": "main.o 实际需要 config.h"
+      }
+    ]
+  },
+  "error": null
+}

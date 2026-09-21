@@ -1,0 +1,491 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Lee-bx-06/devops-2026/blob/main/docs/interfaces/task.schema.json",
+  "title": "E2 公共任务契约 (A09 <-> B09)",
+  "description": "小组 A09 / 配对组 B09。依据《E2 需求与接口契约》第 6、7、8、9、10、19、20、21、22、23、24 页制定。A1 拥有并冻结三个顶层信封 (create_request / job / artifact_record) 与公共字段；input / output 内部按第 20-23 页拟定，属服务负责人 (A2/A3/B2/B3) 确认范围。E2 只定义契约，不部署 API (第 7 页)。",
+  "oneOf": [
+    {"$ref": "#/$defs/create_request"},
+    {"$ref": "#/$defs/job"},
+    {"$ref": "#/$defs/artifact_record"}
+  ],
+  "$defs": {
+
+    "job_type": {
+      "description": "第 19 页：四类服务专有输入。封闭枚举，新增取值属破坏性变更 (第 26 页)。",
+      "enum": ["DRAFT", "FULL_CHECK", "INCREMENTAL_CHECK", "REPAIR"]
+    },
+
+    "job_status": {
+      "description": "第 8 页：QUEUED / RUNNING / SUCCEEDED + 其他终态 FAILED / TIMED_OUT / CANCELLED。封闭枚举，改动属破坏性变更 (第 26 页)。",
+      "enum": ["QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELLED"]
+    },
+
+    "error_code": {
+      "description": "第 9 页系统执行错误，写入 job.error。命名空间 ENV_3xxx / EXEC_4xxx / ANALYSIS_5xxx / VALIDATION_2xxx 见 docs/interfaces/errors.md。此处用模式而非枚举，使各组可在自己的命名空间内增码而不破坏本 schema (第 26 页)。",
+      "type": "string",
+      "pattern": "^(VALIDATION_2[0-9]{3}|ENV_3[0-9]{3}|EXEC_4[0-9]{3}|ANALYSIS_5[0-9]{3})$"
+    },
+
+    "finding_type": {
+      "description": "第 9 页正常分析发现，写入 ERROR_REPORT 的 findings，不是 job.error。MISSING=实际需要但声明缺失；REDUNDANT=声明了但本配置未用。",
+      "enum": ["MISSING", "REDUNDANT"]
+    },
+
+    "artifact_type": {
+      "description": "第 21、23、24 页出现的产物类型。模式校验 + errors.md 注册表，便于各组扩展。",
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+
+    "job_id": {
+      "description": "第 7 页：job_id 由服务端产生，因此 create_request 中不得出现。",
+      "type": "string",
+      "pattern": "^job-[a-z0-9][a-z0-9-]*$"
+    },
+
+    "trace_id": {
+      "description": "第 6 页：trace_id 串联同一次平台流程。",
+      "type": "string",
+      "pattern": "^trace-[a-z0-9][a-z0-9-]*$"
+    },
+
+    "artifact_uri": {
+      "description": "第 24 页：artifact://{pair}/{job_id}/{name}。pair09 = A09 与 B09 的配对命名空间。读取方式见 ADR-003，不得只给 URI 不给解析约定。",
+      "type": "string",
+      "pattern": "^artifact://pair09/job-[a-z0-9][a-z0-9-]*/[A-Za-z0-9._-]+$"
+    },
+
+    "commit_sha": {
+      "description": "第 10、21、22 页反复强调「完整提交 SHA」，禁止短 SHA。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+
+    "iso8601": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+
+    "nullable_string": {
+      "oneOf": [{"type": "null"}, {"type": "string", "minLength": 1}]
+    },
+
+    "repository": {
+      "description": "第 20、21、22、23 页共有输入：仓库地址与完整 commit。",
+      "type": "object",
+      "required": ["url", "commit"],
+      "properties": {
+        "url": {"type": "string", "minLength": 1},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "branch": {"$ref": "#/$defs/nullable_string"}
+      }
+    },
+
+    "environment": {
+      "description": "第 21 页：可运行镜像与 configuration_id。configuration_id 必须与 DRAFT 产出对得上 (第 21、22 页)。",
+      "type": "object",
+      "required": ["image_uri", "configuration_id"],
+      "properties": {
+        "image_uri": {"type": "string", "minLength": 1},
+        "configuration_id": {"type": "string", "minLength": 1}
+      }
+    },
+
+    "build_spec": {
+      "description": "第 20、21、23 页：构建与验证命令。clean_command 用于全量检测的可复现起点。",
+      "type": "object",
+      "required": ["command"],
+      "properties": {
+        "command": {"type": "string", "minLength": 1},
+        "verify_command": {"$ref": "#/$defs/nullable_string"},
+        "clean_command": {"$ref": "#/$defs/nullable_string"},
+        "project_root": {"$ref": "#/$defs/nullable_string"}
+      }
+    },
+
+    "finding_location": {
+      "description": "第 10 页：「完整报告还要有位置」。第 5 页修复交接要求接收方能核对位置。",
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "line": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 1}]},
+        "column": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 1}]}
+      }
+    },
+
+    "finding_evidence": {
+      "description": "第 10 页：「完整报告还要有证据」；第 21 页：进程、文件和声明位置证据。INSTRUCTOR_SAMPLE 对应第 10 页「人工样本标明人工来源」(detector=INSTRUCTOR_ORACLE)。",
+      "type": "object",
+      "required": ["kind", "detail"],
+      "properties": {
+        "kind": {"enum": ["PROCESS_TRACE", "FILE_ACCESS", "DECLARATION", "INSTRUCTOR_SAMPLE"]},
+        "detail": {"type": "string", "minLength": 1},
+        "artifact_uri": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/artifact_uri"}]}
+      }
+    },
+
+    "finding": {
+      "description": "第 10 页的报告记录。type/target/dependency/commit/detector 为第 10 页原文五字段；location/evidence 由第 10 页「完整报告还要有位置和证据」与第 5 页「目标、缺失文件、位置与证据」补全。MDFixer (B3) 只消费 type=MISSING 的记录 (第 12、23 页)。此处允许附加字段，属第 26 页的可兼容变化。",
+      "type": "object",
+      "required": ["id", "type", "target", "dependency", "commit", "detector", "location", "evidence", "message"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"$ref": "#/$defs/finding_type"},
+        "target": {"type": "string", "minLength": 1},
+        "dependency": {"type": "string", "minLength": 1},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "detector": {"type": "string", "minLength": 1},
+        "location": {"$ref": "#/$defs/finding_location"},
+        "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/finding_evidence"}},
+        "message": {"type": "string", "minLength": 1}
+      }
+    },
+
+    "error": {
+      "description": "第 9 页系统执行错误通道。仅在 FAILED / TIMED_OUT 出现。检测出 MD 不是错误 (第 8、9 页)。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {"$ref": "#/$defs/error_code"},
+        "message": {"type": "string", "minLength": 1},
+        "retryable": {"type": "boolean"},
+        "detail": {"$ref": "#/$defs/nullable_string"}
+      }
+    },
+
+    "artifact": {
+      "description": "第 24 页产物记录。uri 必须配 ADR-003 的解析约定；sha256 供下游核验完整性；commit 与 configuration_id 保证可追溯到固定提交与固定构建配置 (第 21 页)。",
+      "type": "object",
+      "required": ["artifact_id", "type", "uri", "media_type", "producer_job_id", "commit", "configuration_id", "sha256"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "type": {"$ref": "#/$defs/artifact_type"},
+        "uri": {"$ref": "#/$defs/artifact_uri"},
+        "media_type": {"type": "string", "minLength": 1},
+        "producer_job_id": {"$ref": "#/$defs/job_id"},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "configuration_id": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size_bytes": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]}
+      }
+    },
+
+    "execution": {
+      "description": "第 19 页列为公共字段但未给出定义，由 A1 定义 (见 ADR-001)。承载第 6 页「耗时任务先受理再后台执行」所需的计时与重试信息，避免把大日志塞进响应。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attempt", "queued_at", "started_at", "finished_at"],
+      "properties": {
+        "attempt": {"type": "integer", "minimum": 1},
+        "queued_at": {"$ref": "#/$defs/iso8601"},
+        "started_at": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/iso8601"}]},
+        "finished_at": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/iso8601"}]},
+        "duration_ms": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]},
+        "worker_id": {"$ref": "#/$defs/nullable_string"}
+      }
+    },
+
+    "input_draft": {
+      "description": "第 20 页 DRAFT 输入：仓库与构建要求。max_iterations 与时间限制必须显式，否则自动构建没有明确成功判据。",
+      "type": "object",
+      "required": ["repository", "build", "limits"],
+      "properties": {
+        "repository": {"$ref": "#/$defs/repository"},
+        "build": {"$ref": "#/$defs/build_spec"},
+        "limits": {
+          "type": "object",
+          "required": ["max_iterations", "timeout_seconds"],
+          "properties": {
+            "max_iterations": {"type": "integer", "minimum": 1},
+            "timeout_seconds": {"type": "integer", "minimum": 1}
+          }
+        }
+      }
+    },
+
+    "input_full_check": {
+      "description": "第 21 页 FULL_CHECK 输入：仓库与完整 commit、可运行镜像与 configuration_id、clean build 命令、项目根目录。",
+      "type": "object",
+      "required": ["repository", "environment", "build"],
+      "properties": {
+        "repository": {"$ref": "#/$defs/repository"},
+        "environment": {"$ref": "#/$defs/environment"},
+        "build": {
+          "allOf": [{"$ref": "#/$defs/build_spec"}],
+          "required": ["command", "clean_command", "project_root"]
+        }
+      }
+    },
+
+    "input_incremental_check": {
+      "description": "第 22 页 INCREMENTAL_CHECK 输入，字段名照抄该页原文。baseline 必填 —— 缺 baseline 必须被拒 (第 12、25 页)。base_commit 必须等于 baseline.commit，否则基线与提交不匹配 (第 5、22 页)。",
+      "type": "object",
+      "required": ["base_commit", "repository", "environment", "build", "baseline"],
+      "properties": {
+        "base_commit": {"$ref": "#/$defs/commit_sha"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "environment": {"$ref": "#/$defs/environment"},
+        "build": {"$ref": "#/$defs/build_spec"},
+        "baseline": {
+          "type": "object",
+          "required": ["actual_graph_uri", "commit", "configuration_id"],
+          "properties": {
+            "actual_graph_uri": {"$ref": "#/$defs/artifact_uri"},
+            "commit": {"$ref": "#/$defs/commit_sha"},
+            "configuration_id": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+
+    "input_repair": {
+      "description": "第 23 页 REPAIR 输入：相同仓库与 commit、MD 报告 URI、Makefile、环境及构建/验证命令。md_report 必须指向 type=ERROR_REPORT 的产物，因为 MDFixer 只消费 MD (第 12 页)。",
+      "type": "object",
+      "required": ["repository", "environment", "build", "md_report", "makefile_path"],
+      "properties": {
+        "repository": {"$ref": "#/$defs/repository"},
+        "environment": {"$ref": "#/$defs/environment"},
+        "build": {"$ref": "#/$defs/build_spec"},
+        "md_report": {"$ref": "#/$defs/artifact"},
+        "makefile_path": {"type": "string", "minLength": 1}
+      }
+    },
+
+    "output_common": {
+      "description": "所有 job_type 共有的输出骨架。findings 是正常分析结果 (第 9 页)，与 job.error 严格分离。",
+      "type": "object",
+      "properties": {
+        "summary": {"type": "string"},
+        "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+        "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}}
+      }
+    },
+
+    "output_draft": {
+      "description": "第 20 页 DRAFT 输出：Dockerfile 与镜像引用、每轮日志/修改/选择理由、最终构建和验证结果。成功判据必须明确。",
+      "allOf": [{"$ref": "#/$defs/output_common"}],
+      "type": "object",
+      "required": ["build_result"],
+      "properties": {
+        "build_result": {
+          "type": "object",
+          "required": ["build_succeeded", "verify_succeeded", "iterations"],
+          "properties": {
+            "build_succeeded": {"type": "boolean"},
+            "verify_succeeded": {"type": "boolean"},
+            "iterations": {"type": "integer", "minimum": 0},
+            "image_ref": {"$ref": "#/$defs/nullable_string"},
+            "success_criteria": {"type": "string", "minLength": 1}
+          }
+        },
+        "rounds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["index", "change", "rationale", "log_uri"],
+            "properties": {
+              "index": {"type": "integer", "minimum": 1},
+              "change": {"type": "string", "minLength": 1},
+              "rationale": {"type": "string", "minLength": 1},
+              "log_uri": {"$ref": "#/$defs/artifact_uri"}
+            }
+          }
+        }
+      }
+    },
+
+    "output_full_check": {
+      "description": "第 21 页 FULL_CHECK 输出：实际依赖图、声明依赖图、MD 与 RD 报告。报告以 ERROR_REPORT 产物交接，findings 内联供快速阅读。",
+      "allOf": [{"$ref": "#/$defs/output_common"}],
+      "type": "object",
+      "required": ["counts"],
+      "properties": {
+        "counts": {
+          "type": "object",
+          "required": ["missing", "redundant"],
+          "properties": {
+            "missing": {"type": "integer", "minimum": 0},
+            "redundant": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+
+    "output_incremental_check": {
+      "description": "第 22 页 INCREMENTAL_CHECK 输出：当前发现及新增/消除的发现，返回更新后的图供后续提交使用。",
+      "allOf": [{"$ref": "#/$defs/output_common"}],
+      "type": "object",
+      "required": ["introduced", "resolved", "updated_graph"],
+      "properties": {
+        "introduced": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+        "resolved": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+        "updated_graph": {"$ref": "#/$defs/artifact"}
+      }
+    },
+
+    "output_repair": {
+      "description": "第 23 页 REPAIR 输出：Git Patch 与声明风格说明、构建/测试/重检结果、失败时拒绝候选并记录原因。",
+      "allOf": [{"$ref": "#/$defs/output_common"}],
+      "type": "object",
+      "required": ["verification", "declaration_style"],
+      "properties": {
+        "patch": {"$ref": "#/$defs/artifact"},
+        "declaration_style": {"type": "string", "minLength": 1},
+        "verification": {
+          "type": "object",
+          "required": ["build", "test", "recheck"],
+          "properties": {
+            "build": {"type": "boolean"},
+            "test": {"type": "boolean"},
+            "recheck": {"type": "boolean"}
+          }
+        },
+        "rejected_candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["candidate", "reason"],
+            "properties": {
+              "candidate": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+
+    "status_matrix": {
+      "description": "第 8 页状态与结果的约束：QUEUED 对应 HTTP 202；QUEUED/RUNNING/CANCELLED 无 error 且 output 为空；SUCCEEDED 无 error，output 可含 MD/RD findings；FAILED/TIMED_OUT 必须有 error 且 output 为空。检出 MD 仍判 SUCCEEDED。",
+      "oneOf": [
+        {
+          "properties": {
+            "status": {"const": "QUEUED"},
+            "http_status": {"const": 202},
+            "error": {"const": null},
+            "output": {"type": "object", "maxProperties": 0}
+          }
+        },
+        {
+          "properties": {
+            "status": {"const": "RUNNING"},
+            "error": {"const": null},
+            "output": {"type": "object", "maxProperties": 0}
+          },
+          "not": {"required": ["http_status"]}
+        },
+        {
+          "properties": {
+            "status": {"const": "SUCCEEDED"},
+            "error": {"const": null}
+          },
+          "not": {"required": ["http_status"]}
+        },
+        {
+          "properties": {
+            "status": {"const": "FAILED"},
+            "error": {"$ref": "#/$defs/error"},
+            "output": {"type": "object", "maxProperties": 0}
+          },
+          "required": ["error"],
+          "not": {"required": ["http_status"]}
+        },
+        {
+          "properties": {
+            "status": {"const": "TIMED_OUT"},
+            "error": {"$ref": "#/$defs/error"},
+            "output": {"type": "object", "maxProperties": 0}
+          },
+          "required": ["error"],
+          "not": {"required": ["http_status"]}
+        },
+        {
+          "properties": {
+            "status": {"const": "CANCELLED"},
+            "error": {"const": null},
+            "output": {"type": "object", "maxProperties": 0}
+          },
+          "not": {"required": ["http_status"]}
+        }
+      ]
+    },
+
+    "create_request": {
+      "description": "第 7 页 POST 创建任务。携带输入与幂等键；不含服务端产生的 job_id 与 status。additionalProperties=false —— 顶层信封由 A1 冻结。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "trace_id", "job_type", "idempotency_key", "input"],
+      "properties": {
+        "kind": {"const": "create_request"},
+        "schema_version": {"const": "1.0.0"},
+        "trace_id": {"$ref": "#/$defs/trace_id"},
+        "job_type": {"$ref": "#/$defs/job_type"},
+        "idempotency_key": {
+          "description": "第 7 页「创建请求携带输入与幂等键」。重放同一键必须返回同一 job_id，不得重复起任务。",
+          "type": "string",
+          "minLength": 1
+        },
+        "input": {"type": "object"}
+      },
+      "allOf": [
+        {"if": {"properties": {"job_type": {"const": "DRAFT"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_draft"}}}},
+        {"if": {"properties": {"job_type": {"const": "FULL_CHECK"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_full_check"}}}},
+        {"if": {"properties": {"job_type": {"const": "INCREMENTAL_CHECK"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_incremental_check"}}}},
+        {"if": {"properties": {"job_type": {"const": "REPAIR"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_repair"}}}}
+      ]
+    },
+
+    "job": {
+      "description": "第 6、19 页的可查询任务单。公共字段九个：schema_version、job_id、trace_id、job_type、status、execution、input、output、error。http_status 仅在受理响应中出现，用于表达第 7 页的 202。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "job_id", "trace_id", "job_type", "status", "execution", "input", "output", "error"],
+      "properties": {
+        "kind": {"const": "job"},
+        "schema_version": {"const": "1.0.0"},
+        "job_id": {"$ref": "#/$defs/job_id"},
+        "trace_id": {"$ref": "#/$defs/trace_id"},
+        "job_type": {"$ref": "#/$defs/job_type"},
+        "status": {"$ref": "#/$defs/job_status"},
+        "http_status": {"type": "integer", "enum": [202]},
+        "execution": {"$ref": "#/$defs/execution"},
+        "input": {"type": "object"},
+        "output": {"$ref": "#/$defs/output_common"},
+        "error": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/error"}]}
+      },
+      "allOf": [
+        {"$ref": "#/$defs/status_matrix"},
+        {"if": {"properties": {"job_type": {"const": "DRAFT"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_draft"}, "output": {"$ref": "#/$defs/output_draft"}}}},
+        {"if": {"properties": {"job_type": {"const": "FULL_CHECK"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_full_check"}, "output": {"$ref": "#/$defs/output_full_check"}}}},
+        {"if": {"properties": {"job_type": {"const": "INCREMENTAL_CHECK"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_incremental_check"}, "output": {"$ref": "#/$defs/output_incremental_check"}}}},
+        {"if": {"properties": {"job_type": {"const": "REPAIR"}}}, "then": {"properties": {"input": {"$ref": "#/$defs/input_repair"}, "output": {"$ref": "#/$defs/output_repair"}}}}
+      ]
+    },
+
+    "artifact_record": {
+      "description": "第 24 页产物记录的独立形态，用于产物清单与跨组交接。output.artifacts 内联同一形状但不带 kind/schema_version。此处必须平铺全部属性：JSON Schema 的 additionalProperties 只看同一模式对象内的 properties，跨 allOf 不生效。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "artifact_id", "type", "uri", "media_type", "producer_job_id", "commit", "configuration_id", "sha256"],
+      "properties": {
+        "kind": {"const": "artifact_record"},
+        "schema_version": {"const": "1.0.0"},
+        "artifact_id": {"type": "string", "minLength": 1},
+        "type": {"$ref": "#/$defs/artifact_type"},
+        "uri": {"$ref": "#/$defs/artifact_uri"},
+        "media_type": {"type": "string", "minLength": 1},
+        "producer_job_id": {"$ref": "#/$defs/job_id"},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "configuration_id": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size_bytes": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]}
+      }
+    }
+  }
+}

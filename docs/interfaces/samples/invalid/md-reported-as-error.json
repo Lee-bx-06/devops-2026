@@ -1,0 +1,38 @@
+{
+  "expected_error": "MISSING/REDUNDANT 属 findings",
+  "_note": "第 25 页检查 04 的可执行形式：把「检出缺失依赖」当成「工具执行失败」写进 job.error。MD 是正常分析结果，任务应判 SUCCEEDED 并把记录放进 output.findings（第 8、9 页）。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-neg-004",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": "2026-09-20T09:31:12Z",
+    "duration_ms": 669000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean && make all",
+      "project_root": "."
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "MISSING",
+    "message": "main.o 缺少 config.h 声明"
+  }
+}
