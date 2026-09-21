@@ -24,7 +24,7 @@
 | 成员 | 学号 | 角色 | 主责 | 对接人 |
 | --- | --- | --- | --- | --- |
 | **李秉轩** | `<待填写>` | **B1** | 公共契约与版本：`CHANGELOG.md`、`versioning.md`、`adr/README.md`、`endpoints.md` 定稿、错误码注册表维护、Issue #1 复核 | A1 |
-| `<待填写>` | `<待填写>` | B2 | DRAFT 接口（读 ICSE 2026）：`DRAFT` 请求/响应、成功判据与每轮日志字段 | A2 |
+| **zrh** | `<待填写>` | **B2** | DRAFT 接口（读 ICSE 2026）：`DRAFT` 请求/响应、成功判据与每轮日志字段 | A2 |
 | `<待填写>` | `<待填写>` | B3 | MDFixer 接口（读 ASE 2025）：`REPAIR` 样例、patch 与拒绝原因字段 | A3 |
 
 ## A1 提交追溯
@@ -89,6 +89,20 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 本节的 SHA 在提交 `bcf217e` 之后回填，回填动作本身构成一次追加提交。
 沿用 A1 的做法：表内 SHA 指向**交付内容所在的那次提交**，不是回填提交本身。
+
+## B2 提交追溯
+
+- **Commit SHA**：`<本次交付提交后回填>`
+- **作者**：zrh `<3407953470@qq.com>`
+- **提交说明**：`docs(B2): 对齐 DRAFT 样例与环境交接契约`
+- **分支**：`e2b2`
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| DRAFT 创建请求 | `interfaces/samples/draft-request.json` | `<回填>` | 待提 PR | 按 `create_request` 信封补齐 `kind`、三段式版本、幂等键与 `limits` |
+| DRAFT 成功响应 | `interfaces/samples/draft-response.json` | `<回填>` | 待提 PR | 包含 `build_result`、环境、每轮理由和可追溯 artifact |
+| DRAFT 失败响应 | `interfaces/samples/draft-failed-response.json` | `<回填>` | 待提 PR | `FAILED + ENV_3002 + output={}` 符合公共状态矩阵 |
+| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `<回填>` | 待提 PR | 第 13 页四段式，并在 `adr/README.md` 登记 |
 
 ## 其它分支
 

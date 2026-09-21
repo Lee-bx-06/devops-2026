@@ -296,7 +296,28 @@ make check
 确认彼此理解一致（第 11 页）。本仓库不宣称任何服务已实现、已部署。
 
 B1 的复核已于 2026-09-21 完成，逐条结论见 `docs/CHANGELOG.md` 的 1.0.0 条目。
-A2、A3、B2、B3 尚未确认各自负责的 `input` / `output` 字段，
-这些待确认项集中在 `docs/BACKLOG.md` 第三节与 Issue #1 第三节。
+A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
+`e2b2` 分支提交 DRAFT 字段与成功判据提案，待 A2 交叉确认。其余待确认项
+集中在 `docs/BACKLOG.md` 第三节与 Issue #1 第三节。
 少数条目仍需教师确认，已在 `docs/CHANGELOG.md` 的待处理表中单独标注，
 其中最重要的是 `artifact://` URI 使用完整 `job_id` 这一处对课件样例的有意偏离。
+
+---
+
+## B2（zrh）的记录
+
+### 条目 12：AI 建议直接修补旧样例，人工改为先对齐公共契约再重写
+
+- **工具/模型**：OpenAI Codex（本次会话）
+- **任务**：按课件、任务分工和两张复核截图修正 B2 的 DRAFT 契约交付
+- **AI 建议**：在原有三份 JSON 上逐项增加缺失字段，并保留原 ADR 编号
+- **人工判断：修改。** 截图明确要求先 `rebase origin/main`，且已合并的
+  `task.schema.json` 冻结了公共信封。如果只修补旧结构，会继续混用
+  `schema_version=1.0`、占位 `trace_id`、顶层缺 `kind` 等旧语义。
+- **落实**：先将 `e2b2` 变基到最新 `origin/main`，再按公共 schema 重写三份
+  B2 样例。成功响应补齐 `build_result`、每轮理由、可追溯 artifact 和一致的
+  `configuration_id`；失败响应依公共状态矩阵使用 `output={}`，没有伪造
+  可交付的部分环境。原 ADR-001 改号为 ADR-007，避免覆盖 A1 的异步 Job 决策。
+- **关联文件**：`docs/interfaces/samples/draft-*.json`、
+  `docs/adr/ADR-007-draft-buildchecker-contract.md`、`docs/adr/README.md`
+- **验证**：`make check`（公共校验器与 27 项单元测试）

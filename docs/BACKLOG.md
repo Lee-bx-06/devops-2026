@@ -44,7 +44,7 @@
 | 18 | 🟡 | URI 用完整 `job_id` 而非第 24 页简写 `full01` | **教师**（B1 已认同） | 有意偏离课件样例，需认可 |
 | 19 | ⬜ | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 | A2 的依赖图与报告字段 |
 | 20 | ⬜ | `INCREMENTAL_CHECK` 的 baseline 匹配规则与新增/消除 finding 语义 | A3 | A3 的 C0/C1 可追溯验收 |
-| 21 | ⬜ | `DRAFT` 的成功判据与每轮日志字段 | B2 | B2 的环境与 `configuration_id` 对齐 |
+| 21 | 🟡 | `DRAFT` 的成功判据与每轮日志字段 | B2 已提案，待 A2 确认 | `draft-*.json` 与 ADR-007 对齐环境、成功判据和 `configuration_id`；`make check` 为硬门槛 |
 | 22 | ⬜ | `REPAIR` 的 patch 与拒绝原因字段 | B3 | B3 的「能解释 MD≠执行失败」验收 |
 
 第 14 至 17 项由 B1 于 2026-09-21 完成复核，结论与理由见

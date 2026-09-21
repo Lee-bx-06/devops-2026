@@ -39,19 +39,19 @@
 | 004 | 兼容性策略：信封严格，载荷可扩展 | Accepted | A1 |
 | 005 | 创建期拒绝与运行期失败的边界 | Accepted | A1 |
 | 006 | 校验器零依赖，从 schema 读常量 | Accepted | A1 |
+| 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Proposed | B2 |
 
 预计需要但尚未认领的 ADR：
 
 | 建议编号 | 主题 | 建议认领人 |
 |---|---|---|
-| 007 | DRAFT 的成功判据与每轮日志字段 | B2 |
 | 008 | 增量检测的基线可比性判定 | A3 |
 | 009 | 候选补丁的接受与拒绝判据 | B3 |
 
 本表由 B1 维护。每新增一篇 ADR 必须同时在此登记，否则视为未完成。
 
-## 五、编号冲突提示
+## 五、已解决的编号冲突
 
-远端分支 `origin/e2b2` 下有 `ADR-001-draft-buildchecker-contract.md`，
-与已合并的 `ADR-001-async-job-model.md` **编号重复**。B2 合并前需要改号，
-建议改为 `ADR-007-draft-buildchecker-contract.md`，并同步 `README.md` 里的引用。
+B2 原文件 `ADR-001-draft-buildchecker-contract.md` 与公共契约已使用的
+`ADR-001-async-job-model.md` 编号重复。2026-09-21 已在 `e2b2` 分支改号为
+`ADR-007-draft-buildchecker-contract.md` 并登记到上方索引。
