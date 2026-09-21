@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.edu/e2/pair09/task.schema.json",
+  "title": "E2 统一任务契约",
+  "description": "一份 Job 表达 DRAFT / FULL_CHECK / INCREMENTAL_CHECK / REPAIR 四类耗时任务。评审状态：v0.1 草案，B1 起草，待 A1 联合评审后冻结。依据《E2 需求与接口契约》第 6、8、9、10、19、24 页。",
+  "oneOf": [
+    { "$ref": "#/$defs/Job" },
+    { "$ref": "#/$defs/CreateRequest" }
+  ],
+  "$defs": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "契约版本，形式为 MAJOR.MINOR。字段删除、改名、改语义或改变状态枚举时递增 MAJOR。"
+    },
+    "job_id": {
+      "type": "string",
+      "pattern": "^job-[A-Za-z0-9_-]{1,40}$",
+      "description": "由服务端产生，客户端不可自行指定。"
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "串联同一次平台流程，便于跨服务定位。"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "创建请求必填。同一幂等键重复提交不得创建第二个任务。"
+    },
+    "commit_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$",
+      "description": "完整的 40 位提交 SHA，不接受短 SHA 或分支名。"
+    },
+    "job_type": {
+      "enum": ["DRAFT", "FULL_CHECK", "INCREMENTAL_CHECK", "REPAIR"]
+    },
+    "status": {
+      "enum": ["QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELLED"]
+    },
+    "repository": {
+      "type": "object",
+      "required": ["url", "commit"],
+      "properties": {
+        "url": { "type": "string", "minLength": 1 },
+        "commit": { "$ref": "#/$defs/commit_sha" }
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "required": ["image_ref", "configuration_id"],
+      "properties": {
+        "image_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "可运行镜像引用，来自 DRAFT 产物。"
+        },
+        "configuration_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "构建配置标识。历史图与当前图必须同一 configuration_id 才可比。"
+        }
+      },
+      "additionalProperties": false
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string", "minLength": 1, "description": "构建命令。" },
+        "verify_command": { "type": "string", "description": "构建后的验证命令。" },
+        "clean_command": { "type": "string", "description": "clean build 命令。" },
+        "project_root": { "type": "string", "description": "项目根目录，容器内路径。" }
+      },
+      "additionalProperties": false
+    },
+    "DraftInput": {
+      "type": "object",
+      "required": ["repository", "build", "max_iterations", "timeout_seconds"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "build": {
+          "allOf": [
+            { "$ref": "#/$defs/build" },
+            { "required": ["command", "verify_command"] }
+          ]
+        },
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "DRAFT 允许的最大迭代次数。"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "该任务的时间限制，超限转 TIMED_OUT。"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FullCheckInput": {
+      "type": "object",
+      "required": ["repository", "environment", "build"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "environment": { "$ref": "#/$defs/environment" },
+        "build": {
+          "allOf": [
+            { "$ref": "#/$defs/build" },
+            { "required": ["clean_command", "project_root"] }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "IncrementalCheckInput": {
+      "type": "object",
+      "required": ["repository", "base_commit", "environment", "build", "baseline"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "base_commit": {
+          "$ref": "#/$defs/commit_sha",
+          "description": "历史基线 C0 的完整 SHA。"
+        },
+        "environment": { "$ref": "#/$defs/environment" },
+        "build": {
+          "allOf": [
+            { "$ref": "#/$defs/build" },
+            { "required": ["clean_command", "project_root"] }
+          ]
+        },
+        "baseline": {
+          "$ref": "#/$defs/baseline",
+          "description": "增量检测的必填输入。缺 baseline 的请求必须被拒绝。"
+        }
+      },
+      "additionalProperties": false
+    },
+    "baseline": {
+      "type": "object",
+      "required": ["actual_graph_uri", "commit", "configuration_id"],
+      "properties": {
+        "actual_graph_uri": {
+          "type": "string",
+          "pattern": "^(artifact|https?)://",
+          "description": "上一轮实际依赖图的产物地址。"
+        },
+        "commit": { "$ref": "#/$defs/commit_sha" },
+        "configuration_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "RepairInput": {
+      "type": "object",
+      "required": ["repository", "md_report_uri", "makefile_path", "environment", "build"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "md_report_uri": {
+          "type": "string",
+          "pattern": "^(artifact|https?)://",
+          "description": "只消费 MD 报告。REDUNDANT 不在本任务范围内。"
+        },
+        "makefile_path": { "type": "string", "minLength": 1 },
+        "environment": { "$ref": "#/$defs/environment" },
+        "build": {
+          "allOf": [
+            { "$ref": "#/$defs/build" },
+            { "required": ["command", "verify_command"] }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "attempt": { "type": "integer", "minimum": 1, "default": 1 },
+        "started_at": { "type": ["string", "null"], "format": "date-time" },
+        "finished_at": { "type": ["string", "null"], "format": "date-time" },
+        "duration_ms": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "location": {
+      "type": "object",
+      "required": ["file"],
+      "properties": {
+        "file": { "type": "string", "minLength": 1, "description": "仓库内相对路径。" },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "finding": {
+      "type": "object",
+      "required": ["type", "target", "dependency", "commit", "detector"],
+      "properties": {
+        "type": {
+          "enum": ["MISSING", "REDUNDANT"],
+          "description": "MISSING 表示实际需要但声明缺失；REDUNDANT 表示已声明但本配置未用。"
+        },
+        "target": { "type": "string", "minLength": 1 },
+        "dependency": { "type": "string", "minLength": 1 },
+        "commit": { "$ref": "#/$defs/commit_sha" },
+        "detector": {
+          "type": "string",
+          "minLength": 1,
+          "description": "发现来源。人工样本必须能识别为人工来源，例如 INSTRUCTOR_ORACLE。"
+        },
+        "location": { "$ref": "#/$defs/location" },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "description": "证据。完整报告必须给出位置与证据。"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["artifact_id", "type", "uri", "media_type", "producer_job_id"],
+      "properties": {
+        "artifact_id": { "type": "string", "minLength": 1 },
+        "type": {
+          "enum": [
+            "DOCKERFILE",
+            "IMAGE_REF",
+            "BUILD_LOG",
+            "VERIFY_REPORT",
+            "ACTUAL_GRAPH",
+            "DECLARED_GRAPH",
+            "MD_REPORT",
+            "RD_REPORT",
+            "ERROR_REPORT",
+            "PATCH",
+            "REPAIR_REPORT"
+          ]
+        },
+        "uri": {
+          "type": "string",
+          "pattern": "^(artifact|https?)://",
+          "description": "大文件一律通过引用交接，读取方式见 endpoints.md。"
+        },
+        "media_type": { "type": "string", "minLength": 1 },
+        "producer_job_id": { "$ref": "#/$defs/job_id" },
+        "commit": { "$ref": "#/$defs/commit_sha" },
+        "configuration_id": { "type": "string" },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "需要核验完整性时使用。"
+        },
+        "produced_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "output": {
+      "type": "object",
+      "required": ["artifacts"],
+      "properties": {
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact" }
+        },
+        "findings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/finding" },
+          "description": "小规模报告可直接内联，避免把大日志塞进每个响应。完整报告以 ERROR_REPORT 产物为准。"
+        },
+        "summary": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": ["ENV_3002", "EXEC_4002", "ANALYSIS_5001"],
+          "description": "系统执行错误码。检测发现不属于这里。"
+        },
+        "message": { "type": "string", "minLength": 1 },
+        "occurred_at": { "type": "string", "format": "date-time" },
+        "detail_uri": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "Job": {
+      "type": "object",
+      "required": ["schema_version", "job_id", "trace_id", "job_type", "status", "input"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/schema_version" },
+        "job_id": { "$ref": "#/$defs/job_id" },
+        "trace_id": { "$ref": "#/$defs/trace_id" },
+        "job_type": { "$ref": "#/$defs/job_type" },
+        "status": { "$ref": "#/$defs/status" },
+        "execution": { "$ref": "#/$defs/execution" },
+        "input": {
+          "oneOf": [
+            { "$ref": "#/$defs/DraftInput" },
+            { "$ref": "#/$defs/FullCheckInput" },
+            { "$ref": "#/$defs/IncrementalCheckInput" },
+            { "$ref": "#/$defs/RepairInput" }
+          ]
+        },
+        "output": { "$ref": "#/$defs/output" },
+        "error": { "$ref": "#/$defs/error" }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "DRAFT" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/DraftInput" } } }
+        },
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "FULL_CHECK" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/FullCheckInput" } } }
+        },
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "INCREMENTAL_CHECK" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/IncrementalCheckInput" } } }
+        },
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "REPAIR" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/RepairInput" } } }
+        },
+        {
+          "if": { "required": ["status"], "properties": { "status": { "const": "SUCCEEDED" } } },
+          "then": { "required": ["output"] }
+        },
+        {
+          "if": { "required": ["status"], "properties": { "status": { "enum": ["FAILED", "TIMED_OUT"] } } },
+          "then": { "required": ["error"] }
+        }
+      ]
+    },
+    "CreateRequest": {
+      "type": "object",
+      "required": ["schema_version", "job_type", "idempotency_key", "input"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/schema_version" },
+        "job_type": { "$ref": "#/$defs/job_type" },
+        "idempotency_key": { "$ref": "#/$defs/idempotency_key" },
+        "trace_id": { "$ref": "#/$defs/trace_id" },
+        "input": {
+          "oneOf": [
+            { "$ref": "#/$defs/DraftInput" },
+            { "$ref": "#/$defs/FullCheckInput" },
+            { "$ref": "#/$defs/IncrementalCheckInput" },
+            { "$ref": "#/$defs/RepairInput" }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "DRAFT" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/DraftInput" } } }
+        },
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "FULL_CHECK" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/FullCheckInput" } } }
+        },
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "INCREMENTAL_CHECK" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/IncrementalCheckInput" } } }
+        },
+        {
+          "if": { "required": ["job_type"], "properties": { "job_type": { "const": "REPAIR" } } },
+          "then": { "properties": { "input": { "$ref": "#/$defs/RepairInput" } } }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "job_id": "job-abc01",
+  "trace_id": "trace-pair09-0009",
+  "job_type": "ABC",
+  "status": "QUEUED",
+  "input": {
+    "repository": {
+      "url": "https://git.example.edu/pair09/demo-project.git",
+      "commit": "3f2a91c0d4e5b6a7f8091a2b3c4d5e6f708192a3"
+    },
+    "environment": {
+      "image_ref": "registry.example.edu/pair09/demo-project:cc-MODE0",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "clean_command": "make clean && make -j4",
+      "project_root": "/workspace/demo-project"
+    }
+  }
+}
