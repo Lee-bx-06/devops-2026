@@ -3,7 +3,7 @@
   "schema_version": "1.0.0",
   "trace_id": "trace-a09-e2-001",
   "job_type": "FULL_CHECK",
-  "idempotency_key": "a09-full-9f8e7d6c-cc-MODE0",
+  "idempotency_key": "a09-full-9f8e7d6c-cc-gcc13-release-6f12a4c8",
   "input": {
     "repository": {
       "url": "https://github.com/pair09/demo-make-project.git",
@@ -11,8 +11,8 @@
       "branch": "main"
     },
     "environment": {
-      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "configuration_id": "cc-MODE0"
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     },
     "build": {
       "command": "make all",

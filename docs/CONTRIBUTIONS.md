@@ -16,7 +16,7 @@
 | 成员 | 学号 | 角色 | 主责 | 对接人 |
 | --- | --- | --- | --- | --- |
 | **谢浩天** | **241250033** | **A1** | 公共契约与集成：`task.schema.json`、`errors.md`、`tools/validate.py`、样例套件、ADR | B1 |
-| `<待填写>` | `<待填写>` | A2 | BuildChecker 接口（读 TSE）：`FULL_CHECK` 请求/响应、依赖图与 MD/RD 报告字段 | B2 |
+| **殷晓瑞** | `241250014` | A2 | BuildChecker 接口（读 TSE）：`FULL_CHECK` 请求/响应、依赖图与 MD/RD 报告字段 | B2 |
 | `<待填写>` | `<待填写>` | A3 | EChecker 接口（读 ISSTA 2024）：`INCREMENTAL_CHECK` 样例、baseline 匹配规则 | B3 |
 
 ## B09 成员与分工
@@ -49,6 +49,30 @@ A1 交付内容集中于一次提交：
 
 > 回填 SHA 与 Issue/PR 号本身构成追加提交，故上表 SHA 指向**交付内容所在的那次提交**
 > （`2a9bd2c`），不是回填提交。
+
+## A1 第二轮：PR #2 合并后的复核
+
+- **Commit SHA**：`73cc5b693e6b6d4529c630f3c1b7b44139aac431`（短 `73cc5b6`）
+- **作者**：谢浩天 `<241250033@smail.nju.edu.cn>`
+- **提交说明**：`A1: 复核合并后的契约，修三处不一致并形式化 B1 的迁移规则`
+- **分支**：`a1-review-round2`
+- **起因**：PR #2 合并后拉取 main，复核 B1（`bcf217e` 等）与 B2（`d05ee38`、`e04364f`）
+  的改动是否与 A1 的契约一致
+
+| 工作项 | 文件 | 类型 |
+| --- | --- | --- |
+| `job.error.code` 排除 `VALIDATION_2xxx` | `task.schema.json`、`tools/validate.py`、`tests/`、`samples/invalid/validation-code-in-job-error.json`、`errors.md` 补记 | 修正 A1 自己的疏漏 |
+| 状态迁移规则形式化为 `execution` 计时约束 | `task.schema.json`（`status_matrix`）、`tools/validate.py`（`check_transition_timing`）、`tests/…TestTransitionTiming` | 落实 B1 的规则并解开其表内冲突 |
+| 补 `output_draft.environment` | `task.schema.json`、`samples/draft.job-succeeded.json`、`tools/validate.py` | 采纳 B2 的字段，修 A1 断掉的交接链 |
+| ADR-010（含对 ADR-005 判据的修正） | `docs/adr/ADR-010-…md`、`docs/adr/README.md` 索引 | 新建，不修改 ADR-005 原文 |
+| 更正 `e2b2` 合并前置条件已失效 | `docs/BACKLOG.md` 第四节 | 附六行证据表，保留原文取回路径 |
+| 样例命名规范与 DRAFT 重复样例处理方案 | `docs/interfaces/samples/README.md` | 未擅自改名 B2 文件，列出请 B2 做的三件事 |
+| 变更记录与文档同步 | `docs/CHANGELOG.md`、`docs/VALIDATION.md`、`README.md`、`docs/AI_USAGE.md` 条目 13–16 | —— |
+
+验证：`make check` 全绿，测试由 27 项增至 41 项（正例 19、负例 19）。
+
+本轮三处问题**都不会让 `make check` 变红**——校验全绿不等于契约自洽。
+教训已记入 `AI_USAGE.md` A1 第二轮汇总。
 
 ## B1 提交追溯
 
@@ -92,34 +116,36 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 ## B2 提交追溯
 
-- **Commit SHA**：`d05ee38ab343908b072746e4afa1bcbf70bf308a`（短 `d05ee38`）
+- **Commit SHA**：`a587263bd82b88526769732004540c7766bd75b1`
 - **作者**：zrh `<3407953470@qq.com>`
-- **提交说明**：`docs(B2): 对齐 DRAFT 样例与环境交接契约`
+- **提交说明**：`b2修改`
 - **分支**：`e2b2`
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| DRAFT 创建请求 | `interfaces/samples/draft-request.json` | `d05ee38` | 待提 PR | 按 `create_request` 信封补齐 `kind`、三段式版本、幂等键与 `limits` |
-| DRAFT 成功响应 | `interfaces/samples/draft-response.json` | `d05ee38` | 待提 PR | 包含 `build_result`、环境、每轮理由和可追溯 artifact |
-| DRAFT 失败响应 | `interfaces/samples/draft-failed-response.json` | `d05ee38` | 待提 PR | `FAILED + ENV_3002 + output={}` 符合公共状态矩阵 |
-| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `d05ee38` | 待提 PR | 第 13 页四段式，并在 `adr/README.md` 登记 |
+| canonical DRAFT 链路 | `interfaces/samples/draft.request.json`、`draft.job-succeeded.json`、`full-check.request.json` | `a587263` | Issue #4 / PR #5 | `environment/build` 可从 DRAFT 直接映射到 FULL_CHECK |
+| DRAFT 失败路径 | `interfaces/samples/draft.job-failed.json`、`job.timed-out.json` | `a587263` | Issue #4 / PR #5 | 迭代耗尽、环境失败与超时均有明确状态/错误码 |
+| DRAFT 正式 schema 与校验 | `interfaces/task.schema.json`、`tools/validate.py`、`tests/test_validate.py` | `a587263` | Issue #4 / PR #5 | 缺环境/配置/命令/路径均被拒绝，`make check` 通过 |
+| DRAFT artifact fixture | `interfaces/artifacts/job-draft09/*` | `a587263` | Issue #4 / PR #5 | 四个产物的大小与 SHA-256 由测试重算 |
+| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `a587263` | Issue #4 / PR #5 | 已纳入 A2/B2 v0.1 约定，待 A2 在 PR 中接受 |
 
 ## A2 提交追溯
 
-- **作者**：Inxerph（Git 作者；真实姓名与学号待补）
-- **学号**：`<待填写>`
+- **作者**：殷晓瑞（Git 作者 `Inxerph`）
+- **学号**：`241250014`
 - **分支**：`a2-full-check-contract`
 - **Commit SHA**：`26bda5c`（TSE 语义复核后的内容提交；首个内容提交为 `1c38393`）
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `1c38393` | 待创建 | 请求/输出、MD/RD、失败路径和下游交接已定义 |
-| artifact 本体 schema | `interfaces/task.schema.json` | `1c38393` | 待创建 | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
-| BuildChecker ADR | `adr/ADR-010-buildchecker-output-contract.md` | `1c38393` | 待创建 | 第 13 页四段式，记录本体与一致性决策 |
-| artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | 待创建 | 三份本体通过校验 |
-| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | 待创建 | 零发现正例与五项负例通过校验 |
-| A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | 待创建 | 35 项测试全绿 |
-| TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | 待创建 | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
+| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `1c38393` | 本 PR | 请求/输出、MD/RD、失败路径和下游交接已定义 |
+| artifact 本体 schema | `interfaces/task.schema.json` | `1c38393` | 本 PR | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
+| BuildChecker ADR | `adr/ADR-011-buildchecker-output-contract.md` | `1c38393` | 本 PR | 第 13 页四段式，记录本体与一致性决策；与 A1 的 ADR-010 撞号后改号为 011 |
+| artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | 本 PR | 三份本体通过校验 |
+| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | 本 PR | 零发现正例与五项负例通过校验 |
+| A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | 本 PR | A2 分支上 35 项全绿；合并 B2 的改动后整体 56 项全绿 |
+| TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | 本 PR | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
+| 复核 B2 的 DRAFT 交接 | `interfaces/samples/draft.job-succeeded.json`、`adr/ADR-007-…md`、`adr/README.md` | 本 PR | 本 PR | 五项待确认全部满足，`ADR-007` 改为 `Accepted`；按 blob 实际字节改正 Dockerfile 制品的 `size_bytes` / `sha256` |
 
 ## 其它分支
 
@@ -171,8 +197,8 @@ $ python tools/validate.py
 A09/B09 公共契约校验通过：四类请求与响应、六种状态、artifact 元数据/本体
 与全部负例均符合 task.schema.json。
 
-$ python -m unittest discover -s tests -v
-Ran 35 tests
+$ python -m unittest discover -s tests
+Ran 56 tests
 OK
 ```
 
@@ -188,7 +214,7 @@ OK
 
 ## 待补
 
-- [ ] A2、A3 的姓名与学号
+- [ ] A3 的姓名与学号（A2 已补：殷晓瑞 / `241250014`）
 - [ ] B09 三位成员的姓名与学号（由 B1 填写）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2

@@ -2,7 +2,7 @@
   "kind": "actual_graph",
   "schema_version": "1.0.0",
   "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-  "configuration_id": "cc-MODE0",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
   "project_root": "/workspace/project",
   "targets": [
     {

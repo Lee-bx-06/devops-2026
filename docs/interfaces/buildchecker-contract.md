@@ -101,7 +101,7 @@ artifact 元数据：
   "media_type": "application/json",
   "producer_job_id": "job-full09",
   "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-  "configuration_id": "cc-MODE0",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
   "sha256": "..."
 }
 ```
@@ -133,7 +133,7 @@ artifact 元数据：
   "media_type": "application/json",
   "producer_job_id": "job-full09",
   "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-  "configuration_id": "cc-MODE0",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
   "sha256": "..."
 }
 ```
@@ -163,7 +163,7 @@ artifact 元数据：
   "media_type": "application/json",
   "producer_job_id": "job-full09",
   "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-  "configuration_id": "cc-MODE0",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
   "sha256": "..."
 }
 ```

@@ -43,7 +43,8 @@ class TestFullCheckArtifactBodies(unittest.TestCase):
         ]
         self.assertEqual({d["commit"] for d in docs}, {
             "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432"})
-        self.assertEqual({d["configuration_id"] for d in docs}, {"cc-MODE0"})
+        self.assertEqual({d["configuration_id"] for d in docs},
+                         {"cc-gcc13-release-6f12a4c8"})
 
     def test_error_report_matches_inline_findings(self):
         job = load("full-check.job-succeeded.json")

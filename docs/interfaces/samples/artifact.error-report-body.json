@@ -2,7 +2,7 @@
   "kind": "error_report",
   "schema_version": "1.0.0",
   "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-  "configuration_id": "cc-MODE0",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
   "counts": {
     "missing": 1,
     "redundant": 1
@@ -49,7 +49,7 @@
       "evidence": [
         {
           "kind": "DECLARATION",
-          "detail": "Makefile 第 27 行声明 util.o: legacy.h，但在 configuration cc-MODE0 的完整构建中未观察到对 legacy.h 的任何访问",
+    "detail": "Makefile 第 27 行声明 util.o: legacy.h，但在 configuration cc-gcc13-release-6f12a4c8 的完整构建中未观察到对 legacy.h 的任何访问",
           "artifact_uri": "artifact://pair09/job-full09/declared-graph.json"
         }
       ],

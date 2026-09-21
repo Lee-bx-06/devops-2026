@@ -1,0 +1,6 @@
+[round 1]
+configuration change: pin Ubuntu 24.04 and install gcc-13 plus make
+clean command: make clean
+build command: make all
+result: failed
+reason: openssl/ssl.h was not found while compiling crypto.o

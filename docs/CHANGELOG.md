@@ -13,15 +13,61 @@
 |---|---|
 | `interfaces/buildchecker-contract.md` | FULL_CHECK 请求、成功输出、MD/RD、失败路径与下游交接 |
 | `interfaces/task.schema.json` | 新增 `actual_graph` / `declared_graph` / `error_report` 三种本体定义 |
-| `adr/ADR-010-buildchecker-output-contract.md` | A2 对本体和跨字段一致性的架构决策 |
+| `adr/ADR-011-buildchecker-output-contract.md` | A2 对本体和跨字段一致性的架构决策（原编号 010，与 A1 的 ADR-010 冲突后改号） |
 | `interfaces/samples/artifact.*.json` | 三份 artifact 本体正例 |
 | `interfaces/samples/full-check.clean-project.json` | 零发现成功样例 |
 | `interfaces/samples/invalid/…` | counts 不一致、缺图、非法 observation、报告本体不一致、相对 project_root 五个负例 |
 | `tests/test_buildchecker_contract.py` | A2 的 artifact 与跨字段一致性测试 |
 | `tools/validate.py` | 增加 counts/findings、核心 artifact 类型和三种本体的校验 |
 
-状态：A2 已起草并通过本地校验，待 A3、B3、B1 复核。是否提升
-`schema_version` 由 B1 按 `versioning.md` 判定。
+状态：A2 已起草，与 B2 的 `324a32e` 合并后 `make check` 全绿（56 项），
+待 A3、B3、B1 复核。是否提升 `schema_version` 由 B1 按 `versioning.md` 判定。
+### A1 变更（2026-09-21，待 B1 评审）
+
+对应 ADR-010。三项改动，其中第 1 项涉及 `error.code`，版本号处理见下方待处理表第 6 项。
+
+| # | 变更 | 类型 | 影响面 |
+|---|---|---|---|
+| 1 | `error_code` 拆为 `job_error_code`（`ENV_3xxx`/`EXEC_4xxx`/`ANALYSIS_5xxx`）与 `request_error_code`（`VALIDATION_2xxx`）；`job.error` 只引前者 | 收紧 | 落实 B1 在 `errors.md` 第二节已定稿的规则。此前 schema 正则四段全允许，即文档禁止的事契约放行。**仓库内无任何合法样例受影响**，仅 A1 一条测试断言过旧行为，已改正 |
+| 2 | `status_matrix` 增加 `execution.started_at` / `finished_at` 的计时约束 | 收紧 | 把 B1 在 `endpoints.md`「状态迁移」一节的规则形式化。全部 19 个正例已符合，无需改样例 |
+| 3 | 新增 `$defs.produced_environment`，挂到 `output_draft.environment`（**可选**） | 新增 | 依 B2 的 `draft-response.json` 补入，使该字段可被校验。第 21、22 页要求下游消费的 `configuration_id` 此前在 DRAFT 输出里没有定义来源。是否升为必填由 B2 决定 |
+
+新增负例 `samples/invalid/validation-code-in-job-error.json`；
+`draft.job-succeeded.json` 补入 `output.environment`；
+测试由 27 项增至 41 项（含两项防文档腐烂的断言，见下）。
+
+数量类陈述的单一来源是 `VALIDATION.md` 第五节；ADR 与 BACKLOG 不再各自写死样例数，
+改为指向该节，并由 `tests/…TestDocsDoNotRot` 断言其与实际文件数一致。
+起因是本轮自检发现三个 ADR 里的样例计数在 B2 补样例后已全部过时。
+
+同时更正 `BACKLOG.md` 第四节关于 `origin/e2b2`「不可直接合并、三个样例通不过校验」
+的判断：实测 `e2b2` 已完全并入 main，提交 `38f6694` 在仓库内不存在，
+三个样例单独校验全部通过。原文保留在 `git show 8eb7b4c`，更正附证据表。
+### B2：落实 A2–B2 环境交接约定
+
+- 将 DRAFT 成功输出的 `environment`、`build`、`build_result`、`rounds` 与
+  `artifacts` 纳入正式 schema；FULL_CHECK 输入同步要求清理、构建、验证三条命令
+  和绝对 POSIX `project_root`
+- 规范镜像为 OCI/Docker 引用并拒绝 `:latest`；`configuration_id` 定义为稳定、
+  不绑定提交、任务或 UUID 的不透明标识
+- DRAFT 成功输出可逐字段直接映射到 FULL_CHECK 输入；校验器会拒绝两侧漂移、
+  非连续迭代轮次、日志与制品不对应以及错误的提交/配置归属
+- 删除三份重复命名的旧 DRAFT 样例，保留唯一规范请求/成功链，新增构建失败样例，
+  并明确任务超时和达到最大迭代次数的终态
+- 新增一组 Dockerfile/轮次日志/最终验证日志测试制品，样例记录其真实 SHA-256
+  与字节数；新增 7 项 A2–B2 专项单元测试
+- 本变更只涉及 B2 所属的 DRAFT 契约及其与 A2 的明确交接边界，提交到 `e2b2`
+  并通过 PR 请求合入，不直接推送 `main`
+### A2 复核 B2 的 DRAFT 交接并接受 ADR-007（2026-09-21）
+
+- 逐条复核 `Issue #4` / `PR #5`：`output_draft` 已进 schema、canonical DRAFT 链唯一、
+  `configuration_id` 不再绑定 commit、`clean_command` 与 `project_root` 语义统一、
+  Issue + PR 追溯齐备。B2 待确认的五项前置条件全部满足，`ADR-007` 由 `Proposed` 改为 `Accepted`。
+- 复核发现并修正一处数据不一致：`draft.job-succeeded.json` 中 Dockerfile 制品的
+  `size_bytes` / `sha256` 取自 CRLF 工作副本（318 字节），与仓库内 LF blob
+  （308 字节）不符，`TestA2B2DraftHandoff` 在干净检出上必然失败。已按 blob 实际字节改正。
+- 原 `ADR-010-buildchecker-output-contract.md` 与 A1 已合并的 `ADR-010` 编号冲突，
+  已在 `a2-full-check-contract` 分支改号为 `ADR-011` 并登记进 `adr/README.md`。
 
 ### 待处理
 
@@ -32,6 +78,10 @@
 | 3 | `execution` 字段在第 19 页被列为公共字段但全篇未定义，现定义由 A1 给出 | A2、A3、B2、B3 确认可用 | 若服务侧需要更多计时字段，属可兼容扩展 |
 | 4 | `input` / `output` 内部字段由四个服务负责人最终确认 | A2、A3、B2、B3 | 见 Issue #1 第三节 |
 | 5 | 产物读取接口在 E2 不部署，E3 是否需要落地实现 | 全组 | 见 `interfaces/endpoints.md` 第四节 |
+| 6 | 收紧 `job.error.code`（上表 A1 变更第 1 项）是否需要递增 `schema_version` | **B1 裁定** | A1 判断不递增：1.0.0 的 `errors.md` 从未允许 `VALIDATION_2xxx` 进 `job.error`，是 schema 正则写宽了，本次是让 schema 符合已定稿规范。但 `versioning.md` 第二节把「改动 `error.code`」列在破坏兼容栏。若 B1 判定需递增，A1 将同步改 `const`、全部 38 个样例与测试。论证见 ADR-010 第五节 |
+| 7 | `endpoints.md`「状态迁移」硬规则 2 与迁移表第三行冲突（`QUEUED→FAILED` vs「`RUNNING` 不可跳过」） | **B1 修订** | A1 建议收窄硬规则 2 为「`SUCCEEDED` 与 `TIMED_OUT` 不可跳过 `RUNNING`」，保留 `QUEUED→FAILED` 路径。规则本意（超时归属可判定）不受影响。见 ADR-010 第二节 |
+| 8 | `configuration_id` 取值两组不一致：A1 用第 22 页原文的 `cc-MODE0`，B2 用 `draft-gcc13-release-9f8e7d6c` | B2 定格式、A2 定消费方式 | 该值必须全组统一，否则 DRAFT → BuildChecker 的环境交接对不上（第 21、22 页）。见 `interfaces/samples/README.md` 第四节 |
+| 9 | DRAFT 样例两套并存、命名规范不统一 | **B2 执行** | A1 未擅自改名，因三个文件被 B2 的 `ADR-007` 与 `CONTRIBUTIONS.md` 引用。方案见 `interfaces/samples/README.md` 第五节 |
 
 ## [1.0.0] - 2026-09-21
 

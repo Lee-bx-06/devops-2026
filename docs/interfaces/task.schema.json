@@ -23,10 +23,16 @@
       "enum": ["QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELLED"]
     },
 
-    "error_code": {
-      "description": "第 9 页系统执行错误，写入 job.error。命名空间 ENV_3xxx / EXEC_4xxx / ANALYSIS_5xxx / VALIDATION_2xxx 见 docs/interfaces/errors.md。此处用模式而非枚举，使各组可在自己的命名空间内增码而不破坏本 schema (第 26 页)。",
+    "job_error_code": {
+      "description": "第 9 页系统执行错误，写入 job.error，仅 ENV_3xxx / EXEC_4xxx / ANALYSIS_5xxx 三段。B1 于 2026-09-21 在 errors.md 第二节限定 VALIDATION_2xxx 只出现在创建期 HTTP 4xx 响应体、不写入 job.error；本定义是该规则的机器可校验形式。用模式而非枚举，使各组可在自己的命名空间内增码而不破坏本 schema（第 26 页）。",
       "type": "string",
-      "pattern": "^(VALIDATION_2[0-9]{3}|ENV_3[0-9]{3}|EXEC_4[0-9]{3}|ANALYSIS_5[0-9]{3})$"
+      "pattern": "^(ENV_3[0-9]{3}|EXEC_4[0-9]{3}|ANALYSIS_5[0-9]{3})$"
+    },
+
+    "request_error_code": {
+      "description": "创建期同步拒绝（HTTP 4xx）使用的 VALIDATION_2xxx 段。此类请求不产生 Job、没有 job_id，因此该段的码不可能合法地出现在 job.error 里。判据见 ADR-005。目前仅由 errors.md 与 endpoints.md 引用，尚未作为独立 kind 建模（见 BACKLOG）。",
+      "type": "string",
+      "pattern": "^VALIDATION_2[0-9]{3}$"
     },
 
     "finding_type": {
@@ -89,18 +95,47 @@
       }
     },
 
+    "image_uri": {
+      "description": "OCI/Docker 镜像引用。禁止 latest 等浮动标签；可用不可变 tag，有 digest 时优先使用 digest。",
+      "type": "string",
+      "pattern": "^[a-z0-9.-]+(?::[0-9]+)?/[a-z0-9._/-]+(?::[A-Za-z0-9_][A-Za-z0-9._-]{0,127}|@sha256:[0-9a-f]{64})$"
+    },
+
+    "configuration_id": {
+      "description": "DRAFT 生成的 opaque 非空标识；只随基础镜像、工具链、依赖集或构建参数变化，不得绑定 commit、Job ID 或随机 UUID。",
+      "type": "string",
+      "minLength": 1
+    },
+
+    "project_root": {
+      "description": "容器内执行 clean/build/verify 命令的仓库根目录；必须是绝对 POSIX 路径。",
+      "type": "string",
+      "pattern": "^/(?:[A-Za-z0-9._-]+/?)+$"
+    },
+
     "environment": {
-      "description": "第 21 页：可运行镜像与 configuration_id。configuration_id 必须与 DRAFT 产出对得上 (第 21、22 页)。",
+      "description": "第 21 页：可拉取、可运行的镜像与 DRAFT 生成的 configuration_id。DRAFT 输出与 FULL_CHECK 输入必须原样一致。",
+      "type": "object",
+      "required": ["image_uri", "configuration_id"],
+      "properties": {
+        "image_uri": {"$ref": "#/$defs/image_uri"},
+        "configuration_id": {"$ref": "#/$defs/configuration_id"}
+      }
+    },
+
+    "produced_environment": {
+      "description": "DRAFT 产出的环境标识。下游 FULL_CHECK / INCREMENTAL_CHECK / REPAIR 的 input.environment 必须消费这里的 image_uri 与 configuration_id（第 21 页「可运行镜像与 configuration_id」、第 22 页 configuration_id 匹配）。A1 依 B2 的 draft-response.json 补入此定义，使该字段可被校验；是否升为必填由 B2 决定（ADR-004：output 内部属服务负责人）。",
       "type": "object",
       "required": ["image_uri", "configuration_id"],
       "properties": {
         "image_uri": {"type": "string", "minLength": 1},
-        "configuration_id": {"type": "string", "minLength": 1}
+        "configuration_id": {"type": "string", "minLength": 1},
+        "project_root": {"$ref": "#/$defs/nullable_string"},
+        "clean_command": {"$ref": "#/$defs/nullable_string"}
       }
     },
 
-    "build_spec": {
-      "description": "第 20、21、23 页：构建与验证命令。clean_command 用于全量检测的可复现起点。",
+    "build_spec": {      "description": "第 20、21、23 页：构建与验证命令。clean_command 用于全量检测的可复现起点。",
       "type": "object",
       "required": ["command"],
       "properties": {
@@ -151,12 +186,12 @@
     },
 
     "error": {
-      "description": "第 9 页系统执行错误通道。仅在 FAILED / TIMED_OUT 出现。检测出 MD 不是错误 (第 8、9 页)。",
+      "description": "第 9 页系统执行错误通道。仅在 FAILED / TIMED_OUT 出现。检测出 MD 不是错误 (第 8、9 页)。code 只取 job_error_code 的三段，VALIDATION_2xxx 不得出现在此。",
       "type": "object",
       "additionalProperties": false,
       "required": ["code", "message"],
       "properties": {
-        "code": {"$ref": "#/$defs/error_code"},
+        "code": {"$ref": "#/$defs/job_error_code"},
         "message": {"type": "string", "minLength": 1},
         "retryable": {"type": "boolean"},
         "detail": {"$ref": "#/$defs/nullable_string"}
@@ -345,7 +380,8 @@
         "environment": {"$ref": "#/$defs/environment"},
         "build": {
           "allOf": [{"$ref": "#/$defs/build_spec"}],
-          "required": ["command", "clean_command", "project_root"]
+          "required": ["command", "clean_command", "verify_command", "project_root"],
+          "properties": {"project_root": {"$ref": "#/$defs/project_root"}}
         }
       }
     },
@@ -365,7 +401,7 @@
           "properties": {
             "actual_graph_uri": {"$ref": "#/$defs/artifact_uri"},
             "commit": {"$ref": "#/$defs/commit_sha"},
-            "configuration_id": {"type": "string", "minLength": 1}
+            "configuration_id": {"$ref": "#/$defs/configuration_id"}
           }
         }
       }
@@ -395,19 +431,24 @@
     },
 
     "output_draft": {
-      "description": "第 20 页 DRAFT 输出：Dockerfile 与镜像引用、每轮日志/修改/选择理由、最终构建和验证结果。成功判据必须明确。",
+      "description": "第 20、21 页及 A2/B2 约定：DRAFT 成功输出可直接映射为 FULL_CHECK.input，并包含 Dockerfile、每轮日志/修改/选择理由与明确成功判据。",
       "allOf": [{"$ref": "#/$defs/output_common"}],
       "type": "object",
-      "required": ["build_result"],
+      "required": ["environment", "build", "build_result", "rounds", "artifacts"],
       "properties": {
+        "environment": {"$ref": "#/$defs/environment"},
+        "build": {
+          "allOf": [{"$ref": "#/$defs/build_spec"}],
+          "required": ["command", "clean_command", "verify_command", "project_root"],
+          "properties": {"project_root": {"$ref": "#/$defs/project_root"}}
+        },
         "build_result": {
           "type": "object",
-          "required": ["build_succeeded", "verify_succeeded", "iterations"],
+          "required": ["build_succeeded", "verify_succeeded", "iterations", "success_criteria"],
           "properties": {
             "build_succeeded": {"type": "boolean"},
             "verify_succeeded": {"type": "boolean"},
-            "iterations": {"type": "integer", "minimum": 0},
-            "image_ref": {"$ref": "#/$defs/nullable_string"},
+            "iterations": {"type": "integer", "minimum": 0, "description": "环境配置发生修改的轮数，与 rounds 长度一致。"},
             "success_criteria": {"type": "string", "minLength": 1}
           }
         },
@@ -423,7 +464,8 @@
               "log_uri": {"$ref": "#/$defs/artifact_uri"}
             }
           }
-        }
+        },
+        "artifacts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/artifact"}}
       }
     },
 
@@ -481,28 +523,46 @@
     },
 
     "status_matrix": {
-      "description": "第 8 页状态与结果的约束：QUEUED 对应 HTTP 202；QUEUED/RUNNING/CANCELLED 无 error 且 output 为空；SUCCEEDED 无 error，output 可含 MD/RD findings；FAILED/TIMED_OUT 必须有 error 且 output 为空。检出 MD 仍判 SUCCEEDED。",
+      "description": "第 8 页状态与结果的约束：QUEUED 对应 HTTP 202；QUEUED/RUNNING/CANCELLED 无 error 且 output 为空；SUCCEEDED 无 error，output 可含 MD/RD findings；FAILED/TIMED_OUT 必须有 error 且 output 为空。检出 MD 仍判 SUCCEEDED。另外把 B1 在 endpoints.md「状态迁移」一节的规则形式化为单文档可校验的 execution 计时约束：非终态不得有 finished_at；SUCCEEDED 与 TIMED_OUT 必须有 started_at（任务确实跑过）；FAILED 与 CANCELLED 允许 started_at 为 null（任务可能从未被执行器领取，即 B1 表中 QUEUED→FAILED 的环境准备失败路径）。这样既落实了「终态不可再迁移」，也解开了 B1 迁移表中 QUEUED→FAILED 与硬规则 2「RUNNING 不可跳过」的冲突，见 ADR-008。",
       "oneOf": [
         {
           "properties": {
             "status": {"const": "QUEUED"},
             "http_status": {"const": 202},
             "error": {"const": null},
-            "output": {"type": "object", "maxProperties": 0}
+            "output": {"type": "object", "maxProperties": 0},
+            "execution": {
+              "properties": {
+                "started_at": {"const": null},
+                "finished_at": {"const": null}
+              }
+            }
           }
         },
         {
           "properties": {
             "status": {"const": "RUNNING"},
             "error": {"const": null},
-            "output": {"type": "object", "maxProperties": 0}
+            "output": {"type": "object", "maxProperties": 0},
+            "execution": {
+              "properties": {
+                "started_at": {"$ref": "#/$defs/iso8601"},
+                "finished_at": {"const": null}
+              }
+            }
           },
           "not": {"required": ["http_status"]}
         },
         {
           "properties": {
             "status": {"const": "SUCCEEDED"},
-            "error": {"const": null}
+            "error": {"const": null},
+            "execution": {
+              "properties": {
+                "started_at": {"$ref": "#/$defs/iso8601"},
+                "finished_at": {"$ref": "#/$defs/iso8601"}
+              }
+            }
           },
           "not": {"required": ["http_status"]}
         },
@@ -510,7 +570,12 @@
           "properties": {
             "status": {"const": "FAILED"},
             "error": {"$ref": "#/$defs/error"},
-            "output": {"type": "object", "maxProperties": 0}
+            "output": {"type": "object", "maxProperties": 0},
+            "execution": {
+              "properties": {
+                "finished_at": {"$ref": "#/$defs/iso8601"}
+              }
+            }
           },
           "required": ["error"],
           "not": {"required": ["http_status"]}
@@ -519,7 +584,13 @@
           "properties": {
             "status": {"const": "TIMED_OUT"},
             "error": {"$ref": "#/$defs/error"},
-            "output": {"type": "object", "maxProperties": 0}
+            "output": {"type": "object", "maxProperties": 0},
+            "execution": {
+              "properties": {
+                "started_at": {"$ref": "#/$defs/iso8601"},
+                "finished_at": {"$ref": "#/$defs/iso8601"}
+              }
+            }
           },
           "required": ["error"],
           "not": {"required": ["http_status"]}
@@ -528,7 +599,12 @@
           "properties": {
             "status": {"const": "CANCELLED"},
             "error": {"const": null},
-            "output": {"type": "object", "maxProperties": 0}
+            "output": {"type": "object", "maxProperties": 0},
+            "execution": {
+              "properties": {
+                "finished_at": {"$ref": "#/$defs/iso8601"}
+              }
+            }
           },
           "not": {"required": ["http_status"]}
         }

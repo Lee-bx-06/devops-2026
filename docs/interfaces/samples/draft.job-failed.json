@@ -1,16 +1,16 @@
 {
   "kind": "job",
   "schema_version": "1.0.0",
-  "job_id": "job-draft-b09-002",
-  "trace_id": "trace-b09-draft-002",
+  "job_id": "job-draft11",
+  "trace_id": "trace-a09-e2-006",
   "job_type": "DRAFT",
   "status": "FAILED",
   "execution": {
     "attempt": 1,
     "queued_at": "2026-09-21T08:10:00+08:00",
     "started_at": "2026-09-21T08:10:02+08:00",
-    "finished_at": "2026-09-21T08:12:00+08:00",
-    "duration_ms": 118000,
+    "finished_at": "2026-09-21T08:22:00+08:00",
+    "duration_ms": 718000,
     "worker_id": "b09-draft-worker-1"
   },
   "input": {
@@ -21,9 +21,9 @@
     },
     "build": {
       "command": "make all",
-      "verify_command": "make test",
       "clean_command": "make clean",
-      "project_root": "."
+      "verify_command": "make test",
+      "project_root": "/workspace/project"
     },
     "limits": {
       "max_iterations": 5,
@@ -33,8 +33,8 @@
   "output": {},
   "error": {
     "code": "ENV_3002",
-    "message": "镜像构建失败：基础镜像与目标平台架构不兼容",
+    "message": "达到 max_iterations=5 后仍未生成可用镜像",
     "retryable": true,
-    "detail": "DRAFT 未产生可供下游使用的镜像或 configuration_id；FAILED 状态按公共状态矩阵保持 output 为空对象。"
+    "detail": "环境配置连续 5 轮修改仍未同时通过清理、构建和验证；未交接半成品环境。"
   }
 }

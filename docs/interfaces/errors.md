@@ -86,6 +86,15 @@
 本注册表自 2026-09-21 起由 **B1 维护**。错误码变更属版本与兼容性范畴，
 按 `../versioning.md` 第四节流程处理，并在 `../CHANGELOG.md` 留下记录。
 
+> **A1 补记（2026-09-21）**：上表「不写入 `job.error`」这条已由契约强制，不再只靠约定。
+> `task.schema.json` 原先只有一个 `error_code` 定义，四段全允许，而 `job.error` 直接引用它
+> ——也就是文档禁止的事 schema 放行。现已拆为两个定义：
+> `job_error_code`（`ENV_3xxx` / `EXEC_4xxx` / `ANALYSIS_5xxx`，供 `job.error` 使用）与
+> `request_error_code`（`VALIDATION_2xxx`，供创建期 HTTP 4xx 使用）。
+> 负例 `samples/invalid/validation-code-in-job-error.json` 与
+> `tests/…::test_validation_codes_are_rejected_in_job_error` 守护这条。
+> 论证见 `../adr/ADR-010`；是否因此递增 `schema_version` 待 B1 裁定（ADR-010 第五节）。
+
 `task.schema.json` 用**正则**而非枚举约束 `error.code`：
 
 ```

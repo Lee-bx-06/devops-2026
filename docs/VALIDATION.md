@@ -63,6 +63,35 @@ python3 tools/validate.py ../B09/their-response.json
 
 **检出 MD 仍是 `SUCCEEDED`**，findings 放 `output`，绝不放 `error`（第 8、9 页）。
 
+### 状态迁移的计时痕迹（B1 迁移表 + ADR-010）
+
+迁移本身是文档序列上的性质，单文档校验器看不到；但每次迁移都会在 `execution`
+留下必然痕迹，这些痕迹可校验：
+
+| `status` | `started_at` | `finished_at` |
+| --- | --- | --- |
+| `QUEUED` | 必须 `null` | 必须 `null` |
+| `RUNNING` | 必须是时间戳 | 必须 `null` |
+| `SUCCEEDED` | 必须是时间戳 | 必须是时间戳 |
+| `TIMED_OUT` | 必须是时间戳 | 必须是时间戳 |
+| `FAILED` | **允许 `null`** | 必须是时间戳 |
+| `CANCELLED` | **允许 `null`** | 必须是时间戳 |
+
+`FAILED` / `CANCELLED` 允许 `started_at` 为 `null`，对应 B1 迁移表里
+`QUEUED → FAILED`（受理后环境准备失败）与 `QUEUED → CANCELLED`（队列中取消）
+这两条从未进入 `RUNNING` 的路径。论证见 ADR-010 第二节。
+
+### 错误码命名空间（第 9 页 + B1 于 2026-09-21 的边界限定）
+
+`error.code` 拆成两个互斥的正则：
+
+| 定义 | 正则 | 用在哪 |
+| --- | --- | --- |
+| `job_error_code` | `^(ENV_3[0-9]{3}\|EXEC_4[0-9]{3}\|ANALYSIS_5[0-9]{3})$` | `job.error`，即 `FAILED` / `TIMED_OUT` |
+| `request_error_code` | `^VALIDATION_2[0-9]{3}$` | 创建期 HTTP 4xx 响应体，不产生 Job |
+
+因此把 `VALIDATION_2001` 写进 `job.error` 会被拒（ADR-010、`errors.md` 第二节）。
+
 ### 服务专有 input（第 20–23 页，按 `job_type` 分叉）
 
 | `job_type` | 必填 |
@@ -78,7 +107,7 @@ python3 tools/validate.py ../B09/their-response.json
 
 | `job_type` | `SUCCEEDED` 时必填 |
 | --- | --- |
-| `DRAFT` | `build_result`（`build_succeeded` / `verify_succeeded` / `iterations`） |
+| `DRAFT` | `environment`、`build`（clean/build/verify/绝对 project_root）、`build_result`、`rounds`、`artifacts` |
 | `FULL_CHECK` | `counts`（`missing` / `redundant`） |
 | `INCREMENTAL_CHECK` | `introduced`、`resolved`、`updated_graph` |
 | `REPAIR` | `verification`（恰含 `build` / `test` / `recheck`）、`declaration_style` |
@@ -98,7 +127,20 @@ FULL_CHECK 还额外强制：
 - `error_report.counts` 必须与自身 `findings` 一致。
 - 三份本体都必须带相同的 `commit` 和 `configuration_id`。
 
-定义见 `interfaces/buildchecker-contract.md` 与 `ADR-010`。
+定义见 `interfaces/buildchecker-contract.md` 与 `ADR-011`。
+
+### A2/B2 环境交接专项校验
+
+`tests/test_validate.py::TestA2B2DraftHandoff` 覆盖：
+
+- 仓库只有一份 canonical DRAFT 请求和成功响应；
+- `DRAFT.output.environment/build` 与 `FULL_CHECK.input.environment/build` 全等；
+- 缺 `environment`、`configuration_id`、任一命令或 `project_root` 时被拒绝；
+- 禁止 `latest`、相对 `project_root` 和串联构建的 `clean_command`；
+- `configuration_id` 不包含 commit、Job ID 或随机 UUID；
+- 每轮 `log_uri` 都有 `BUILD_LOG` artifact，所有 artifact 的 commit/configuration 一致；
+- 对仓库内 DRAFT artifact fixture 重算文件大小和 SHA-256；
+- `FAILED + ENV_3002`、`TIMED_OUT + EXEC_4002` 与迭代耗尽路径。
 
 ### finding（第 10 页）
 
@@ -109,7 +151,8 @@ FULL_CHECK 还额外强制：
 
 ### error（第 9 页）
 
-`code` 必须落在命名空间正则内（见 `errors.md`），`message` 必填。
+`code` 必须落在 `job_error_code` 的三段命名空间内（见 `errors.md`），`message` 必填。
+`VALIDATION_2xxx` 属创建期 HTTP 4xx 码段，写进 `job.error` 会被拒。
 `error` 对象严格封闭，不接受未定义字段。
 
 ## 四、已知边界：这不是通用 JSON Schema 引擎
@@ -129,22 +172,32 @@ FULL_CHECK 还额外强制：
 因此：**schema 是权威定义，validate.py 是它的可执行镜像。**
 若两者出现分歧，以 schema 为准并修 validate.py。
 
-尚未由校验器强制、需人工或 B1 复核的约束：
+尚未由校验器强制、需人工或运行期处理的约束：
 
-- `base_commit` 与 `baseline.commit` 语义上应一致——但**故意不**在校验期拒绝，
-  因为这是运行期才能确认的语义问题，落为 `FAILED` + `ENV_3003`（见 ADR-005、
-  `samples/job.baseline-mismatch-failed.json`）。
+- `base_commit` 与 `baseline.commit` 是否相等、`baseline.configuration_id` 与
+  `environment.configuration_id` 是否相等——**故意不**在校验期比对。
+  第 5 页把「基线版本和配置匹配」列为**接收方检查**，属运行期职责，
+  由 EChecker 落为 `FAILED` + `ENV_3003`。
+  `tests/…TestBaselineConsistencyIsRuntimeNotContract` 钉住这条边界，
+  防止后来者误收紧。论证见 ADR-010 第三节；ADR-005 原来给的理由
+  （「需要读产物才能比对」）不成立，已由 ADR-010 第四节修正。
+- 「终态不可再迁移」需要 Job 文档**序列**才能验证，单文档校验器看不到。
+  已覆盖的是它在每个状态上留下的计时痕迹（见第三节迁移表）。
 - Job 内联 `output.findings` 与下载后的 `ERROR_REPORT` 文件本体是否一致：
-  需要读取 artifact 才能比对，校验期只能检查两者各自的 counts。
+  需要读取 artifact 才能比对，校验期只能检查两者各自的 counts 与形状。
+  A2 的 `tests/test_buildchecker_contract.py` 用仓库内样例断言二者相等，
+  但那是对样例的检查，不是对任意请求的校验。
 - `trace_id` 在跨服务调用链上的实际串联。
-- `sha256` 与产物本体是否真的匹配（需下载后计算）。
+- DRAFT canonical 样例的 `sha256` 已对仓库内 fixture 重算校验；其他服务的
+  说明性 artifact 仍需在真实下载后计算。
 
 ## 五、样例清单
 
-正例 23 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
-六种 `status` 各至少一个、独立 `artifact_record`、三种 artifact 本体和零发现路径。
+正例 21 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
+六种 `status` 各至少一个、独立 `artifact_record`、B2 的 DRAFT 请求/成功/失败链、
+A2 的三种 artifact 本体和零发现路径。
 
-负例 23 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
+负例 24 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，
 否则报「被拒原因与 expected_error 不符」。这样负例不会因为契约收紧而
 「碰巧仍然被拒」地失去意义。
@@ -152,6 +205,7 @@ FULL_CHECK 还额外强制：
 下划线开头的键（`_note`、`expected_error`）是给人看的注解，校验前会被剥离，
 不属于线上载荷。
 
-> 所有 URI、SHA、commit、镜像名、时间戳均为**说明性值**，不对应真实仓库或真实
-> 检测结果。它们的作用是让 A09 与 B09 能用同一份具体例子确认彼此理解一致
-> （第 11 页：「用自己的例子证明双方理解一致」）。
+> 除 canonical DRAFT 成功样例的仓库内 fixture 外，URI、SHA、commit、镜像名、
+> 时间戳均为**说明性值**。DRAFT fixture 的 `sha256` 与 `size_bytes` 是文件真实值；
+> 镜像 URI 仍是契约示例，不表示已推送或部署。
+

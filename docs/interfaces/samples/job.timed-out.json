@@ -9,8 +9,8 @@
     "attempt": 2,
     "queued_at": "2026-09-20T11:30:00Z",
     "started_at": "2026-09-20T11:30:06Z",
-    "finished_at": "2026-09-20T12:00:06Z",
-    "duration_ms": 1800000,
+    "finished_at": "2026-09-20T11:45:06Z",
+    "duration_ms": 900000,
     "worker_id": "b09-draft-worker-2"
   },
   "input": {
@@ -23,17 +23,17 @@
       "command": "make all",
       "verify_command": "make test",
       "clean_command": "make clean",
-      "project_root": "."
+      "project_root": "/workspace/project"
     },
     "limits": {
       "max_iterations": 5,
-      "timeout_seconds": 1800
+      "timeout_seconds": 900
     }
   },
   "output": {},
   "error": {
     "code": "EXEC_4002",
-    "message": "任务超时：达到 limits.timeout_seconds=1800，第 3 轮迭代未收敛",
+    "message": "任务超时：达到 limits.timeout_seconds=900，当前轮次未完成",
     "retryable": false,
     "detail": "TIMED_OUT 是终态且必须有 error（第 8 页）。output 必须为空，不得残留部分产物引用；已完成轮次的日志由 worker 侧保留，不通过本 Job 交接。"
   }

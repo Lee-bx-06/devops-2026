@@ -1,4 +1,4 @@
-# ADR-010：BuildChecker 输出与 artifact 本体契约
+# ADR-011：BuildChecker 输出与 artifact 本体契约
 
 - 状态：**Proposed**（A2 起草，待 A3、B3 和 B1 复核）
 - 日期：2026-09-21

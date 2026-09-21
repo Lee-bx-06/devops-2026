@@ -1,0 +1,9 @@
+[final verification]
+project root: /workspace/project
+clean command: make clean
+clean exit code: 0
+build command: make all
+build exit code: 0
+verify command: make test
+verify exit code: 0
+new environment changes after verification: none

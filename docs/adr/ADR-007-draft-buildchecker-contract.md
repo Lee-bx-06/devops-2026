@@ -1,107 +1,135 @@
 # ADR-007：DRAFT 与 BuildChecker 的环境交接契约
 
-- 状态：**Proposed**（B2 zrh，待 A2 确认）
+- 状态：**Accepted**（2026-09-21 由 A2 殷晓瑞复核接受）
 - 日期：2026-09-21
 - 契约版本：1.0.0
 - 相关：课件第 5、20、21、24 页；`task.schema.json` 的 `input_draft` / `output_draft`
 
 ## Context
 
-DRAFT 负责从固定的仓库提交生成可构建环境，BuildChecker 需要复用这个环境
-执行全量依赖检测。课件第 20 页要求 DRAFT 输入包含仓库、构建命令、最大迭代次数
-与时间限制，输出包含 Dockerfile、镜像引用、每轮日志、修改及选择理由、
-最终构建和验证结果。第 21 页又要求 BuildChecker 能使用镜像、`configuration_id`、
-clean build 命令和项目根目录。
+DRAFT 从固定仓库提交生成可构建环境，BuildChecker 在同一环境中执行全量依赖检测。
+课件第 20 页要求 DRAFT 输出 Dockerfile、镜像引用、每轮日志与选择理由，
+第 21 页要求 BuildChecker 获得镜像、`configuration_id`、构建命令和项目根目录。
 
-E2 只冻结契约，不部署 API。因此本决策的核心是让 B2 的 DRAFT 样例与 A1/B1
-已冻结的公共信封一致，同时让 A2 能从结果中唯一确定要读取的环境。
+旧样例把 `environment` 放在未约束扩展区，没有 `output.build`，且使用包含 commit 的
+`configuration_id`、相对 `project_root` 和兼做构建的 `clean_command`。A2 无法在不写
+转换逻辑的情况下消费这些结果。另外，仓库同时存在点号和连字符命名的两套
+DRAFT 请求/成功响应，会让契约真源不唯一。
 
 ## Decision
 
-### 1. DRAFT 请求沿用公共创建信封
+### 1. 只保留一套 canonical 链路
 
-`draft-request.json` 使用 `kind=create_request`、`schema_version=1.0.0`、`trace_id`、
-`job_type=DRAFT`、`idempotency_key` 和 `input`。`input` 固定为：
+标准端到端样例为：
 
-- `repository`：仓库 URL、40 位完整 commit SHA，可选 branch；
-- `build`：`command`、`verify_command`、`clean_command` 和 `project_root`；
-- `limits`：`max_iterations` 与 `timeout_seconds`。
+```text
+draft.request.json
+-> draft.job-succeeded.json
+-> full-check.request.json
+```
 
-`limits` 保留在 DRAFT 专有输入中，不再误放到 `execution`。`execution` 只用于 Job
-的排队、执行和完成时间。
+DRAFT 响应原样回显请求 `input` 和 `trace_id`。删除重复的
+`draft-request.json` 与 `draft-response.json`。失败、超时仍保留独立状态样例，
+但不得形成第二套成功链路。
 
-### 2. 成功结果显式给出成功判据
+### 2. DRAFT 成功输出正式包含环境与最终命令
 
-`draft-response.json` 使用 `status=SUCCEEDED`、`error=null`，并在 `output.build_result`
-中必填：
+`output_draft` 在 `task.schema.json` 中必填：
 
-- `build_succeeded`：clean build 是否成功；
-- `verify_succeeded`：验证命令是否成功；
-- `iterations`：实际迭代次数；
-- `image_ref`：可供下游拉取的镜像引用；
-- `success_criteria`：可供人和下游共同核对的成功判据。
+- `environment.image_uri` 和 `environment.configuration_id`；
+- `build.command`、`build.clean_command`、`build.verify_command` 和 `build.project_root`；
+- `build_result`、`rounds` 与 `artifacts`。
 
-本组将成功判据定为：`clean_command + command` 与 `verify_command` 的退出码均为 0，
-且最后一轮没有新的环境修改。`build_succeeded=true` 但 `verify_succeeded=false`
-不算 DRAFT 成功。
+A2 使用唯一的无损映射：
 
-### 3. 环境与 `configuration_id` 必须一致
+```text
+FULL_CHECK.input.environment = DRAFT.output.environment
+FULL_CHECK.input.build       = DRAFT.output.build
+```
 
-`output.environment` 作为 B2 在宽松载荷区的可兼容扩展，提供 `image_uri`、
-`configuration_id`、`project_root` 与 `clean_command`。其中：
+专项测试比较两个 JSON 对象全等，避免字段重命名或语义转换。
 
-- `environment.image_uri` 必须与 `build_result.image_ref` 相同；
-- Dockerfile 和每轮日志的 artifact 必须携带相同的 `configuration_id`；
-- BuildChecker 创建请求应原样使用这个 `image_uri` 和 `configuration_id`，
-  不得自行重新命名配置。
+### 3. 镜像引用与 `configuration_id`
 
-样例中 `configuration_id=draft-gcc13-release-9f8e7d6c`。它同时出现在环境描述和
-所有 DRAFT artifact 记录中，供 A2 交叉检查。
+- 字段名统一为 `image_uri`，不使用 `image_reference`，也不再输出冗余 `image_ref`。
+- `image_uri` 必须是 OCI/Docker reference，禁止 `latest`。canonical 样例使用 digest。
+- `configuration_id` 由 DRAFT 产生，A2 只原样消费。它是 opaque 非空字符串，
+  只随基础镜像、工具链、依赖集或构建参数变化。
+- `configuration_id` 不得包含 commit、Job ID 或随机 UUID。样例使用
+  `cc-gcc13-release-6f12a4c8`。
+- 所有 DRAFT artifact 的 `configuration_id` 必须与 `environment` 一致。
 
-### 4. 每轮日志与选择理由可追溯
+### 4. 构建命令的语义不重叠
 
-`output.rounds[]` 的每项包含 `index`、`change`、`rationale` 和 `log_uri`。日志本体
-不内联到 Job 响应，而是按 ADR-003 通过 `artifact://pair09/{job_id}/{name}` 引用，
-并在 `output.artifacts[]` 中保留媒体类型、生产 Job、commit、配置及 `sha256`。
+```text
+clean_command  = make clean
+command        = make all
+verify_command = make test
+project_root   = /workspace/project
+```
 
-### 5. 失败结果不交接部分环境
+A2 依次执行 clean、build、verify。`clean_command` 不得使用 `&&`、`||` 或 `;`
+串联构建命令。`project_root` 是容器内仓库根目录，必须是绝对 POSIX 路径，
+不接受 `.`、Windows 路径或宿主路径。
 
-`draft-failed-response.json` 使用 `status=FAILED`、`output={}` 和 `ENV_3002`。根据公共
-状态矩阵，FAILED 必须有 `job.error`，且 `output` 必须是空对象。失败轮次产生的
-临时镜像或日志不得被宣称为可供 BuildChecker 消费的有效产物。
+### 5. 成功、失败与迭代次数
+
+`build_result.iterations` 定义为“环境配置发生修改的轮数”，必须等于
+`rounds` 长度。DRAFT 只有在下列条件全部成立时返回 `SUCCEEDED`：
+
+- clean、build、verify 退出码均为 0；
+- 镜像可拉取、可运行；
+- 最后一轮没有新的环境修改；
+- `build_succeeded=true` 且 `verify_succeeded=true`。
+
+达到 `max_iterations` 仍未成功时返回 `FAILED + ENV_3002`；超时返回
+`TIMED_OUT + EXEC_4002`。两种情况的 `output` 都必须是 `{}`，不交接半成品环境。
+
+### 6. artifact 与每轮日志一一对应
+
+`rounds[].log_uri` 必须指向 `output.artifacts[]` 中 `type=BUILD_LOG` 的记录。
+成功输出至少包含一个 `DOCKERFILE`、每轮日志与最终验证日志。每条 artifact
+都必须携带与请求相同的 40 位 commit 及与环境相同的 `configuration_id`。
+
+样例 artifact 本体保存在 `docs/interfaces/artifacts/job-draft09/`。测试会重新计算
+文件大小和 SHA-256，避免只校验“64 位形式正确”却指向不存在的内容。
+读取方式仍按 ADR-003：用 `artifact_id` 调用 `GET /v1/artifacts/{artifact_id}`，
+下载后用 `sha256` 验证。
 
 ## Alternatives
 
-### 只交付 Dockerfile
+### 让 A2 从 Dockerfile 重建环境
 
-BuildChecker 仍需要自行构建环境，不能直接复用 DRAFT 的构建结果，也无法与
-`configuration_id` 保持一致。否决。
+违反“A2 直接消费 DRAFT 环境”的边界，也可能得到不同镜像。否决。
 
-### 只交付镜像引用
+### 把 `environment` 保留为未约束扩展字段
 
-下游可以运行环境，但缺少 Dockerfile、每轮修改理由和日志，无法解释环境如何
-得到，也不符合第 20 页。否决。
+样例能通过宽松载荷，但缺字段、改名或类型错误都无法被拒绝。A2 明确要求
+进入正式 schema。否决。
 
-### 失败时返回部分 `output`
+### 保留 `build_result.image_ref`
 
-看似便于调试，但下游无法判断这些产物是否可用，且直接违反已冻结的公共
-状态矩阵。调试信息应放在 `error.detail` 或工作器侧日志中。否决。
+会与 `environment.image_uri` 表达同一事物，必须再增加一条相等性规则。只保留
+`environment.image_uri`，避免两个真源。否决。
 
-### 另起一套 DRAFT 顶层信封
+### `configuration_id` 包含 commit
 
-这会与 `task.schema.json` 中已冻结的 `create_request` / `job` 重复，并导致三份
-样例无法通过公共校验器。否决。
+看似便于追溯，但同一构建配置每次换 commit 都会获得新 ID，破坏跨 Job 复用和
+基线比较。commit 已由仓库字段和 artifact 单独记录。否决。
 
 ## Consequences
 
-- A2 可以从一份成功 Job 中同时获得镜像、`configuration_id`、项目根目录和
-  clean build 命令，并用 artifact 记录核对来源。
-- `build_result` 把“进程跑完”与“构建且验证成功”分开，避免将半成品交给下游。
-- 每轮修改均有理由和日志 URI，可以审查 DRAFT 是否引入不必要的环境变更。
-- `output.environment` 是载荷区的可兼容扩展，当前校验器只保证公共必填字段；
-  `image_uri` 与 `configuration_id` 的跨字段一致性暂由 A2/B2 交叉复核。
-- A2 确认后可将本 ADR 从 Proposed 更新为 Accepted。如果 A2 需要删除、改名或改变
-  已有字段语义，必须按 ADR-004 走破坏性变更流程。
+- A2 可将 DRAFT 的 `environment` 与 `build` 对象直接放入 FULL_CHECK 请求。
+- schema 和校验器会拒绝缺环境、缺配置 ID、命令缺失、相对项目路径及语义重叠的
+  `clean_command`。
+- 校验器会拒绝 artifact 的 commit/configuration 不一致、轮次日志无对应产物、
+  浮动 `latest` 镜像与绑定 commit/Job/UUID 的 `configuration_id`。
+- 仓库增加四个小型 artifact fixture，用于校验样例中的大小与 SHA-256。
+- A2 已于 2026-09-21 复核接受本 ADR。复核前发现一处必须修的数据不一致：
+  `draft.job-succeeded.json` 中 Dockerfile 制品的 `size_bytes` / `sha256`
+  取自 CRLF 工作副本（318 字节），与仓库内 LF blob（308 字节）不符，
+  导致 `TestA2B2DraftHandoff` 在干净检出上失败。该条数据已按 blob 实际字节改正，
+  接受决定随之生效。
 
 验证命令：
 
