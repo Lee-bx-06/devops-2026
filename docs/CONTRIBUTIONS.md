@@ -109,7 +109,7 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 - **作者**：Inxerph（Git 作者；真实姓名与学号待补）
 - **学号**：`<待填写>`
 - **分支**：`a2-full-check-contract`
-- **Commit SHA**：`1c383934e6a67529fb76609efe8e03e11e36b5a2`
+- **Commit SHA**：`26bda5c`（TSE 语义复核后的内容提交；首个内容提交为 `1c38393`）
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
@@ -119,6 +119,7 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | 待创建 | 三份本体通过校验 |
 | FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | 待创建 | 零发现正例与五项负例通过校验 |
 | A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | 待创建 | 35 项测试全绿 |
+| TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | 待创建 | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
 
 ## 其它分支
 
