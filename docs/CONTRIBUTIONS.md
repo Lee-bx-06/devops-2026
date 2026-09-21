@@ -23,18 +23,26 @@ B 侧（B1/B2/B3）由配对组 B09 填写。
 
 ## A1 提交追溯
 
-| 工作项 | 文件 | Commit SHA | 提交说明 | Issue / PR | 验证结果 |
-| --- | --- | --- | --- | --- | --- |
-| 公共任务契约 schema | `docs/interfaces/task.schema.json` | `待填写` | `待填写` | `待填写` | `make check` 通过 |
-| 错误与发现双通道 | `docs/interfaces/errors.md` | `待填写` | `待填写` | `待填写` | 第 25 页检查 04 有成文答案 |
-| 零依赖校验器 | `tools/validate.py` | `待填写` | `待填写` | `待填写` | 15 正例通过、18 负例按声明原因被拒 |
-| 样例套件 | `docs/interfaces/samples/**` | `待填写` | `待填写` | `待填写` | 四类请求响应 + 六种状态 + 产物记录齐备 |
-| 单元测试 | `tests/test_validate.py` | `待填写` | `待填写` | `待填写` | 27 项全绿 |
-| 设计记录 | `docs/adr/ADR-001..006` | `待填写` | `待填写` | `待填写` | 六份，第 13 页四段式 |
-| 流程文档 | `docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/VALIDATION.md` | `待填写` | `待填写` | `待填写` | 第 12、14 页格式 |
+A1 交付内容集中于一次提交：
 
-> SHA 与 Issue/PR 号在提交后回填。回填本身会形成一次追加提交，
-> 因此表中 SHA 指向**交付内容所在的那次提交**，不是回填提交。
+- **Commit SHA**：`2a9bd2c3d388245236d33cb76a230b0f4ef48b18`（短 `2a9bd2c`）
+- **作者**：谢浩天 `<241250033@smail.nju.edu.cn>`
+- **提交说明**：`A1: 建立 A09/B09 公共接口契约与零依赖校验器`
+- **父提交**：`a48d53e`（仓库原有的 "first commit"）
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| 公共任务契约 schema | `docs/interfaces/task.schema.json` | `2a9bd2c` | `待补` | `make check` 通过；四类 `job_type` 均可表达 |
+| 错误与发现双通道 | `docs/interfaces/errors.md` | `2a9bd2c` | `待补` | 第 25 页检查 04 有成文答案 + 可执行断言 |
+| 零依赖校验器 | `tools/validate.py` | `2a9bd2c` | `待补` | 16 正例通过、18 负例按声明原因被拒 |
+| 样例套件 | `docs/interfaces/samples/**` | `2a9bd2c` | `待补` | 四类请求响应 + 六状态 + 产物记录齐备 |
+| 单元测试 | `tests/test_validate.py` | `2a9bd2c` | `待补` | 27 项全绿 |
+| 设计记录 | `docs/adr/ADR-001..006` | `2a9bd2c` | `待补` | 六份，第 13 页四段式 |
+| 流程文档 | `docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/VALIDATION.md` | `2a9bd2c` | `待补` | 第 12、14 页格式 |
+| 端点草案（B1 负责） | `docs/interfaces/endpoints.md` | `2a9bd2c` | `待补` | A1 起草，明确标注待 B1 定稿 |
+
+> 回填 SHA 本身构成一次追加提交，故上表 SHA 指向**交付内容所在的那次提交**，
+> 不是回填提交。Issue/PR 号在推送到 GitHub 后补入。
 
 ## 验证记录
 
@@ -63,6 +71,6 @@ OK
 
 - [ ] A2、A3 的姓名与学号
 - [ ] B09 三位成员的姓名与学号（由 B1 填写）
-- [ ] 各工作项的 Commit SHA
-- [ ] Issue 编号与 PR 链接
+- [x] 各工作项的 Commit SHA —— `2a9bd2c`
+- [ ] Issue 编号与 PR 链接（推送到 GitHub 后补）
 - [ ] 三轮课堂交换的结论（第 16 页）落到 ADR 与 BACKLOG
