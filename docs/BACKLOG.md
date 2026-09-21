@@ -23,13 +23,13 @@
 
 | # | 状态 | 任务 | 产物 | 验收条件 |
 | --- | --- | --- | --- | --- |
-| 5 | ✅ | 状态枚举与状态矩阵 | `task.schema.json` `$defs.status_matrix` | 六种状态各有样例；非法组合被拒（6 个负例覆盖） |
+| 5 | ✅ | 状态枚举与状态矩阵 | `task.schema.json` `$defs.status_matrix` | 六种状态各有样例；非法组合被负例逐条覆盖（清单见 `VALIDATION.md` 第五节） |
 | 6 | ✅ | 错误码双通道与注册表 | `docs/interfaces/errors.md` | 第 9 页三个给定码全部登记；`MISSING` 写进 `error` 被拒 |
 | 7 | ✅ | 第 25 页检查 04 的书面解释 | `errors.md` 第一节 | 「MD 为什么不等于工具执行失败」有成文答案 + 可执行断言 |
 | 8 | ✅ | 零依赖校验器 | `tools/validate.py` | `python3 tools/validate.py` 在无第三方包的环境直接跑通 |
 | 9 | ✅ | 负例套件 | `samples/invalid/*.json`（18 个） | 每个负例按声明的 `expected_error` 被拒 |
 | 10 | ✅ | 单元测试 | `tests/test_validate.py`（27 项） | `python3 -m unittest discover -s tests` 全绿 |
-| 11 | ✅ | 六份 ADR | `docs/adr/ADR-001..006` | 按第 13 页 Context/Decision/Alternatives/Consequences 四段式 |
+| 11 | ✅ | A1 的架构决策记录 | `docs/adr/ADR-001`–`ADR-006`，第二轮增 `ADR-010` | 按第 13 页 Context/Decision/Alternatives/Consequences 四段式；索引与编号规则见 `adr/README.md`（B1 维护） |
 | 12 | ✅ | 校验规则说明 | `docs/VALIDATION.md` | 列出已覆盖与**未覆盖**的约束，不夸大 |
 | 13 | ✅ | 端点草案 | `docs/interfaces/endpoints.md` | 第 27 页五端点齐备 + 交互示例；标注负责人为 B1 |
 
@@ -86,7 +86,7 @@
 | `e2b2` 当前指向 | `git log -1 origin/e2b2` | `e04364f`（= main 的 HEAD） |
 | 提交 `38f6694` 是否存在 | `git cat-file -t 38f6694` | **`fatal: Not a valid object name`** —— 仓库内无此对象 |
 | 三个样例是否通过校验 | `python3 tools/validate.py docs/interfaces/samples/draft-{request,response,failed-response}.json` | **三个全部通过** |
-| 全量校验 | `make check` | 通过，39 项测试全绿 |
+| 全量校验 | `make check` | 通过，41 项测试全绿 |
 
 结论：B2 已经按 `task.schema.json` 重写了三个样例（`d05ee38`「对齐 DRAFT 样例与
 环境交接契约」、`e04364f`），ADR 也已改号为 `ADR-007` 并登记进 `adr/README.md` 索引。

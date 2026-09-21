@@ -69,7 +69,7 @@ A1 交付内容集中于一次提交：
 | 样例命名规范与 DRAFT 重复样例处理方案 | `docs/interfaces/samples/README.md` | 未擅自改名 B2 文件，列出请 B2 做的三件事 |
 | 变更记录与文档同步 | `docs/CHANGELOG.md`、`docs/VALIDATION.md`、`README.md`、`docs/AI_USAGE.md` 条目 13–16 | —— |
 
-验证：`make check` 全绿，测试由 27 项增至 39 项（正例 19、负例 19）。
+验证：`make check` 全绿，测试由 27 项增至 41 项（正例 19、负例 19）。
 
 本轮三处问题**都不会让 `make check` 变红**——校验全绿不等于契约自洽。
 教训已记入 `AI_USAGE.md` A1 第二轮汇总。

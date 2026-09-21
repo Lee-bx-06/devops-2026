@@ -7,6 +7,7 @@
 import importlib.util
 import json
 import pathlib
+import re
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -51,6 +52,50 @@ class TestRepoFixtures(unittest.TestCase):
                 self.assertTrue(
                     any(expected in item for item in found),
                     f"{path.name} 拒绝原因不含 {expected!r}：{found}")
+
+
+class TestDocsDoNotRot(unittest.TestCase):
+    """VALIDATION.md 第五节是样例数量的唯一来源，其余文档一律指向它。
+
+    数量写死在多处必然腐烂（本仓库已发生过一次：三个 ADR 里的计数在 B2
+    补样例后全部过时）。这里把它变成断言，让腐烂当场变红。
+    """
+
+    def test_counts_in_validation_md_match_the_files(self):
+        text = (ROOT / "docs" / "VALIDATION.md").read_text(encoding="utf-8")
+        pos = len(list(SAMPLES.glob("*.json")))
+        neg = len(list((SAMPLES / "invalid").glob("*.json")))
+        m_pos = re.search(r"正例\s*(\d+)\s*个", text)
+        m_neg = re.search(r"负例\s*(\d+)\s*个", text)
+        self.assertIsNotNone(m_pos, "VALIDATION.md 第五节应写明正例数量")
+        self.assertIsNotNone(m_neg, "VALIDATION.md 第五节应写明负例数量")
+        self.assertEqual(int(m_pos.group(1)), pos,
+                         f"VALIDATION.md 写正例 {m_pos.group(1)} 个，实际 {pos} 个")
+        self.assertEqual(int(m_neg.group(1)), neg,
+                         f"VALIDATION.md 写负例 {m_neg.group(1)} 个，实际 {neg} 个")
+
+    def test_test_count_in_validation_md_matches_reality(self):
+        """README 与 VALIDATION.md 若写了测试项数，必须与实际一致。"""
+        actual = sum(1 for _ in _iter_test_ids())
+        for doc in ("README.md", "docs/VALIDATION.md"):
+            text = (ROOT / doc).read_text(encoding="utf-8")
+            for m in re.finditer(r"(\d+)\s*项单元测试", text):
+                self.assertEqual(int(m.group(1)), actual,
+                                 f"{doc} 写「{m.group(1)} 项单元测试」，实际 {actual} 项")
+
+
+def _iter_test_ids():
+    loader = unittest.TestLoader()
+    suite = loader.discover(str(ROOT / "tests"))
+
+    def walk(s):
+        for item in s:
+            if isinstance(item, unittest.TestSuite):
+                yield from walk(item)
+            else:
+                yield item
+
+    yield from walk(suite)
 
 
 class TestSlide25Check01FourJobTypes(unittest.TestCase):

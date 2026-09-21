@@ -19,7 +19,11 @@
 
 新增负例 `samples/invalid/validation-code-in-job-error.json`；
 `draft.job-succeeded.json` 补入 `output.environment`；
-测试由 27 项增至 39 项。
+测试由 27 项增至 41 项（含两项防文档腐烂的断言，见下）。
+
+数量类陈述的单一来源是 `VALIDATION.md` 第五节；ADR 与 BACKLOG 不再各自写死样例数，
+改为指向该节，并由 `tests/…TestDocsDoNotRot` 断言其与实际文件数一致。
+起因是本轮自检发现三个 ADR 里的样例计数在 B2 补样例后已全部过时。
 
 同时更正 `BACKLOG.md` 第四节关于 `origin/e2b2`「不可直接合并、三个样例通不过校验」
 的判断：实测 `e2b2` 已完全并入 main，提交 `38f6694` 在仓库内不存在，
