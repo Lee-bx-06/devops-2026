@@ -134,18 +134,19 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 - **作者**：殷晓瑞（Git 作者 `Inxerph`）
 - **学号**：`241250014`
 - **分支**：`a2-full-check-contract`
-- **Commit SHA**：`26bda5c`（TSE 语义复核后的内容提交；首个内容提交为 `1c38393`）
+- **Commit SHA**：`74c69d2`（合并 B2 的 `324a32e` 后的提交，对应 PR #6）；
+  内容提交为 `26bda5c`（TSE 语义复核）与 `1c38393`（首个内容提交）
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `1c38393` | 本 PR | 请求/输出、MD/RD、失败路径和下游交接已定义 |
-| artifact 本体 schema | `interfaces/task.schema.json` | `1c38393` | 本 PR | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
-| BuildChecker ADR | `adr/ADR-011-buildchecker-output-contract.md` | `1c38393` | 本 PR | 第 13 页四段式，记录本体与一致性决策；与 A1 的 ADR-010 撞号后改号为 011 |
-| artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | 本 PR | 三份本体通过校验 |
-| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | 本 PR | 零发现正例与五项负例通过校验 |
-| A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | 本 PR | A2 分支上 35 项全绿；合并 B2 的改动后整体 56 项全绿 |
-| TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | 本 PR | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
-| 复核 B2 的 DRAFT 交接 | `interfaces/samples/draft.job-succeeded.json`、`adr/ADR-007-…md`、`adr/README.md` | 本 PR | 本 PR | 五项待确认全部满足，`ADR-007` 改为 `Accepted`；按 blob 实际字节改正 Dockerfile 制品的 `size_bytes` / `sha256` |
+| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `1c38393` | PR #6 | 请求/输出、MD/RD、失败路径和下游交接已定义 |
+| artifact 本体 schema | `interfaces/task.schema.json` | `1c38393` | PR #6 | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
+| BuildChecker ADR | `adr/ADR-011-buildchecker-output-contract.md` | `1c38393` | PR #6 | 第 13 页四段式，记录本体与一致性决策；与 A1 的 ADR-010 撞号后改号为 011 |
+| artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | PR #6 | 三份本体通过校验 |
+| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | PR #6 | 零发现正例与五项负例通过校验 |
+| A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | PR #6 | A2 分支上 35 项全绿；合并 B2 的改动后整体 56 项全绿 |
+| TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | PR #6 | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
+| 复核 B2 的 DRAFT 交接 | `interfaces/samples/draft.job-succeeded.json`、`adr/ADR-007-…md`、`adr/README.md` | `74c69d2` | PR #6 | 五项待确认全部满足，`ADR-007` 改为 `Accepted`；按 blob 实际字节改正 Dockerfile 制品的 `size_bytes` / `sha256` |
 
 ## 其它分支
 
