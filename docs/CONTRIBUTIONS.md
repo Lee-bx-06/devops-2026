@@ -67,22 +67,28 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 ### 第二段：B1 复核与版本维护
 
+- **Commit SHA**：`bcf217e5f808325113546f9340d60a23f325cb5a`
+- **作者**：李秉轩
+- **提交说明**：`docs(B1): 复核 Issue #1 七项、定稿端点、补齐版本与变更记录`
+- **关联**：Issue #1
+
 对应 Issue #1 第二节的七项待确认，逐条结论见 `CHANGELOG.md` 的 1.0.0 条目。
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| 逐条复核 Issue #1 的七项待确认 | `CHANGELOG.md` | `<本次提交>` | Issue #1 | 七项均有结论与理由，落点文件明确 |
-| 端点定稿 | `interfaces/endpoints.md` 第五节 | `<本次提交>` | Issue #1 | 四个待确认项有结论；补入第 5 页交接验收清单 |
-| 错误码注册表边界与维护权 | `interfaces/errors.md` | `<本次提交>` | Issue #1 | 限定 `VALIDATION_2xxx` 只出现在 HTTP 4xx，不进 `job.error` |
-| 版本与兼容性规则 | `versioning.md` | `<本次提交>` | —— | 三段式版本号，与校验器的 schema_version 模式一致 |
-| 契约变更记录 | `CHANGELOG.md` | `<本次提交>` | —— | 补上第 26 页要求但原先缺失的变更记录 |
-| ADR 索引与模板 | `adr/README.md`、`adr/ADR-000-template.md` | `<本次提交>` | —— | 六篇 ADR 入索引；发现 B2 分支 ADR 编号冲突 |
-| 配对组编号修正 | `README.md`、`docs/` 共 8 个文件 | `<本次提交>` | —— | 「配对组 B09」改为「配对组 第 9 组（pair09）」 |
-| 消除重复契约 | 移除 `e2-pair09/` | `<本次提交>` | —— | 公共契约只剩 `docs/` 一处定义 |
+| 逐条复核 Issue #1 的七项待确认 | `CHANGELOG.md` | `bcf217e5f808325113546f9340d60a23f325cb5a` | Issue #1 | 七项均有结论与理由，落点文件明确 |
+| 端点定稿 | `interfaces/endpoints.md` 第五节 | `bcf217e5f808325113546f9340d60a23f325cb5a` | Issue #1 | 四个待确认项有结论；补入第 5 页交接验收清单 |
+| 错误码注册表边界与维护权 | `interfaces/errors.md` | `bcf217e5f808325113546f9340d60a23f325cb5a` | Issue #1 | 限定 `VALIDATION_2xxx` 只出现在 HTTP 4xx，不进 `job.error` |
+| 版本与兼容性规则 | `versioning.md` | `bcf217e5f808325113546f9340d60a23f325cb5a` | —— | 三段式版本号，与校验器的 schema_version 模式一致 |
+| 契约变更记录 | `CHANGELOG.md` | `bcf217e5f808325113546f9340d60a23f325cb5a` | —— | 补上第 26 页要求但原先缺失的变更记录 |
+| ADR 索引与模板 | `adr/README.md`、`adr/ADR-000-template.md` | `bcf217e5f808325113546f9340d60a23f325cb5a` | —— | 六篇 ADR 入索引；发现 B2 分支 ADR 编号冲突 |
+| 配对组编号修正 | `README.md`、`docs/` 共 8 个文件 | `bcf217e5f808325113546f9340d60a23f325cb5a` | —— | 「配对组 B09」改为「配对组 第 9 组（pair09）」 |
+| 消除重复契约 | 移除 `e2-pair09/` | `bcf217e5f808325113546f9340d60a23f325cb5a` | —— | 公共契约只剩 `docs/` 一处定义 |
 
-### 待回填
+### 关于回填
 
-本节的 `<本次提交>` 需要在实际提交后替换为完整 40 位 SHA，替换动作本身构成一次追加提交。
+本节的 SHA 在提交 `bcf217e` 之后回填，回填动作本身构成一次追加提交。
+沿用 A1 的做法：表内 SHA 指向**交付内容所在的那次提交**，不是回填提交本身。
 
 ## 其它分支
 
