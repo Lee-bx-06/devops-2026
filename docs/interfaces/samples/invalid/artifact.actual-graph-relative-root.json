@@ -1,0 +1,20 @@
+{
+  "expected_error": "project_root 格式不符",
+  "_note": "A2 的契约把 project_root 固定为容器内绝对 POSIX 路径，避免 DRAFT 输出和 FULL_CHECK 输入对同一路径作不同解释。",
+  "kind": "actual_graph",
+  "schema_version": "1.0.0",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "project_root": ".",
+  "targets": [
+    {
+      "target": "main.o",
+      "dependencies": [
+        {
+          "path": "src/main.c",
+          "observation": "FILE_ACCESS"
+        }
+      ]
+    }
+  ]
+}

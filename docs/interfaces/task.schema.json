@@ -6,7 +6,10 @@
   "oneOf": [
     {"$ref": "#/$defs/create_request"},
     {"$ref": "#/$defs/job"},
-    {"$ref": "#/$defs/artifact_record"}
+    {"$ref": "#/$defs/artifact_record"},
+    {"$ref": "#/$defs/actual_graph"},
+    {"$ref": "#/$defs/declared_graph"},
+    {"$ref": "#/$defs/error_report"}
   ],
   "$defs": {
 
@@ -177,6 +180,127 @@
       }
     },
 
+    "counts": {
+      "description": "第 21 页 FULL_CHECK 的 MD/RD 计数。必须与 findings 中同类型记录数量一致。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["missing", "redundant"],
+      "properties": {
+        "missing": {"type": "integer", "minimum": 0},
+        "redundant": {"type": "integer", "minimum": 0}
+      }
+    },
+
+    "actual_graph_dependency": {
+      "description": "实际依赖图中的一条文件访问。path 统一为相对 project_root 的 POSIX 路径；observation 表示证据来源。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "observation"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "observation": {"enum": ["FILE_ACCESS", "PROCESS_TRACE"]},
+        "evidence_uri": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/artifact_uri"}]}
+      }
+    },
+
+    "actual_graph_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "dependencies"],
+      "properties": {
+        "target": {"type": "string", "minLength": 1},
+        "dependencies": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/actual_graph_dependency"}
+        }
+      }
+    },
+
+    "actual_graph": {
+      "description": "BuildChecker 产出的实际依赖图本体。它描述固定 commit 和 configuration_id 下，各 target 实际访问的文件。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "commit", "configuration_id", "project_root", "targets"],
+      "properties": {
+        "kind": {"const": "actual_graph"},
+        "schema_version": {"const": "1.0.0"},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "configuration_id": {"type": "string", "minLength": 1},
+        "project_root": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^/"
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/actual_graph_target"}
+        }
+      }
+    },
+
+    "declared_graph_dependency": {
+      "description": "声明依赖图中的一条 Makefile prerequisite。path 统一为相对 project_root 的 POSIX 路径。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "makefile_path", "line"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "makefile_path": {"type": "string", "minLength": 1},
+        "line": {"type": "integer", "minimum": 1},
+        "rule": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1}]}
+      }
+    },
+
+    "declared_graph_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "prerequisites"],
+      "properties": {
+        "target": {"type": "string", "minLength": 1},
+        "prerequisites": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/declared_graph_dependency"}
+        }
+      }
+    },
+
+    "declared_graph": {
+      "description": "BuildChecker 从 Makefile 解析出的声明依赖图本体。它描述固定 commit 和 configuration_id 下，各 target 声明了哪些 prerequisite。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "commit", "configuration_id", "targets"],
+      "properties": {
+        "kind": {"const": "declared_graph"},
+        "schema_version": {"const": "1.0.0"},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "configuration_id": {"type": "string", "minLength": 1},
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/declared_graph_target"}
+        }
+      }
+    },
+
+    "error_report": {
+      "description": "FULL_CHECK 的 ERROR_REPORT artifact 本体。counts 与 findings 必须一致；MDFixer 只消费 type=MISSING 的记录。",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema_version", "commit", "configuration_id", "counts", "findings"],
+      "properties": {
+        "kind": {"const": "error_report"},
+        "schema_version": {"const": "1.0.0"},
+        "commit": {"$ref": "#/$defs/commit_sha"},
+        "configuration_id": {"type": "string", "minLength": 1},
+        "counts": {"$ref": "#/$defs/counts"},
+        "findings": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/finding"}
+        }
+      }
+    },
+
     "execution": {
       "description": "第 19 页列为公共字段但未给出定义，由 A1 定义 (见 ADR-001)。承载第 6 页「耗时任务先受理再后台执行」所需的计时与重试信息，避免把大日志塞进响应。",
       "type": "object",
@@ -307,14 +431,7 @@
       "type": "object",
       "required": ["counts"],
       "properties": {
-        "counts": {
-          "type": "object",
-          "required": ["missing", "redundant"],
-          "properties": {
-            "missing": {"type": "integer", "minimum": 0},
-            "redundant": {"type": "integer", "minimum": 0}
-          }
-        }
+        "counts": {"$ref": "#/$defs/counts"}
       }
     },
 

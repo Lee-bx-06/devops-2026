@@ -40,6 +40,7 @@
 | 005 | 创建期拒绝与运行期失败的边界 | Accepted | A1 |
 | 006 | 校验器零依赖，从 schema 读常量 | Accepted | A1 |
 | 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Proposed | B2 |
+| 010 | [BuildChecker 输出与 artifact 本体契约](ADR-010-buildchecker-output-contract.md) | Proposed | A2 |
 
 预计需要但尚未认领的 ADR：
 

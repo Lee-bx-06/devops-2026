@@ -1,0 +1,20 @@
+{
+  "expected_error": "observation 非法",
+  "_note": "实际依赖必须来自可解释的证据来源；未知 observation 会让 EChecker 无法判断该边是否可信。",
+  "kind": "actual_graph",
+  "schema_version": "1.0.0",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "project_root": "/workspace/project",
+  "targets": [
+    {
+      "target": "main.o",
+      "dependencies": [
+        {
+          "path": "src/main.c",
+          "observation": "MAGIC"
+        }
+      ]
+    }
+  ]
+}

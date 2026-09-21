@@ -23,7 +23,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "docs" / "interfaces" / "task.schema.json"
 SAMPLES = ROOT / "docs" / "interfaces" / "samples"
 
-KINDS = ("create_request", "job", "artifact_record")
+ENVELOPE_KINDS = ("create_request", "job", "artifact_record")
+ARTIFACT_BODY_KINDS = ("actual_graph", "declared_graph", "error_report")
+KINDS = ENVELOPE_KINDS + ARTIFACT_BODY_KINDS
 
 
 class Schema:
@@ -41,6 +43,8 @@ class Schema:
         self.trace_id_re = re.compile(d["trace_id"]["pattern"])
         self.artifact_uri_re = re.compile(d["artifact_uri"]["pattern"])
         self.commit_re = re.compile(d["commit_sha"]["pattern"])
+        self.container_root_re = re.compile(
+            d["actual_graph"]["properties"]["project_root"]["pattern"])
         self.sha256_re = re.compile(d["sha256"]["pattern"])
         self.iso_re = re.compile(d["iso8601"]["pattern"])
 
@@ -54,6 +58,8 @@ class Schema:
         self.execution_required = set(d["execution"]["required"])
         self.execution_fields = set(d["execution"]["properties"])
         self.evidence_kinds = set(d["finding_evidence"]["properties"]["kind"]["enum"])
+        self.actual_observations = set(
+            d["actual_graph_dependency"]["properties"]["observation"]["enum"])
 
         # 每类 job 的 input 必填项与 input/output 的 $def 名
         self.input_required: dict[str, set] = {}
@@ -191,6 +197,129 @@ class Validator:
         if value.get("size_bytes") is not None and not _is_int(value.get("size_bytes")):
             errors.append(f"{label}.size_bytes 必须是整数或 null")
 
+    def check_counts(self, value, label, errors):
+        if not isinstance(value, dict):
+            errors.append(f"{label} 必须是对象")
+            return
+        unknown = set(value) - {"missing", "redundant"}
+        if unknown:
+            errors.append(f"{label} 含未定义字段: {', '.join(sorted(unknown))}")
+        for field in ("missing", "redundant"):
+            if not _is_int(value.get(field)) or value[field] < 0:
+                errors.append(f"{label}.{field} 必须是 >=0 的整数")
+
+    def check_counts_match_findings(self, counts, findings, label, errors):
+        if not isinstance(counts, dict) or not isinstance(findings, list):
+            return
+        expected = {
+            "missing": sum(1 for f in findings
+                           if isinstance(f, dict) and f.get("type") == "MISSING"),
+            "redundant": sum(1 for f in findings
+                             if isinstance(f, dict) and f.get("type") == "REDUNDANT"),
+        }
+        for field, actual in expected.items():
+            if counts.get(field) != actual:
+                errors.append(
+                    f"{label}.counts.{field} 必须等于 findings 中 {field.upper()} "
+                    f"记录数，期望 {actual}，实际 {counts.get(field)!r}")
+
+    def check_actual_graph_dependency(self, value, label, errors):
+        if not isinstance(value, dict):
+            errors.append(f"{label} 必须是对象")
+            return
+        unknown = set(value) - {"path", "observation", "evidence_uri"}
+        if unknown:
+            errors.append(f"{label} 含未定义字段: {', '.join(sorted(unknown))}")
+        self.check_str(value.get("path"), f"{label}.path", errors)
+        if value.get("observation") not in self.s.actual_observations:
+            errors.append(
+                f"{label}.observation 非法: {value.get('observation')!r}，"
+                f"必须是 {'/'.join(sorted(self.s.actual_observations))}")
+        if value.get("evidence_uri") is not None:
+            self.check_pattern(value["evidence_uri"], f"{label}.evidence_uri", errors,
+                               self.s.artifact_uri_re, "artifact_uri")
+
+    def check_declared_graph_dependency(self, value, label, errors):
+        if not isinstance(value, dict):
+            errors.append(f"{label} 必须是对象")
+            return
+        unknown = set(value) - {"path", "makefile_path", "line", "rule"}
+        if unknown:
+            errors.append(f"{label} 含未定义字段: {', '.join(sorted(unknown))}")
+        self.check_str(value.get("path"), f"{label}.path", errors)
+        self.check_str(value.get("makefile_path"), f"{label}.makefile_path", errors)
+        if not _is_int(value.get("line")) or value["line"] < 1:
+            errors.append(f"{label}.line 必须是 >=1 的整数")
+        if value.get("rule") is not None and not _s(value.get("rule")):
+            errors.append(f"{label}.rule 必须是非空字符串或 null")
+
+    def check_artifact_body(self, kind, value, label, errors):
+        """校验 ACTUAL_GRAPH / DECLARED_GRAPH / ERROR_REPORT 的文件本体。"""
+        missing = self.s.envelope_required[kind] - set(value)
+        if missing:
+            errors.append(f"{label} 缺少 {kind} 必填字段: {', '.join(sorted(missing))}")
+        unknown = set(value) - self.s.envelope_fields[kind]
+        if unknown:
+            errors.append(f"{label} 含未定义字段: {', '.join(sorted(unknown))}")
+        if value.get("kind") != kind:
+            errors.append(f"{label}.kind 必须是 {kind}")
+        if value.get("schema_version") != self.s.schema_version:
+            errors.append(f"{label}.schema_version 必须是 {self.s.schema_version}")
+        self.check_commit(value.get("commit"), f"{label}.commit", errors)
+        self.check_str(value.get("configuration_id"), f"{label}.configuration_id", errors)
+
+        if kind == "actual_graph":
+            self.check_str(
+                value.get("project_root"), f"{label}.project_root", errors,
+                self.s.container_root_re)
+            targets = value.get("targets")
+            if not isinstance(targets, list) or not targets:
+                errors.append(f"{label}.targets 必须是非空数组")
+                return
+            for i, target in enumerate(targets):
+                item_label = f"{label}.targets[{i}]"
+                if not isinstance(target, dict):
+                    errors.append(f"{item_label} 必须是对象")
+                    continue
+                self.check_str(target.get("target"), f"{item_label}.target", errors)
+                deps = target.get("dependencies")
+                if not isinstance(deps, list):
+                    errors.append(f"{item_label}.dependencies 必须是数组")
+                    continue
+                for j, dep in enumerate(deps):
+                    self.check_actual_graph_dependency(
+                        dep, f"{item_label}.dependencies[{j}]", errors)
+
+        elif kind == "declared_graph":
+            targets = value.get("targets")
+            if not isinstance(targets, list) or not targets:
+                errors.append(f"{label}.targets 必须是非空数组")
+                return
+            for i, target in enumerate(targets):
+                item_label = f"{label}.targets[{i}]"
+                if not isinstance(target, dict):
+                    errors.append(f"{item_label} 必须是对象")
+                    continue
+                self.check_str(target.get("target"), f"{item_label}.target", errors)
+                deps = target.get("prerequisites")
+                if not isinstance(deps, list):
+                    errors.append(f"{item_label}.prerequisites 必须是数组")
+                    continue
+                for j, dep in enumerate(deps):
+                    self.check_declared_graph_dependency(
+                        dep, f"{item_label}.prerequisites[{j}]", errors)
+
+        elif kind == "error_report":
+            self.check_counts(value.get("counts"), f"{label}.counts", errors)
+            findings = value.get("findings")
+            if not isinstance(findings, list):
+                errors.append(f"{label}.findings 必须是数组")
+            else:
+                for i, finding in enumerate(findings):
+                    self.check_finding(finding, f"{label}.findings[{i}]", errors)
+                self.check_counts_match_findings(
+                    value.get("counts"), findings, label, errors)
+
     # ---------- execution ----------
 
     def check_execution(self, value, label, errors):
@@ -317,6 +446,21 @@ class Validator:
         for req in self.s.output_required.get(job_type, set()):
             if req not in value:
                 errors.append(f"{label} 缺少 {job_type} 的输出必填字段: {req}")
+        if job_type == "FULL_CHECK":
+            counts = value.get("counts")
+            self.check_counts(counts, f"{label}.counts", errors)
+            self.check_counts_match_findings(
+                counts, value.get("findings", []), label, errors)
+            artifact_types = {
+                a.get("type") for a in value.get("artifacts", [])
+                if isinstance(a, dict)
+            }
+            required_types = {"ACTUAL_GRAPH", "DECLARED_GRAPH", "ERROR_REPORT"}
+            missing_types = required_types - artifact_types
+            if missing_types:
+                errors.append(
+                    f"{label}.artifacts 缺少 FULL_CHECK 必需产物: "
+                    f"{', '.join(sorted(missing_types))}")
         if job_type == "INCREMENTAL_CHECK":
             for key in ("introduced", "resolved"):
                 items = value.get(key)
@@ -423,8 +567,10 @@ class Validator:
                                   f"{name}.output", errors)
             self.check_status_matrix(data, name, errors)
 
-        else:  # artifact_record
+        elif kind == "artifact_record":
             self.check_artifact(data, name, errors, allow_kind=True)
+        else:
+            self.check_artifact_body(kind, data, name, errors)
 
         return [f"{name}: {e}" if not e.startswith(name) else e for e in errors]
 
@@ -510,7 +656,8 @@ def main(argv: list[str]) -> int:
             print("  - " + p)
         return 1
     print("A09/B09 公共契约校验通过："
-          "四类请求与响应、六种状态、artifact 记录与全部负例均符合 task.schema.json。")
+          "四类请求与响应、六种状态、artifact 元数据/本体与全部负例均符合 "
+          "task.schema.json。")
     return 0
 
 

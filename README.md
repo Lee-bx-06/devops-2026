@@ -68,11 +68,12 @@ python3 tools/validate.py path/to/their-file.json
 
 ```
 docs/interfaces/
-  task.schema.json          A1 ★ 公共契约，唯一权威定义
+  task.schema.json          A1 ★ 公共契约，唯一权威定义（含 A2 的 artifact 本体）
+  buildchecker-contract.md  A2 ★ FULL_CHECK 请求/输出与依赖图契约
   errors.md                 A1 ★ 两条错误通道 + 错误码注册表
   endpoints.md              B1   五端点（A1 起草，待 B1 定稿）
-  samples/                  A1 ★ 16 个正例（四类请求响应 + 六种状态 + 产物记录）
-  samples/invalid/          A1 ★ 18 个负例，每个声明期望的拒绝原因
+  samples/                  A1/ A2 / B2 23 个正例（含三份 artifact 本体）
+  samples/invalid/          A1/ A2 / B2 23 个负例，每个声明期望的拒绝原因
 docs/adr/
   ADR-001  异步 Job 模型与公共信封            A1
   ADR-002  错误与发现双通道分离                A1
@@ -80,24 +81,29 @@ docs/adr/
   ADR-004  兼容性策略：信封严格、载荷可扩展     A1（B1 汇总）
   ADR-005  创建期拒绝 vs 运行期失败            A1
   ADR-006  零依赖校验器                       A1
+  ADR-010  BuildChecker 输出与 artifact 本体  A2
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单
 docs/AI_USAGE.md            A1   第 14 页格式，7 条真实判断记录
 docs/CONTRIBUTIONS.md       A1   作者、提交 SHA、Issue/PR
 docs/VALIDATION.md          A1   校验了什么、**没**校验什么
 tools/validate.py           A1 ★ 零依赖校验器
-tests/test_validate.py      A1   27 项单元测试
+tests/test_validate.py      A1   公共契约单元测试
+tests/test_buildchecker_contract.py A2 FULL_CHECK 与 artifact 本体测试
 ```
 
 ★ = A1 核心交付物。
 
 ## 六、契约速览
 
-**三种文档**（由必填的 `kind` 判别，互斥）：
+**六种文档**（由必填的 `kind` 判别，互斥；前三类是 Job 封套，后三类是 artifact 本体）：
 
 | `kind` | 用途 | `job_id` / `status` |
 | --- | --- | --- |
 | `create_request` | POST 请求体，含 `idempotency_key` | 无（服务端产生） |
 | `job` | 受理响应与查询响应 | 有 |
+| `actual_graph` | 实际依赖图文件本体 | 无 |
+| `declared_graph` | 声明依赖图文件本体 | 无 |
+| `error_report` | MD/RD 报告文件本体 | 无 |
 | `artifact_record` | 第 24 页产物记录 | 无 |
 
 **九个公共字段**（第 19 页）：`schema_version`、`job_id`、`trace_id`、`job_type`、

@@ -16,8 +16,8 @@
     },
     "build": {
       "command": "make all",
-      "clean_command": "make clean && make all",
-      "project_root": ".",
+      "clean_command": "make clean",
+      "project_root": "/workspace/project",
       "verify_command": "make test"
     }
   }

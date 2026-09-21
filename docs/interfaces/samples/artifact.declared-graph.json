@@ -1,0 +1,36 @@
+{
+  "kind": "declared_graph",
+  "schema_version": "1.0.0",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "targets": [
+    {
+      "target": "main.o",
+      "prerequisites": [
+        {
+          "path": "src/main.c",
+          "makefile_path": "src/Makefile",
+          "line": 10,
+          "rule": "main.o: main.c"
+        }
+      ]
+    },
+    {
+      "target": "util.o",
+      "prerequisites": [
+        {
+          "path": "src/util.c",
+          "makefile_path": "src/Makefile",
+          "line": 26,
+          "rule": "util.o: util.c"
+        },
+        {
+          "path": "src/legacy.h",
+          "makefile_path": "src/Makefile",
+          "line": 27,
+          "rule": "util.o: util.c legacy.h"
+        }
+      ]
+    }
+  ]
+}

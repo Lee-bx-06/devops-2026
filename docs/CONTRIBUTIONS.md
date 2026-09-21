@@ -104,11 +104,27 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | DRAFT 失败响应 | `interfaces/samples/draft-failed-response.json` | `d05ee38` | 待提 PR | `FAILED + ENV_3002 + output={}` 符合公共状态矩阵 |
 | DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `d05ee38` | 待提 PR | 第 13 页四段式，并在 `adr/README.md` 登记 |
 
+## A2 提交追溯
+
+- **作者**：`<待填写>`
+- **学号**：`<待填写>`
+- **分支**：`a2-full-check-contract`
+- **Commit SHA**：`<待提交后回填>`
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `<待回填>` | 待创建 | 请求/输出、MD/RD、失败路径和下游交接已定义 |
+| artifact 本体 schema | `interfaces/task.schema.json` | `<待回填>` | 待创建 | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
+| BuildChecker ADR | `adr/ADR-010-buildchecker-output-contract.md` | `<待回填>` | 待创建 | 第 13 页四段式，记录本体与一致性决策 |
+| artifact 正例 | `interfaces/samples/artifact.*.json` | `<待回填>` | 待创建 | 三份本体通过校验 |
+| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `<待回填>` | 待创建 | 零发现正例与五项负例通过校验 |
+| A2 测试 | `tests/test_buildchecker_contract.py` | `<待回填>` | 待创建 | 35 项测试全绿 |
+
 ## 其它分支
 
 | 远端分支 | 提交 | 作者 | 内容 | 状态 |
 | --- | --- | --- | --- | --- |
-| `origin/e2b2` | `38f66940e26da87a9490532e6f342735dbb20da2` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例 3 个、ADR-001 | **不要直接合并**，三个样例全部通不过当前校验器。详见 `BACKLOG.md` 第四节 |
+| `origin/e2b2` | `e04364fe606376c9b9d7e790a9ed2301188795f7` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例、ADR-007 | 已与 `main` 同步；ADR-007 仍为 Proposed，待 A2 最终验收 |
 
 ## 协作方式：fork + PR
 
@@ -146,6 +162,18 @@ OK
 ```
 
 环境：Python 3.14.6 / macOS (arm64) / 无第三方依赖。
+
+### A2 本轮本地验证
+
+```text
+$ python tools/validate.py
+A09/B09 公共契约校验通过：四类请求与响应、六种状态、artifact 元数据/本体
+与全部负例均符合 task.schema.json。
+
+$ python -m unittest discover -s tests -v
+Ran 35 tests
+OK
+```
 
 ## 贡献约定
 

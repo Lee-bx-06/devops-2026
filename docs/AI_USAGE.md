@@ -321,3 +321,39 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
 - **关联文件**：`docs/interfaces/samples/draft-*.json`、
   `docs/adr/ADR-007-draft-buildchecker-contract.md`、`docs/adr/README.md`
 - **验证**：`make check`（公共校验器与 27 项单元测试）
+
+---
+
+## A2（待填写姓名）的记录
+
+### 条目 13：补齐 FULL_CHECK 的 artifact 本体和跨字段约束
+
+- **工具/模型**：OpenAI Codex（本次会话）
+- **任务**：在 B2 完成 DRAFT 对齐后，直接推进 A2 自己负责的 BuildChecker /
+  FULL_CHECK 交付
+- **AI 建议**：只补 DRAFT 对接字段还不够；如果 ACTUAL_GRAPH、DECLARED_GRAPH
+  和 ERROR_REPORT 的文件本体没有定义，A3 的 EChecker 与 B3 的 MDFixer
+  无法稳定消费 artifact。
+- **人工判断：采纳执行。** 用户明确要求“能做就直接做”，因此本轮直接落盘；
+  A2 本人仍需在提交和对外确认前复核 MD/RD 语义、detector 取值以及 TSE
+  论文中的依赖图表示。
+- **落实**：
+  - 新增 `docs/interfaces/buildchecker-contract.md`，定义请求、输出、三份
+    artifact 本体、MD/RD、失败路径和下游交接。
+  - 在 `task.schema.json` 增加 `actual_graph` / `declared_graph` /
+    `error_report`。
+  - 新增三份 artifact 本体正例、零发现正例和五个负例。
+  - 在 `tools/validate.py` 增加 counts/findings 一致性、核心 artifact 类型
+    和本体字段校验。
+  - 新增 `tests/test_buildchecker_contract.py`。
+  - 新增 `ADR-010`，记录本体的设计与取舍。
+- **关联文件**：
+  `docs/interfaces/buildchecker-contract.md`、
+  `docs/interfaces/task.schema.json`、
+  `docs/interfaces/samples/artifact.*.json`、
+  `docs/interfaces/samples/full-check.clean-project.json`、
+  `docs/interfaces/samples/invalid/…`、
+  `docs/adr/ADR-010-buildchecker-output-contract.md`、
+  `tests/test_buildchecker_contract.py`
+- **验证**：`python tools/validate.py` 通过；
+  `python -m unittest discover -s tests -v` 共 35 项全绿。

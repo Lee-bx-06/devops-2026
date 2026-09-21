@@ -27,9 +27,9 @@
 | 6 | ✅ | 错误码双通道与注册表 | `docs/interfaces/errors.md` | 第 9 页三个给定码全部登记；`MISSING` 写进 `error` 被拒 |
 | 7 | ✅ | 第 25 页检查 04 的书面解释 | `errors.md` 第一节 | 「MD 为什么不等于工具执行失败」有成文答案 + 可执行断言 |
 | 8 | ✅ | 零依赖校验器 | `tools/validate.py` | `python3 tools/validate.py` 在无第三方包的环境直接跑通 |
-| 9 | ✅ | 负例套件 | `samples/invalid/*.json`（18 个） | 每个负例按声明的 `expected_error` 被拒 |
-| 10 | ✅ | 单元测试 | `tests/test_validate.py`（27 项） | `python3 -m unittest discover -s tests` 全绿 |
-| 11 | ✅ | 六份 ADR | `docs/adr/ADR-001..006` | 按第 13 页 Context/Decision/Alternatives/Consequences 四段式 |
+| 9 | ✅ | 负例套件 | `samples/invalid/*.json`（含 A2 的 5 个 FULL_CHECK/本体负例） | 每个负例按声明的 `expected_error` 被拒 |
+| 10 | ✅ | 单元测试 | `tests/test_validate.py` + `tests/test_buildchecker_contract.py` | `python3 -m unittest discover -s tests` 全绿（35 项） |
+| 11 | 🟡 | ADR 汇总 | `docs/adr/ADR-001..007`、`ADR-010` | A1 六份已完成；B2 的 ADR-007 与 A2 的 ADR-010 待复核 |
 | 12 | ✅ | 校验规则说明 | `docs/VALIDATION.md` | 列出已覆盖与**未覆盖**的约束，不夸大 |
 | 13 | ✅ | 端点草案 | `docs/interfaces/endpoints.md` | 第 27 页五端点齐备 + 交互示例；标注负责人为 B1 |
 
@@ -42,7 +42,7 @@
 | 16 | ✅ | 信封严格 / 载荷可扩展的分界线（ADR-004） | B1 已确认 | 四组能否自行扩展 `input`/`output` |
 | 17 | ✅ | `execution` 字段定义（第 19 页未解释，A1 自定） | B1 已确认，四组待确认 | 若推翻属破坏性变更，需升版本 |
 | 18 | 🟡 | URI 用完整 `job_id` 而非第 24 页简写 `full01` | **教师**（B1 已认同） | 有意偏离课件样例，需认可 |
-| 19 | ⬜ | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 | A2 的依赖图与报告字段 |
+| 19 | 🟡 | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 已起草，待 A3/B3/B1 复核 | `docs/interfaces/buildchecker-contract.md`、`ADR-010`、三份 artifact 本体样例与测试 | `python tools/validate.py` 与 35 项测试通过；EChecker/MDFixer 消费字段待确认 |
 | 20 | ⬜ | `INCREMENTAL_CHECK` 的 baseline 匹配规则与新增/消除 finding 语义 | A3 | A3 的 C0/C1 可追溯验收 |
 | 21 | 🟡 | `DRAFT` 的成功判据与每轮日志字段 | B2 已提案，待 A2 确认 | `draft-*.json` 与 ADR-007 对齐环境、成功判据和 `configuration_id`；`make check` 为硬门槛 |
 | 22 | ⬜ | `REPAIR` 的 patch 与拒绝原因字段 | B3 | B3 的「能解释 MD≠执行失败」验收 |

@@ -7,6 +7,22 @@
 
 ## [Unreleased]
 
+### 新增：A2 BuildChecker 输出与 artifact 本体
+
+| 文件 | 内容 |
+|---|---|
+| `interfaces/buildchecker-contract.md` | FULL_CHECK 请求、成功输出、MD/RD、失败路径与下游交接 |
+| `interfaces/task.schema.json` | 新增 `actual_graph` / `declared_graph` / `error_report` 三种本体定义 |
+| `adr/ADR-010-buildchecker-output-contract.md` | A2 对本体和跨字段一致性的架构决策 |
+| `interfaces/samples/artifact.*.json` | 三份 artifact 本体正例 |
+| `interfaces/samples/full-check.clean-project.json` | 零发现成功样例 |
+| `interfaces/samples/invalid/…` | counts 不一致、缺图、非法 observation、报告本体不一致、相对 project_root 五个负例 |
+| `tests/test_buildchecker_contract.py` | A2 的 artifact 与跨字段一致性测试 |
+| `tools/validate.py` | 增加 counts/findings、核心 artifact 类型和三种本体的校验 |
+
+状态：A2 已起草并通过本地校验，待 A3、B3、B1 复核。是否提升
+`schema_version` 由 B1 按 `versioning.md` 判定。
+
 ### 待处理
 
 | # | 事项 | 需要谁给结论 | 影响 |

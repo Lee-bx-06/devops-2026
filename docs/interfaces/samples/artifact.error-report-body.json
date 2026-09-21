@@ -1,0 +1,59 @@
+{
+  "kind": "error_report",
+  "schema_version": "1.0.0",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "counts": {
+    "missing": 1,
+    "redundant": 1
+  },
+  "findings": [
+    {
+      "id": "md-9f8e7d6c-001",
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "detector": "INSTRUCTOR_ORACLE",
+      "location": {
+        "path": "src/Makefile",
+        "line": 12,
+        "column": null
+      },
+      "evidence": [
+        {
+          "kind": "INSTRUCTOR_SAMPLE",
+          "detail": "教师提供的人工样本，detector 标为 INSTRUCTOR_ORACLE 以标明人工来源（第 10 页）",
+          "artifact_uri": null
+        },
+        {
+          "kind": "FILE_ACCESS",
+          "detail": "编译 main.c 时进程打开 config.h 失败：fatal error: config.h: No such file or directory",
+          "artifact_uri": "artifact://pair09/job-full09/proc-trace-main-o.log"
+        }
+      ],
+      "message": "main.o 实际需要 config.h，但 Makefile 第 12 行未声明该依赖"
+    },
+    {
+      "id": "rd-9f8e7d6c-001",
+      "type": "REDUNDANT",
+      "target": "util.o",
+      "dependency": "legacy.h",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "detector": "BUILDCHECKER_DYNAMIC",
+      "location": {
+        "path": "src/Makefile",
+        "line": 27,
+        "column": null
+      },
+      "evidence": [
+        {
+          "kind": "DECLARATION",
+          "detail": "Makefile 第 27 行声明 util.o: legacy.h，但在 configuration cc-MODE0 的完整构建中未观察到对 legacy.h 的任何访问",
+          "artifact_uri": "artifact://pair09/job-full09/declared-graph.json"
+        }
+      ],
+      "message": "声明了 legacy.h，但本构建配置下未被实际使用"
+    }
+  ]
+}

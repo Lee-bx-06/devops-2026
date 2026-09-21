@@ -1,0 +1,34 @@
+{
+  "kind": "actual_graph",
+  "schema_version": "1.0.0",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "project_root": "/workspace/project",
+  "targets": [
+    {
+      "target": "main.o",
+      "dependencies": [
+        {
+          "path": "src/main.c",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": "artifact://pair09/job-full09/proc-trace-main-o.log"
+        },
+        {
+          "path": "src/config.h",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": "artifact://pair09/job-full09/proc-trace-main-o.log"
+        }
+      ]
+    },
+    {
+      "target": "util.o",
+      "dependencies": [
+        {
+          "path": "src/util.c",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": "artifact://pair09/job-full09/proc-trace-util-o.log"
+        }
+      ]
+    }
+  ]
+}
