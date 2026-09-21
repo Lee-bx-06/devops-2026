@@ -119,7 +119,8 @@ id, type, target, dependency, commit, detector, location, evidence[], message
   必须可区分。
 - `evidence` 必须非空，意味着检测服务得真的留下证据文件（进程 trace、声明图）。
   第 21 页本来就把这些列为 BuildChecker 的输出，所以不是新增负担，只是提前强制。
-- 六个状态 × 三条通道规则的组合较多，样例量随之上升。本仓库用 18 个负例覆盖。
+- 六个状态 × 三条通道规则的组合较多，样例量随之上升。负例逐条覆盖，
+  清单见 `../VALIDATION.md` 第五节。
 
 **验证：**
 

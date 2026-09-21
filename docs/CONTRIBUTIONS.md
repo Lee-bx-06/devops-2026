@@ -50,6 +50,30 @@ A1 交付内容集中于一次提交：
 > 回填 SHA 与 Issue/PR 号本身构成追加提交，故上表 SHA 指向**交付内容所在的那次提交**
 > （`2a9bd2c`），不是回填提交。
 
+## A1 第二轮：PR #2 合并后的复核
+
+- **Commit SHA**：`73cc5b693e6b6d4529c630f3c1b7b44139aac431`（短 `73cc5b6`）
+- **作者**：谢浩天 `<241250033@smail.nju.edu.cn>`
+- **提交说明**：`A1: 复核合并后的契约，修三处不一致并形式化 B1 的迁移规则`
+- **分支**：`a1-review-round2`
+- **起因**：PR #2 合并后拉取 main，复核 B1（`bcf217e` 等）与 B2（`d05ee38`、`e04364f`）
+  的改动是否与 A1 的契约一致
+
+| 工作项 | 文件 | 类型 |
+| --- | --- | --- |
+| `job.error.code` 排除 `VALIDATION_2xxx` | `task.schema.json`、`tools/validate.py`、`tests/`、`samples/invalid/validation-code-in-job-error.json`、`errors.md` 补记 | 修正 A1 自己的疏漏 |
+| 状态迁移规则形式化为 `execution` 计时约束 | `task.schema.json`（`status_matrix`）、`tools/validate.py`（`check_transition_timing`）、`tests/…TestTransitionTiming` | 落实 B1 的规则并解开其表内冲突 |
+| 补 `output_draft.environment` | `task.schema.json`、`samples/draft.job-succeeded.json`、`tools/validate.py` | 采纳 B2 的字段，修 A1 断掉的交接链 |
+| ADR-010（含对 ADR-005 判据的修正） | `docs/adr/ADR-010-…md`、`docs/adr/README.md` 索引 | 新建，不修改 ADR-005 原文 |
+| 更正 `e2b2` 合并前置条件已失效 | `docs/BACKLOG.md` 第四节 | 附六行证据表，保留原文取回路径 |
+| 样例命名规范与 DRAFT 重复样例处理方案 | `docs/interfaces/samples/README.md` | 未擅自改名 B2 文件，列出请 B2 做的三件事 |
+| 变更记录与文档同步 | `docs/CHANGELOG.md`、`docs/VALIDATION.md`、`README.md`、`docs/AI_USAGE.md` 条目 13–16 | —— |
+
+验证：`make check` 全绿，测试由 27 项增至 41 项（正例 19、负例 19）。
+
+本轮三处问题**都不会让 `make check` 变红**——校验全绿不等于契约自洽。
+教训已记入 `AI_USAGE.md` A1 第二轮汇总。
+
 ## B1 提交追溯
 
 B1 的工作分两段。第一段是独立起草公共契约，第二段是审查 A1 版本并接管版本与兼容性。

@@ -35,7 +35,8 @@ class Schema:
         self.statuses = set(d["job_status"]["enum"])
         self.finding_types = set(d["finding_type"]["enum"])
         self.schema_version = d["create_request"]["properties"]["schema_version"]["const"]
-        self.error_code_re = re.compile(d["error_code"]["pattern"])
+        self.job_error_code_re = re.compile(d["job_error_code"]["pattern"])
+        self.request_error_code_re = re.compile(d["request_error_code"]["pattern"])
         self.artifact_type_re = re.compile(d["artifact_type"]["pattern"])
         self.job_id_re = re.compile(d["job_id"]["pattern"])
         self.trace_id_re = re.compile(d["trace_id"]["pattern"])
@@ -148,10 +149,15 @@ class Validator:
         code = value.get("code")
         if not _s(code):
             errors.append(f"{label}.code 必须是非空字符串")
-        elif not self.s.error_code_re.match(code):
+        elif not self.s.job_error_code_re.match(code):
+            hint = ""
+            if self.s.request_error_code_re.match(code):
+                hint = (f"；{code} 属创建期 HTTP 4xx 码段，不得写入 job.error"
+                        f"（errors.md 第二节，B1 于 2026-09-21 限定）")
             errors.append(
-                f"error.code 非法: {code!r} 不在命名空间内（第 9 页：系统错误用 "
-                f"ENV_3xxx/EXEC_4xxx/ANALYSIS_5xxx；MISSING/REDUNDANT 属 findings，不是 error）")
+                f"error.code 非法: {code!r} 不在 job.error 允许的命名空间内（第 9 页：系统错误只用 "
+                f"ENV_3xxx/EXEC_4xxx/ANALYSIS_5xxx；MISSING/REDUNDANT 属 findings，不是 error"
+                f"{hint}）")
         self.check_str(value.get("message"), f"{label}.message", errors)
         if "retryable" in value and not isinstance(value["retryable"], bool):
             errors.append(f"{label}.retryable 必须是布尔值")
@@ -317,6 +323,15 @@ class Validator:
         for req in self.s.output_required.get(job_type, set()):
             if req not in value:
                 errors.append(f"{label} 缺少 {job_type} 的输出必填字段: {req}")
+        if job_type == "DRAFT" and "environment" in value:
+            # 下游 FULL_CHECK / INCREMENTAL_CHECK / REPAIR 的 input.environment 要消费这里
+            env = value["environment"]
+            if not isinstance(env, dict):
+                errors.append(f"{label}.environment 必须是对象")
+            else:
+                self.check_str(env.get("image_uri"), f"{label}.environment.image_uri", errors)
+                self.check_str(env.get("configuration_id"),
+                               f"{label}.environment.configuration_id", errors)
         if job_type == "INCREMENTAL_CHECK":
             for key in ("introduced", "resolved"):
                 items = value.get(key)
@@ -365,6 +380,49 @@ class Validator:
                 errors.append(f"{label} 状态矩阵违规：http_status 只允许出现在 QUEUED 受理响应")
             elif http != 202:
                 errors.append(f"{label} 状态矩阵违规：受理响应的 http_status 必须是 202，实际 {http!r}")
+
+        self.check_transition_timing(data, label, errors)
+
+    def check_transition_timing(self, data, label, errors):
+        """把 B1 在 endpoints.md「状态迁移」一节的规则转成单文档可校验的计时约束。
+
+        迁移本身是文档序列上的性质，单文档校验器看不到；但它在每个状态上留下
+        必然的痕迹（started_at / finished_at 有无），这些痕迹是可校验的。
+        见 ADR-008。
+        """
+        status = data.get("status")
+        ex = data.get("execution")
+        if status not in self.s.statuses or not isinstance(ex, dict):
+            return
+
+        def iso(v):
+            return _s(v) and bool(self.s.iso_re.match(v))
+
+        started, finished = ex.get("started_at"), ex.get("finished_at")
+
+        if status == "QUEUED":
+            if started is not None:
+                errors.append(f"{label} 迁移违规：QUEUED 尚未被执行器领取，started_at 必须为 null")
+            if finished is not None:
+                errors.append(f"{label} 迁移违规：QUEUED 是非终态，finished_at 必须为 null")
+        elif status == "RUNNING":
+            if not iso(started):
+                errors.append(f"{label} 迁移违规：QUEUED→RUNNING 必须写入 execution.started_at")
+            if finished is not None:
+                errors.append(f"{label} 迁移违规：RUNNING 是非终态，finished_at 必须为 null")
+        elif status in ("SUCCEEDED", "TIMED_OUT"):
+            # 这两个终态意味着任务确实跑过，不得跳过 RUNNING
+            if not iso(started):
+                errors.append(
+                    f"{label} 迁移违规：{status} 意味着任务已被执行器领取并运行过，"
+                    f"started_at 必须是时间戳（不得跳过 RUNNING）")
+            if not iso(finished):
+                errors.append(f"{label} 迁移违规：{status} 是终态，finished_at 必须是时间戳")
+        elif status in ("FAILED", "CANCELLED"):
+            # 允许 started_at 为 null：B1 迁移表里的 QUEUED→FAILED（受理后环境准备失败）
+            # 与 QUEUED→CANCELLED（队列中取消）都从未进入 RUNNING
+            if not iso(finished):
+                errors.append(f"{label} 迁移违规：{status} 是终态，finished_at 必须是时间戳")
 
     # ---------- 顶层 ----------
 

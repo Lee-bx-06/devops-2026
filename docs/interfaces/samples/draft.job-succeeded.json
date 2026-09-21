@@ -31,7 +31,13 @@
     }
   },
   "output": {
-    "summary": "第 3 轮迭代生成可构建环境；clean build 与 verify 均通过。",
+    "summary": "第 3 轮迭代生成可构建环境；clean build 与 verify 均通过。output.environment 是下游 FULL_CHECK / INCREMENTAL_CHECK / REPAIR 的 input.environment 的唯一来源，configuration_id 必须逐字一致。",
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0",
+      "project_root": "/workspace/project",
+      "clean_command": "make clean && make all"
+    },
     "build_result": {
       "build_succeeded": true,
       "verify_succeeded": true,

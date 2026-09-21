@@ -7,6 +7,7 @@
 import importlib.util
 import json
 import pathlib
+import re
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -51,6 +52,50 @@ class TestRepoFixtures(unittest.TestCase):
                 self.assertTrue(
                     any(expected in item for item in found),
                     f"{path.name} 拒绝原因不含 {expected!r}：{found}")
+
+
+class TestDocsDoNotRot(unittest.TestCase):
+    """VALIDATION.md 第五节是样例数量的唯一来源，其余文档一律指向它。
+
+    数量写死在多处必然腐烂（本仓库已发生过一次：三个 ADR 里的计数在 B2
+    补样例后全部过时）。这里把它变成断言，让腐烂当场变红。
+    """
+
+    def test_counts_in_validation_md_match_the_files(self):
+        text = (ROOT / "docs" / "VALIDATION.md").read_text(encoding="utf-8")
+        pos = len(list(SAMPLES.glob("*.json")))
+        neg = len(list((SAMPLES / "invalid").glob("*.json")))
+        m_pos = re.search(r"正例\s*(\d+)\s*个", text)
+        m_neg = re.search(r"负例\s*(\d+)\s*个", text)
+        self.assertIsNotNone(m_pos, "VALIDATION.md 第五节应写明正例数量")
+        self.assertIsNotNone(m_neg, "VALIDATION.md 第五节应写明负例数量")
+        self.assertEqual(int(m_pos.group(1)), pos,
+                         f"VALIDATION.md 写正例 {m_pos.group(1)} 个，实际 {pos} 个")
+        self.assertEqual(int(m_neg.group(1)), neg,
+                         f"VALIDATION.md 写负例 {m_neg.group(1)} 个，实际 {neg} 个")
+
+    def test_test_count_in_validation_md_matches_reality(self):
+        """README 与 VALIDATION.md 若写了测试项数，必须与实际一致。"""
+        actual = sum(1 for _ in _iter_test_ids())
+        for doc in ("README.md", "docs/VALIDATION.md"):
+            text = (ROOT / doc).read_text(encoding="utf-8")
+            for m in re.finditer(r"(\d+)\s*项单元测试", text):
+                self.assertEqual(int(m.group(1)), actual,
+                                 f"{doc} 写「{m.group(1)} 项单元测试」，实际 {actual} 项")
+
+
+def _iter_test_ids():
+    loader = unittest.TestLoader()
+    suite = loader.discover(str(ROOT / "tests"))
+
+    def walk(s):
+        for item in s:
+            if isinstance(item, unittest.TestSuite):
+                yield from walk(item)
+            else:
+                yield item
+
+    yield from walk(suite)
 
 
 class TestSlide25Check01FourJobTypes(unittest.TestCase):
@@ -157,11 +202,109 @@ class TestSlide25Check04MdIsNotExecutionFailure(unittest.TestCase):
         self.assertTrue(any("output 必须为空" in e for e in found), found)
 
     def test_system_error_codes_are_accepted(self):
-        for code in ("ENV_3002", "EXEC_4002", "ANALYSIS_5001", "ENV_3003", "VALIDATION_2001"):
+        for code in ("ENV_3002", "EXEC_4002", "ANALYSIS_5001", "ENV_3003", "EXEC_4001", "ANALYSIS_5002"):
             with self.subTest(code=code):
                 doc = load("job.failed.json")
                 doc["error"]["code"] = code
                 self.assertEqual(errors_of(doc, "mutated.json"), [])
+
+    def test_validation_codes_are_rejected_in_job_error(self):
+        """B1 于 2026-09-21 在 errors.md 第二节限定：VALIDATION_2xxx 只出现在
+        创建期 HTTP 4xx 响应体，不写入 job.error。schema 必须强制这条。"""
+        for code in ("VALIDATION_2001", "VALIDATION_2002"):
+            with self.subTest(code=code):
+                doc = load("job.failed.json")
+                doc["error"]["code"] = code
+                found = errors_of(doc, "mutated.json")
+                self.assertTrue(any("不得写入 job.error" in e for e in found), found)
+
+    def test_schema_splits_the_two_code_namespaces(self):
+        self.assertFalse(SCHEMA.job_error_code_re.match("VALIDATION_2001"))
+        self.assertTrue(SCHEMA.request_error_code_re.match("VALIDATION_2001"))
+        for code in ("ENV_3002", "EXEC_4002", "ANALYSIS_5001"):
+            self.assertTrue(SCHEMA.job_error_code_re.match(code), code)
+            self.assertFalse(SCHEMA.request_error_code_re.match(code), code)
+
+
+class TestTransitionTiming(unittest.TestCase):
+    """B1 在 endpoints.md「状态迁移」一节的规则，形式化为单文档计时约束（ADR-008）。"""
+
+    def test_queued_must_not_have_started_or_finished(self):
+        doc = load("job.accepted-queued.json")
+        self.assertEqual(errors_of(doc, "job.accepted-queued.json"), [])
+        doc["execution"]["started_at"] = "2026-09-20T09:20:03Z"
+        self.assertTrue(any("QUEUED 尚未被执行器领取" in e for e in errors_of(doc)))
+
+    def test_running_must_have_started_but_not_finished(self):
+        doc = load("job.running.json")
+        self.assertEqual(errors_of(doc, "job.running.json"), [])
+        doc["execution"]["started_at"] = None
+        self.assertTrue(any("QUEUED→RUNNING 必须写入" in e for e in errors_of(doc)))
+
+    def test_non_terminal_must_not_have_finished_at(self):
+        for name in ("job.accepted-queued.json", "job.running.json"):
+            with self.subTest(sample=name):
+                doc = load(name)
+                doc["execution"]["finished_at"] = "2026-09-20T09:31:12Z"
+                self.assertTrue(any("非终态" in e for e in errors_of(doc)))
+
+    def test_succeeded_cannot_skip_running(self):
+        doc = load("full-check.job-succeeded.json")
+        doc["execution"]["started_at"] = None
+        found = errors_of(doc)
+        self.assertTrue(any("不得跳过 RUNNING" in e for e in found), found)
+
+    def test_every_terminal_state_has_finished_at(self):
+        for name in ("full-check.job-succeeded.json", "job.failed.json",
+                     "job.timed-out.json", "job.cancelled.json",
+                     "job.analysis-failed.json", "job.baseline-mismatch-failed.json"):
+            with self.subTest(sample=name):
+                doc = load(name)
+                self.assertIsNotNone(doc["execution"]["finished_at"], name)
+                self.assertEqual(errors_of(doc, name), [])
+                doc["execution"]["finished_at"] = None
+                self.assertTrue(any("终态" in e for e in errors_of(doc)))
+
+    def test_failed_without_started_at_is_allowed(self):
+        """B1 迁移表里的 QUEUED→FAILED（受理后环境准备失败）从未进入 RUNNING，
+        因此 started_at 为 null 合法。这条正是解开他表内自相矛盾之处。"""
+        doc = load("job.failed.json")
+        doc["execution"]["started_at"] = None
+        doc["execution"]["duration_ms"] = None
+        doc["error"]["code"] = "ENV_3002"
+        self.assertEqual(errors_of(doc, "mutated.json"), [])
+
+    def test_cancelled_without_started_at_is_allowed(self):
+        doc = load("job.cancelled.json")
+        doc["execution"]["started_at"] = None
+        self.assertEqual(errors_of(doc, "mutated.json"), [])
+
+
+class TestBaselineConsistencyIsRuntimeNotContract(unittest.TestCase):
+    """B1 在 endpoints.md 末尾要求 baseline 与请求的 commit / configuration_id 一致。
+
+    按第 5 页，这一列是「接收方检查」，即 EChecker 在运行期做的事；ADR-005 也把
+    语义真值划归运行期。所以契约校验器**故意不**强制它。本类把这层边界钉住，
+    防止后来者误把它收紧成创建期拒绝。
+    """
+
+    def test_mismatched_baseline_commit_passes_the_validator(self):
+        doc = load("job.baseline-mismatch-failed.json")
+        self.assertNotEqual(doc["input"]["base_commit"], doc["input"]["baseline"]["commit"])
+        self.assertEqual(errors_of(doc, "job.baseline-mismatch-failed.json"), [])
+
+    def test_mismatched_configuration_id_passes_the_validator(self):
+        doc = load("incremental-check.request.json")
+        doc["input"]["baseline"]["configuration_id"] = "cc-MODE9"
+        self.assertNotEqual(doc["input"]["baseline"]["configuration_id"],
+                            doc["input"]["environment"]["configuration_id"])
+        self.assertEqual(errors_of(doc, "mutated.json"), [])
+
+    def test_baseline_shape_is_still_enforced(self):
+        """不强制值相等，但字段必须齐全、格式必须合法——这条界线不能松。"""
+        doc = load("incremental-check.request.json")
+        del doc["input"]["baseline"]["configuration_id"]
+        self.assertTrue(any("configuration_id" in e for e in errors_of(doc)))
 
 
 class TestEnvelopeIsFrozen(unittest.TestCase):
