@@ -35,7 +35,9 @@ python3 tools/validate.py ../B09/their-response.json
 
 ### 顶层信封（A1 冻结，`additionalProperties: false`）
 
-三种 `kind`，互斥：`create_request` / `job` / `artifact_record`。
+六种 `kind`，互斥：三种 Job 封套
+`create_request` / `job` / `artifact_record`，以及三种 artifact 本体
+`actual_graph` / `declared_graph` / `error_report`。
 顶层出现任何未定义字段一律拒绝——想加公共字段必须走 ADR + 版本升级（第 26 页）。
 
 - `schema_version` 必须恰为 `1.0.0`
@@ -110,6 +112,23 @@ python3 tools/validate.py ../B09/their-response.json
 | `INCREMENTAL_CHECK` | `introduced`、`resolved`、`updated_graph` |
 | `REPAIR` | `verification`（恰含 `build` / `test` / `recheck`）、`declaration_style` |
 
+FULL_CHECK 还额外强制：
+
+- `counts.missing` 等于 MISSING findings 数。
+- `counts.redundant` 等于 REDUNDANT findings 数。
+- `SUCCEEDED.output.artifacts[]` 同时包含 `ACTUAL_GRAPH`、`DECLARED_GRAPH`、
+  `ERROR_REPORT`。
+
+### artifact 本体（A2，第 21、22、23、24 页）
+
+- `actual_graph`：target、实际文件访问、observation 和可选 evidence URI。
+- `declared_graph`：target、Makefile prerequisite、声明位置。
+- `error_report`：commit、configuration_id、counts、findings。
+- `error_report.counts` 必须与自身 `findings` 一致。
+- 三份本体都必须带相同的 `commit` 和 `configuration_id`。
+
+定义见 `interfaces/buildchecker-contract.md` 与 `ADR-011`。
+
 ### A2/B2 环境交接专项校验
 
 `tests/test_validate.py::TestA2B2DraftHandoff` 覆盖：
@@ -164,17 +183,21 @@ python3 tools/validate.py ../B09/their-response.json
   （「需要读产物才能比对」）不成立，已由 ADR-010 第四节修正。
 - 「终态不可再迁移」需要 Job 文档**序列**才能验证，单文档校验器看不到。
   已覆盖的是它在每个状态上留下的计时痕迹（见第三节迁移表）。
-- `output.artifacts[]` 与 `ERROR_REPORT` 内联 findings 的一致性。
+- Job 内联 `output.findings` 与下载后的 `ERROR_REPORT` 文件本体是否一致：
+  需要读取 artifact 才能比对，校验期只能检查两者各自的 counts 与形状。
+  A2 的 `tests/test_buildchecker_contract.py` 用仓库内样例断言二者相等，
+  但那是对样例的检查，不是对任意请求的校验。
 - `trace_id` 在跨服务调用链上的实际串联。
 - DRAFT canonical 样例的 `sha256` 已对仓库内 fixture 重算校验；其他服务的
   说明性 artifact 仍需在真实下载后计算。
 
 ## 五、样例清单
 
-正例 17 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
-六种 `status` 各至少一个、一个独立 `artifact_record`。
+正例 21 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
+六种 `status` 各至少一个、独立 `artifact_record`、B2 的 DRAFT 请求/成功/失败链、
+A2 的三种 artifact 本体和零发现路径。
 
-负例 19 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
+负例 24 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，
 否则报「被拒原因与 expected_error 不符」。这样负例不会因为契约收紧而
 「碰巧仍然被拒」地失去意义。

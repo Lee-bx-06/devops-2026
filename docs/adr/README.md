@@ -39,10 +39,11 @@
 | 004 | 兼容性策略：信封严格，载荷可扩展 | Accepted | A1 |
 | 005 | 创建期拒绝与运行期失败的边界 | Accepted | A1 |
 | 006 | 校验器零依赖，从 schema 读常量 | Accepted | A1 |
-| 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Proposed | B2 |
+| 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Accepted | B2 |
 | 010 | [状态迁移规则的形式化，兼修正 ADR-005 的判据表述](ADR-010-transition-timing-and-baseline-ownership.md) | Proposed | A1 |
+| 011 | [BuildChecker 输出与 artifact 本体契约](ADR-011-buildchecker-output-contract.md) | Proposed | A2 |
 
-008 与 009 仍按下表预留给 A3 与 B3，A1 未占用。
+008 与 009 仍按下表预留给 A3 与 B3，A1 与 A2 均未占用。
 
 预计需要但尚未认领的 ADR：
 
@@ -58,3 +59,8 @@
 B2 原文件 `ADR-001-draft-buildchecker-contract.md` 与公共契约已使用的
 `ADR-001-async-job-model.md` 编号重复。2026-09-21 已在 `e2b2` 分支改号为
 `ADR-007-draft-buildchecker-contract.md` 并登记到上方索引。
+
+A2 原文件 `ADR-010-buildchecker-output-contract.md` 与 A1 已合并的
+`ADR-010-transition-timing-and-baseline-ownership.md` 编号重复。2026-09-21
+已在 `a2-full-check-contract` 分支改号为 `ADR-011-buildchecker-output-contract.md`
+并登记到上方索引。008 与 009 已预留给 A3 与 B3，因此 A2 让号到 011。

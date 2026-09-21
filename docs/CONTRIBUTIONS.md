@@ -16,7 +16,7 @@
 | 成员 | 学号 | 角色 | 主责 | 对接人 |
 | --- | --- | --- | --- | --- |
 | **谢浩天** | **241250033** | **A1** | 公共契约与集成：`task.schema.json`、`errors.md`、`tools/validate.py`、样例套件、ADR | B1 |
-| `<待填写>` | `<待填写>` | A2 | BuildChecker 接口（读 TSE）：`FULL_CHECK` 请求/响应、依赖图与 MD/RD 报告字段 | B2 |
+| **殷晓瑞** | `241250014` | A2 | BuildChecker 接口（读 TSE）：`FULL_CHECK` 请求/响应、依赖图与 MD/RD 报告字段 | B2 |
 | `<待填写>` | `<待填写>` | A3 | EChecker 接口（读 ISSTA 2024）：`INCREMENTAL_CHECK` 样例、baseline 匹配规则 | B3 |
 
 ## B09 成员与分工
@@ -129,11 +129,30 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | DRAFT artifact fixture | `interfaces/artifacts/job-draft09/*` | `a587263` | Issue #4 / PR #5 | 四个产物的大小与 SHA-256 由测试重算 |
 | DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `a587263` | Issue #4 / PR #5 | 已纳入 A2/B2 v0.1 约定，待 A2 在 PR 中接受 |
 
+## A2 提交追溯
+
+- **作者**：殷晓瑞（Git 作者 `Inxerph`）
+- **学号**：`241250014`
+- **分支**：`a2-full-check-contract`
+- **Commit SHA**：`74c69d2`（合并 B2 的 `324a32e` 后的提交，对应 PR #6）；
+  内容提交为 `26bda5c`（TSE 语义复核）与 `1c38393`（首个内容提交）
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| FULL_CHECK 接口契约 | `interfaces/buildchecker-contract.md` | `1c38393` | PR #6 | 请求/输出、MD/RD、失败路径和下游交接已定义 |
+| artifact 本体 schema | `interfaces/task.schema.json` | `1c38393` | PR #6 | `actual_graph` / `declared_graph` / `error_report` 均有必填约束 |
+| BuildChecker ADR | `adr/ADR-011-buildchecker-output-contract.md` | `1c38393` | PR #6 | 第 13 页四段式，记录本体与一致性决策；与 A1 的 ADR-010 撞号后改号为 011 |
+| artifact 正例 | `interfaces/samples/artifact.*.json` | `1c38393` | PR #6 | 三份本体通过校验 |
+| FULL_CHECK 边界样例 | `interfaces/samples/full-check.clean-project.json`、`samples/invalid/…` | `1c38393` | PR #6 | 零发现正例与五项负例通过校验 |
+| A2 测试 | `tests/test_buildchecker_contract.py` | `1c38393` | PR #6 | A2 分支上 35 项全绿；合并 B2 的改动后整体 56 项全绿 |
+| TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | PR #6 | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
+| 复核 B2 的 DRAFT 交接 | `interfaces/samples/draft.job-succeeded.json`、`adr/ADR-007-…md`、`adr/README.md` | `74c69d2` | PR #6 | 五项待确认全部满足，`ADR-007` 改为 `Accepted`；按 blob 实际字节改正 Dockerfile 制品的 `size_bytes` / `sha256` |
+
 ## 其它分支
 
 | 远端分支 | 提交 | 作者 | 内容 | 状态 |
 | --- | --- | --- | --- | --- |
-| `origin/e2b2` | `38f66940e26da87a9490532e6f342735dbb20da2` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例 3 个、ADR-001 | **不要直接合并**，三个样例全部通不过当前校验器。详见 `BACKLOG.md` 第四节 |
+| `origin/e2b2` | `e04364fe606376c9b9d7e790a9ed2301188795f7` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例、ADR-007 | 已与 `main` 同步；ADR-007 仍为 Proposed，待 A2 最终验收 |
 
 ## 协作方式：fork + PR
 
@@ -172,6 +191,18 @@ OK
 
 环境：Python 3.14.6 / macOS (arm64) / 无第三方依赖。
 
+### A2 本轮本地验证
+
+```text
+$ python tools/validate.py
+A09/B09 公共契约校验通过：四类请求与响应、六种状态、artifact 元数据/本体
+与全部负例均符合 task.schema.json。
+
+$ python -m unittest discover -s tests
+Ran 56 tests
+OK
+```
+
 ## 贡献约定
 
 - 公共字段、状态、版本或错误码命名空间的变更，必须在**同一个 PR** 内同步更新：
@@ -184,7 +215,7 @@ OK
 
 ## 待补
 
-- [ ] A2、A3 的姓名与学号
+- [ ] A3 的姓名与学号（A2 已补：殷晓瑞 / `241250014`）
 - [ ] B09 三位成员的姓名与学号（由 B1 填写）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2

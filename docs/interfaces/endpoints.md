@@ -67,6 +67,9 @@ Content-Type: application/json
 `samples/incremental-check.request.json`、`samples/repair.request.json`。
 受理响应样例：`samples/job.accepted-queued.json`。
 
+FULL_CHECK 的服务专有输出、实际图/声明图和 ERROR_REPORT 本体见
+`buildchecker-contract.md`；对应 schema 定义位于 `task.schema.json`。
+
 ## 三、查询任务
 
 ```http

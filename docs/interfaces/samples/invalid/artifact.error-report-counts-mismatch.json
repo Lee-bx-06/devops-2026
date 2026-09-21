@@ -1,0 +1,56 @@
+{
+  "expected_error": "counts.redundant 必须等于 findings",
+  "_note": "ERROR_REPORT artifact 本体也必须保持 counts 与 findings 一致。",
+  "kind": "error_report",
+  "schema_version": "1.0.0",
+  "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+  "configuration_id": "cc-MODE0",
+  "counts": {
+    "missing": 1,
+    "redundant": 0
+  },
+  "findings": [
+    {
+      "id": "md-9f8e7d6c-001",
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "detector": "INSTRUCTOR_ORACLE",
+      "location": {
+        "path": "src/Makefile",
+        "line": 12,
+        "column": null
+      },
+      "evidence": [
+        {
+          "kind": "INSTRUCTOR_SAMPLE",
+          "detail": "教师人工样本",
+          "artifact_uri": null
+        }
+      ],
+      "message": "main.o 实际需要 config.h"
+    },
+    {
+      "id": "rd-9f8e7d6c-001",
+      "type": "REDUNDANT",
+      "target": "util.o",
+      "dependency": "legacy.h",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "detector": "BUILDCHECKER_DYNAMIC",
+      "location": {
+        "path": "src/Makefile",
+        "line": 27,
+        "column": null
+      },
+      "evidence": [
+        {
+          "kind": "DECLARATION",
+          "detail": "声明了 legacy.h 但未观察到访问",
+          "artifact_uri": "artifact://pair09/job-full09/declared-graph.json"
+        }
+      ],
+      "message": "声明了 legacy.h，但本构建配置下未被实际使用"
+    }
+  ]
+}

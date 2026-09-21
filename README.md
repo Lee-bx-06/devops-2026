@@ -68,12 +68,13 @@ python3 tools/validate.py path/to/their-file.json
 
 ```
 docs/interfaces/
-  task.schema.json          A1 ★ 公共契约，唯一权威定义
+  task.schema.json          A1 ★ 公共契约，唯一权威定义（含 B2 的 DRAFT 输出与 A2 的 artifact 本体）
+  buildchecker-contract.md  A2 ★ FULL_CHECK 请求/输出与依赖图契约
   errors.md                 A1 ★ 两条错误通道 + 错误码注册表（注册表由 B1 维护）
   endpoints.md              B1   五端点 + 状态迁移表（A1 起草，B1 已定稿）
   samples/README.md         A1   命名规范与 DRAFT 重复样例的处理方案
-  samples/                  A1 ★ 19 个正例（四类请求响应 + 六种状态 + 产物记录 + B2 的 DRAFT）
-  samples/invalid/          A1 ★ 19 个负例，每个声明期望的拒绝原因
+  samples/                  A1 / A2 / B2  21 个正例（四类请求响应 + 六种状态 + 产物记录 + 三份 artifact 本体）
+  samples/invalid/          A1 / A2 / B2  24 个负例，每个声明期望的拒绝原因
 docs/adr/
   README.md                 B1   ADR 索引与编号规则
   ADR-000-template.md       B1   模板
@@ -83,29 +84,35 @@ docs/adr/
   ADR-004  兼容性策略：信封严格、载荷可扩展     A1（B1 已确认）
   ADR-005  创建期拒绝 vs 运行期失败            A1（判据表述由 ADR-010 修正）
   ADR-006  零依赖校验器                       A1
-  ADR-007  DRAFT 与 BuildChecker 环境交接      B2   Proposed
+  ADR-007  DRAFT 与 BuildChecker 环境交接      B2   Accepted
   ADR-010  状态迁移形式化 + 基线一致性归属      A1   Proposed，待 B1 评审
+  ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，待 A3/B3/B1 复核
   （008 / 009 预留给 A3 与 B3）
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
-docs/AI_USAGE.md            A1/B1/B2  第 14 页格式，16 条真实判断记录
-docs/CONTRIBUTIONS.md       A1/B1/B2  作者、提交 SHA、Issue/PR
+docs/AI_USAGE.md            A1/B1/B2/A2  第 14 页格式，真实判断记录
+docs/CONTRIBUTIONS.md       A1/B1/B2/A2  作者、提交 SHA、Issue/PR
 docs/VALIDATION.md          A1   校验了什么、**没**校验什么
 docs/versioning.md          B1   版本规则、变更流程、消费者清单
 docs/CHANGELOG.md           B1   契约变更记录与待处理表
 tools/validate.py           A1 ★ 零依赖校验器
-tests/test_validate.py      A1/B2   48 项单元测试
+tests/test_validate.py      A1/B2   公共契约与 A2–B2 环境交接测试
+tests/test_buildchecker_contract.py A2 FULL_CHECK 与 artifact 本体测试
+（以上两组合计 56 项单元测试，`make check` 全绿）
 ```
 
 ★ = A1 核心交付物。
 
 ## 六、契约速览
 
-**三种文档**（由必填的 `kind` 判别，互斥）：
+**六种文档**（由必填的 `kind` 判别，互斥；前三类是 Job 封套，后三类是 artifact 本体）：
 
 | `kind` | 用途 | `job_id` / `status` |
 | --- | --- | --- |
 | `create_request` | POST 请求体，含 `idempotency_key` | 无（服务端产生） |
 | `job` | 受理响应与查询响应 | 有 |
+| `actual_graph` | 实际依赖图文件本体 | 无 |
+| `declared_graph` | 声明依赖图文件本体 | 无 |
+| `error_report` | MD/RD 报告文件本体 | 无 |
 | `artifact_record` | 第 24 页产物记录 | 无 |
 
 **九个公共字段**（第 19 页）：`schema_version`、`job_id`、`trace_id`、`job_type`、

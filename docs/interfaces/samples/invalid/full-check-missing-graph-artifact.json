@@ -1,0 +1,67 @@
+{
+  "expected_error": "缺少 FULL_CHECK 必需产物",
+  "_note": "A2 的实际依赖图和声明依赖图分别供 EChecker 与 MDFixer 消费，不能只在 findings 内联结果而不交接图。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full09",
+  "trace_id": "trace-a09-e2-001",
+  "job_type": "FULL_CHECK",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T09:20:00Z",
+    "started_at": "2026-09-20T09:20:03Z",
+    "finished_at": "2026-09-20T09:31:12Z",
+    "duration_ms": 669000,
+    "worker_id": "a09-buildchecker-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean",
+      "project_root": "/workspace/project",
+      "verify_command": "make test"
+    }
+  },
+  "output": {
+    "counts": {
+      "missing": 0,
+      "redundant": 0
+    },
+    "findings": [],
+    "artifacts": [
+      {
+        "artifact_id": "artifact-full09-declared-graph",
+        "type": "DECLARED_GRAPH",
+        "uri": "artifact://pair09/job-full09/declared-graph.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-full09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-MODE0",
+        "sha256": "3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c",
+        "size_bytes": 31884
+      },
+      {
+        "artifact_id": "artifact-full09-error-report",
+        "type": "ERROR_REPORT",
+        "uri": "artifact://pair09/job-full09/error-report.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-full09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-MODE0",
+        "sha256": "4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d",
+        "size_bytes": 6712
+      }
+    ]
+  },
+  "error": null
+}

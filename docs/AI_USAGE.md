@@ -525,3 +525,72 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
   `tools/validate.py`、`tests/test_validate.py`、`docs/adr/ADR-007-draft-buildchecker-contract.md`
 - **验证**：`make check`，其中新增 `TestA2B2DraftHandoff` 覆盖规范样例唯一性、
   直接映射、缺字段拒绝、路径与镜像语义、真实哈希、跨字段漂移和失败路径
+---
+
+## A2（殷晓瑞）的记录
+
+### 条目 19：补齐 FULL_CHECK 的 artifact 本体和跨字段约束
+
+- **工具/模型**：OpenAI Codex（本次会话）
+- **任务**：在 B2 完成 DRAFT 对齐后，直接推进 A2 自己负责的 BuildChecker /
+  FULL_CHECK 交付
+- **AI 建议**：只补 DRAFT 对接字段还不够；如果 ACTUAL_GRAPH、DECLARED_GRAPH
+  和 ERROR_REPORT 的文件本体没有定义，A3 的 EChecker 与 B3 的 MDFixer
+  无法稳定消费 artifact。
+- **人工判断：采纳执行。** 用户明确要求“能做就直接做”，因此本轮直接落盘；
+  A2 本人仍需在提交和对外确认前复核 MD/RD 语义、detector 取值以及 TSE
+  论文中的依赖图表示。
+- **落实**：
+  - 新增 `docs/interfaces/buildchecker-contract.md`，定义请求、输出、三份
+    artifact 本体、MD/RD、失败路径和下游交接。
+  - 在 `task.schema.json` 增加 `actual_graph` / `declared_graph` /
+    `error_report`。
+  - 新增三份 artifact 本体正例、零发现正例和五个负例。
+  - 在 `tools/validate.py` 增加 counts/findings 一致性、核心 artifact 类型
+    和本体字段校验。
+  - 新增 `tests/test_buildchecker_contract.py`。
+  - 新增 `ADR-011`（起草时编号 010），记录本体的设计与取舍。
+- **关联文件**：
+  `docs/interfaces/buildchecker-contract.md`、
+  `docs/interfaces/task.schema.json`、
+  `docs/interfaces/samples/artifact.*.json`、
+  `docs/interfaces/samples/full-check.clean-project.json`、
+  `docs/interfaces/samples/invalid/…`、
+  `docs/adr/ADR-011-buildchecker-output-contract.md`、
+  `tests/test_buildchecker_contract.py`
+- **验证**：`python tools/validate.py` 通过；
+  `python -m unittest discover -s tests -v` 在 A2 分支上 35 项全绿
+  （条目 20 合并 B2 的改动后为 56 项）
+
+### 条目 20：AI 复核 B2 的更新，人工决定"接受并顺手修好"而不是打回
+
+- **工具/模型**：OpenAI Codex（本次会话）
+- **任务**：复核 B2 已合并进 `main` 的 DRAFT 交接更新（`Issue #4` / `PR #5`），
+  判断 `ADR-007` 能否由 A2 接受
+- **AI 发现**：
+  1. 原计划里列的六个卡点，五个已解决：`output_draft` 已进 schema、重复样例已删、
+     `configuration_id` 不再含 commit 前缀、`clean_command` 与 `project_root` 语义统一、
+     Issue + PR 追溯齐备。
+  2. **但 `make check` 在干净检出上是红的**：`TestA2B2DraftHandoff` 报
+     `308 != 318`。根因是 `draft.job-succeeded.json` 里 Dockerfile 制品的
+     `size_bytes` / `sha256` 取自 CRLF 工作副本，与仓库内 LF blob 不符。
+     B2 的 PR 勾了"48 项单元测试通过"，与实际不符。
+  3. `PR #5` 正文写着"验收通过后再合并"，但它在本轮复核之前就已经合进 `main`，
+     A2 的验收关卡被绕过。
+  4. 双方各自新增的 ADR 都编号 010，索引里会出现两篇同号 ADR。
+- **人工判断：接受 ADR-007，但先把红测修好再合。** 打回重做的时间成本高于直接修正：
+  缺陷只有一行数据，而验收条件（字段级契约）本身已经满足。同时明确记下"验收关卡
+  被绕过"这个流程问题，避免下次再发生。
+- **落实**：
+  - 按 blob 实际字节改正 Dockerfile 制品的 `size_bytes` / `sha256`；
+  - 把 `ADR-007` 由 `Proposed` 改为 `Accepted`，登记进 `adr/README.md`；
+  - A2 的 `ADR-010` 让号改名为 `ADR-011`（008/009 已预留给 A3/B3）；
+  - 合并 `main` 并解决 7 个文件的冲突，`tools/validate.py` 保留双方各自的
+    FULL_CHECK 与 DRAFT 校验块。
+- **关联文件**：`docs/interfaces/samples/draft.job-succeeded.json`、
+  `docs/adr/ADR-007-draft-buildchecker-contract.md`、`docs/adr/README.md`、
+  `docs/adr/ADR-011-buildchecker-output-contract.md`、`README.md`、
+  `docs/BACKLOG.md`、`docs/VALIDATION.md`、`docs/CHANGELOG.md`、`tools/validate.py`
+- **验证**：合并后 `python tools/validate.py` 通过、
+  `python -m unittest discover -s tests` 56 项全绿；
+  `docs/VALIDATION.md` 第五节的正例/负例数与实际文件数一致（21 / 24）。

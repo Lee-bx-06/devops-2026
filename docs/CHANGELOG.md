@@ -7,6 +7,21 @@
 
 ## [Unreleased]
 
+### 新增：A2 BuildChecker 输出与 artifact 本体
+
+| 文件 | 内容 |
+|---|---|
+| `interfaces/buildchecker-contract.md` | FULL_CHECK 请求、成功输出、MD/RD、失败路径与下游交接 |
+| `interfaces/task.schema.json` | 新增 `actual_graph` / `declared_graph` / `error_report` 三种本体定义 |
+| `adr/ADR-011-buildchecker-output-contract.md` | A2 对本体和跨字段一致性的架构决策（原编号 010，与 A1 的 ADR-010 冲突后改号） |
+| `interfaces/samples/artifact.*.json` | 三份 artifact 本体正例 |
+| `interfaces/samples/full-check.clean-project.json` | 零发现成功样例 |
+| `interfaces/samples/invalid/…` | counts 不一致、缺图、非法 observation、报告本体不一致、相对 project_root 五个负例 |
+| `tests/test_buildchecker_contract.py` | A2 的 artifact 与跨字段一致性测试 |
+| `tools/validate.py` | 增加 counts/findings、核心 artifact 类型和三种本体的校验 |
+
+状态：A2 已起草，与 B2 的 `324a32e` 合并后 `make check` 全绿（56 项），
+待 A3、B3、B1 复核。是否提升 `schema_version` 由 B1 按 `versioning.md` 判定。
 ### A1 变更（2026-09-21，待 B1 评审）
 
 对应 ADR-010。三项改动，其中第 1 项涉及 `error.code`，版本号处理见下方待处理表第 6 项。
@@ -43,6 +58,16 @@
   与字节数；新增 7 项 A2–B2 专项单元测试
 - 本变更只涉及 B2 所属的 DRAFT 契约及其与 A2 的明确交接边界，提交到 `e2b2`
   并通过 PR 请求合入，不直接推送 `main`
+### A2 复核 B2 的 DRAFT 交接并接受 ADR-007（2026-09-21）
+
+- 逐条复核 `Issue #4` / `PR #5`：`output_draft` 已进 schema、canonical DRAFT 链唯一、
+  `configuration_id` 不再绑定 commit、`clean_command` 与 `project_root` 语义统一、
+  Issue + PR 追溯齐备。B2 待确认的五项前置条件全部满足，`ADR-007` 由 `Proposed` 改为 `Accepted`。
+- 复核发现并修正一处数据不一致：`draft.job-succeeded.json` 中 Dockerfile 制品的
+  `size_bytes` / `sha256` 取自 CRLF 工作副本（318 字节），与仓库内 LF blob
+  （308 字节）不符，`TestA2B2DraftHandoff` 在干净检出上必然失败。已按 blob 实际字节改正。
+- 原 `ADR-010-buildchecker-output-contract.md` 与 A1 已合并的 `ADR-010` 编号冲突，
+  已在 `a2-full-check-contract` 分支改号为 `ADR-011` 并登记进 `adr/README.md`。
 
 ### 待处理
 

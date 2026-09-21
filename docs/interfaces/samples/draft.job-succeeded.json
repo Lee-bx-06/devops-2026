@@ -71,8 +71,8 @@
         "producer_job_id": "job-draft09",
         "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
         "configuration_id": "cc-gcc13-release-6f12a4c8",
-        "sha256": "1a876baec110a664f4c0ac134985f60bbba3341fc3aad49121491e62324bcbbc",
-        "size_bytes": 318
+        "sha256": "cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+        "size_bytes": 308
       },
       {
         "artifact_id": "artifact-draft09-round-01-log",

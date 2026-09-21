@@ -52,7 +52,7 @@
     },
     "rejected_candidates": [
       {
-        "candidate": "在 src/Makefile 顶部加入 -I$(SRCDIR)/include 以绕过 config.h 缺失",
+        "candidate": "只加入 -I$(SRCDIR)/include 局部绕过，不补 config.h 的 prerequisite 声明",
         "reason": "该候选改变编译搜索路径而非补全依赖声明，重检后 MD 仍存在；且会掩盖其他目标的真实依赖，属无效候选，按第 23 页记录拒绝原因"
       }
     ],

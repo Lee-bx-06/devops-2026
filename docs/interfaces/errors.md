@@ -134,7 +134,7 @@ finding 的完整形状（第 10 页原文五字段 + 「完整报告还要有�
   "location": { "path": "src/Makefile", "line": 12, "column": null },
   "evidence": [
     { "kind": "INSTRUCTOR_SAMPLE", "detail": "教师提供的人工样本", "artifact_uri": null },
-    { "kind": "FILE_ACCESS", "detail": "编译 main.c 时打开 config.h 失败", "artifact_uri": "artifact://pair09/job-full09/proc-trace-main-o.log" }
+    { "kind": "FILE_ACCESS", "detail": "ptrace 显示编译 main.c 时进程实际读取了 src/config.h；Makefile 未声明该 prerequisite", "artifact_uri": "artifact://pair09/job-full09/proc-trace-main-o.log" }
   ],
   "message": "main.o 实际需要 config.h，但 Makefile 第 12 行未声明该依赖"
 }

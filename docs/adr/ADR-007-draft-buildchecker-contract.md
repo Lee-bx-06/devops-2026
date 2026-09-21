@@ -1,6 +1,6 @@
 # ADR-007：DRAFT 与 BuildChecker 的环境交接契约
 
-- 状态：**Proposed**（B2 已落实 A2/B2 v0.1 约定，待 A2 在 PR 中接受）
+- 状态：**Accepted**（2026-09-21 由 A2 殷晓瑞复核接受）
 - 日期：2026-09-21
 - 契约版本：1.0.0
 - 相关：课件第 5、20、21、24 页；`task.schema.json` 的 `input_draft` / `output_draft`
@@ -125,7 +125,11 @@ A2 依次执行 clean、build、verify。`clean_command` 不得使用 `&&`、`||
 - 校验器会拒绝 artifact 的 commit/configuration 不一致、轮次日志无对应产物、
   浮动 `latest` 镜像与绑定 commit/Job/UUID 的 `configuration_id`。
 - 仓库增加四个小型 artifact fixture，用于校验样例中的大小与 SHA-256。
-- ADR 保持 Proposed，直到 A2 在 Issue/PR 中复核并改为 Accepted。
+- A2 已于 2026-09-21 复核接受本 ADR。复核前发现一处必须修的数据不一致：
+  `draft.job-succeeded.json` 中 Dockerfile 制品的 `size_bytes` / `sha256`
+  取自 CRLF 工作副本（318 字节），与仓库内 LF blob（308 字节）不符，
+  导致 `TestA2B2DraftHandoff` 在干净检出上失败。该条数据已按 blob 实际字节改正，
+  接受决定随之生效。
 
 验证命令：
 
