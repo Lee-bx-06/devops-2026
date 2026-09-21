@@ -116,17 +116,18 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 ## B2 提交追溯
 
-- **Commit SHA**：`d05ee38ab343908b072746e4afa1bcbf70bf308a`（短 `d05ee38`）
+- **Commit SHA**：`<本轮交付提交后回填>`
 - **作者**：zrh `<3407953470@qq.com>`
-- **提交说明**：`docs(B2): 对齐 DRAFT 样例与环境交接契约`
+- **提交说明**：`b2修改`
 - **分支**：`e2b2`
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| DRAFT 创建请求 | `interfaces/samples/draft-request.json` | `d05ee38` | 待提 PR | 按 `create_request` 信封补齐 `kind`、三段式版本、幂等键与 `limits` |
-| DRAFT 成功响应 | `interfaces/samples/draft-response.json` | `d05ee38` | 待提 PR | 包含 `build_result`、环境、每轮理由和可追溯 artifact |
-| DRAFT 失败响应 | `interfaces/samples/draft-failed-response.json` | `d05ee38` | 待提 PR | `FAILED + ENV_3002 + output={}` 符合公共状态矩阵 |
-| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `d05ee38` | 待提 PR | 第 13 页四段式，并在 `adr/README.md` 登记 |
+| canonical DRAFT 链路 | `interfaces/samples/draft.request.json`、`draft.job-succeeded.json`、`full-check.request.json` | `<回填>` | 待创建 | `environment/build` 可从 DRAFT 直接映射到 FULL_CHECK |
+| DRAFT 失败路径 | `interfaces/samples/draft.job-failed.json`、`job.timed-out.json` | `<回填>` | 待创建 | 迭代耗尽、环境失败与超时均有明确状态/错误码 |
+| DRAFT 正式 schema 与校验 | `interfaces/task.schema.json`、`tools/validate.py`、`tests/test_validate.py` | `<回填>` | 待创建 | 缺环境/配置/命令/路径均被拒绝，`make check` 通过 |
+| DRAFT artifact fixture | `interfaces/artifacts/job-draft09/*` | `<回填>` | 待创建 | 四个产物的大小与 SHA-256 由测试重算 |
+| DRAFT/BuildChecker 决策 | `adr/ADR-007-draft-buildchecker-contract.md` | `<回填>` | 待创建 | 已纳入 A2/B2 v0.1 约定，待 A2 在 PR 中接受 |
 
 ## 其它分支
 

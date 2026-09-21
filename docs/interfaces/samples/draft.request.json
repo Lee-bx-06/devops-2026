@@ -3,7 +3,7 @@
   "schema_version": "1.0.0",
   "trace_id": "trace-a09-e2-001",
   "job_type": "DRAFT",
-  "idempotency_key": "a09-draft-9f8e7d6c-01",
+  "idempotency_key": "b09-draft-cc-gcc13-release-6f12a4c8",
   "input": {
     "repository": {
       "url": "https://github.com/pair09/demo-make-project.git",
@@ -12,13 +12,13 @@
     },
     "build": {
       "command": "make all",
-      "verify_command": "make test",
       "clean_command": "make clean",
-      "project_root": "."
+      "verify_command": "make test",
+      "project_root": "/workspace/project"
     },
     "limits": {
       "max_iterations": 5,
-      "timeout_seconds": 1800
+      "timeout_seconds": 900
     }
   }
 }

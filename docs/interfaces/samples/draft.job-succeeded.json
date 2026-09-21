@@ -7,11 +7,11 @@
   "status": "SUCCEEDED",
   "execution": {
     "attempt": 1,
-    "queued_at": "2026-09-20T09:05:00Z",
-    "started_at": "2026-09-20T09:05:04Z",
-    "finished_at": "2026-09-20T09:17:41Z",
-    "duration_ms": 757000,
-    "worker_id": "b09-draft-worker-2"
+    "queued_at": "2026-09-21T08:00:00+08:00",
+    "started_at": "2026-09-21T08:00:03+08:00",
+    "finished_at": "2026-09-21T08:05:00+08:00",
+    "duration_ms": 297000,
+    "worker_id": "b09-draft-worker-1"
   },
   "input": {
     "repository": {
@@ -21,48 +21,45 @@
     },
     "build": {
       "command": "make all",
-      "verify_command": "make test",
       "clean_command": "make clean",
-      "project_root": "."
+      "verify_command": "make test",
+      "project_root": "/workspace/project"
     },
     "limits": {
       "max_iterations": 5,
-      "timeout_seconds": 1800
+      "timeout_seconds": 900
     }
   },
   "output": {
-    "summary": "第 3 轮迭代生成可构建环境；clean build 与 verify 均通过。output.environment 是下游 FULL_CHECK / INCREMENTAL_CHECK / REPAIR 的 input.environment 的唯一来源，configuration_id 必须逐字一致。",
+    "summary": "DRAFT 在第 2 轮生成可复现环境，清理、构建、验证和镜像可用性检查均通过。",
     "environment": {
-      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "configuration_id": "cc-MODE0",
-      "project_root": "/workspace/project",
-      "clean_command": "make clean && make all"
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean",
+      "verify_command": "make test",
+      "project_root": "/workspace/project"
     },
     "build_result": {
       "build_succeeded": true,
       "verify_succeeded": true,
-      "iterations": 3,
-      "image_ref": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "success_criteria": "make all 退出码 0 且 make test 退出码 0，连续一轮无新增修改"
+      "iterations": 2,
+      "success_criteria": "clean_command、command 和 verify_command 退出码均为 0，镜像可拉取且可运行，最后一轮没有新的环境修改"
     },
     "rounds": [
       {
         "index": 1,
-        "change": "基础镜像从 ubuntu:latest 固定为 ubuntu:22.04，安装 build-essential",
-        "rationale": "latest 不可复现，且目标提交需要 gcc/make 工具链",
+        "change": "固定 Ubuntu 24.04 基础镜像并安装 gcc-13、make",
+        "rationale": "首次构建时缺少 C 工具链，固定版本可避免构建环境漂移",
         "log_uri": "artifact://pair09/job-draft09/round-01.log"
       },
       {
         "index": 2,
-        "change": "补充 libssl-dev 到构建依赖",
-        "rationale": "第 1 轮日志显示 openssl/ssl.h 缺失导致 crypto.o 编译失败",
+        "change": "增加 libssl-dev",
+        "rationale": "第 1 轮日志显示 openssl/ssl.h 缺失；补齐依赖后构建与验证均通过",
         "log_uri": "artifact://pair09/job-draft09/round-02.log"
-      },
-      {
-        "index": 3,
-        "change": "将 make test 设为独立阶段并固定工作目录 /workspace",
-        "rationale": "verify_command 与 build 共用缓存目录导致测试读到过期对象文件",
-        "log_uri": "artifact://pair09/job-draft09/round-03.log"
       }
     ],
     "artifacts": [
@@ -73,20 +70,42 @@
         "media_type": "text/plain",
         "producer_job_id": "job-draft09",
         "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "configuration_id": "cc-MODE0",
-        "sha256": "0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
-        "size_bytes": 1043
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "1a876baec110a664f4c0ac134985f60bbba3341fc3aad49121491e62324bcbbc",
+        "size_bytes": 318
       },
       {
-        "artifact_id": "artifact-draft09-buildlog",
+        "artifact_id": "artifact-draft09-round-01-log",
         "type": "BUILD_LOG",
-        "uri": "artifact://pair09/job-draft09/final-build.log",
+        "uri": "artifact://pair09/job-draft09/round-01.log",
         "media_type": "text/plain",
         "producer_job_id": "job-draft09",
         "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "configuration_id": "cc-MODE0",
-        "sha256": "1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a",
-        "size_bytes": 88421
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "ea203b23bda970a7dac4bf5d131c56641e0fe66ca085dca3534d77bb3d8b9760",
+        "size_bytes": 204
+      },
+      {
+        "artifact_id": "artifact-draft09-round-02-log",
+        "type": "BUILD_LOG",
+        "uri": "artifact://pair09/job-draft09/round-02.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-draft09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "e092994c420239aa34a85c158039555b610abb9df04ea3e0bf4c8c07eba97841",
+        "size_bytes": 180
+      },
+      {
+        "artifact_id": "artifact-draft09-final-verify-log",
+        "type": "BUILD_LOG",
+        "uri": "artifact://pair09/job-draft09/final-verify.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-draft09",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "9d6b9fc240c8991ed5cbdc470e8378de8e3b53dbfa1d8720fb245001c796c7da",
+        "size_bytes": 237
       }
     ]
   },

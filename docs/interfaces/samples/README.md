@@ -28,18 +28,17 @@
 下划线开头的键（`_note`、`expected_error`）是给人看的注解，校验前会被剥离，
 不属于线上载荷。
 
-## 二、当前状态：DRAFT 有两套样例并存
+## 二、当前状态：DRAFT 已收敛为一套 canonical 样例
 
 | 文件 | 来源 | 命名 | 状态 |
 | --- | --- | --- | --- |
-| `draft.request.json` | A1 | 符合规范 | **规范版本** |
-| `draft.job-succeeded.json` | A1 | 符合规范 | **规范版本** |
-| `draft-request.json` | B2（`d05ee38`） | 连字符 | 内容重复，待处理 |
-| `draft-response.json` | B2（`d05ee38`） | 连字符 | 内容重复，待处理 |
-| `draft-failed-response.json` | B2（`d05ee38`） | 连字符 | **内容不重复，应保留** |
+| `draft.request.json` | A1/B2 | 符合规范 | **唯一规范请求** |
+| `draft.job-succeeded.json` | A1/B2 | 符合规范 | **唯一规范成功响应** |
+| `draft.job-failed.json` | B2 | 符合规范 | 环境失败/迭代耗尽响应 |
 
-两套都能通过 `tools/validate.py`，所以 `make check` 是绿的——
-问题不在合法性，在于下游拿到两份 DRAFT 请求样例时不知道以哪份为准。
+旧的 `draft-request.json`、`draft-response.json` 已删除，
+`draft-failed-response.json` 已按点号规范改名。专项测试会在重复请求或成功响应
+再次出现时失败。
 
 ## 三、A1 的判断：命名以 A1 为准，但 B2 有一处内容比 A1 的好
 
@@ -63,59 +62,37 @@ B2 在 `output` 里写了 `environment`：
 根本没有产出 `environment`，等于把 DRAFT → BuildChecker 这条交接链断在了契约里——
 A2 无从得知自己要消费的 `configuration_id` 是谁给的、长什么样。
 
-已做的处理：
+最终处理：
 
-1. `task.schema.json` 新增 `$defs.produced_environment`，并挂到 `output_draft.environment`，
-   使该字段可被校验（此前它是自由字段）。依 ADR-004，`output` 内部属服务负责人，
-   因此**定为可选而非必填**；是否升为必填请 B2 决定。
-2. `draft.job-succeeded.json` 已补入 `output.environment`，A1 侧的
-   DRAFT → FULL_CHECK → INCREMENTAL_CHECK 交接链现在完整。
-3. `tools/validate.py` 增加对 `output.environment` 的形状检查。
+1. `task.schema.json` 的 `output_draft` 正式要求 `environment` 与独立的 `build`，
+   两者均为成功响应必填字段。
+2. `draft.job-succeeded.json` 的这两个对象与 `full-check.request.json` 对应对象全等，
+   形成 DRAFT → FULL_CHECK 的直接交接链。
+3. `tools/validate.py` 与专项测试会拒绝缺字段、浮动 `latest`、相对工作目录、
+   命令语义重叠和跨字段不一致。
 
-## 四、一处需要 B2 与 A2 一起定的分歧：`configuration_id` 取值
+## 四、`configuration_id` 取值已按 A2–B2 v0.1 收敛
 
 | 出处 | 值 |
 | --- | --- |
-| A1 全部样例 | `cc-MODE0` |
-| B2 的 `draft-*.json` | `draft-gcc13-release-9f8e7d6c` |
+| canonical DRAFT 输出 | `cc-gcc13-release-6f12a4c8` |
+| canonical FULL_CHECK 输入 | `cc-gcc13-release-6f12a4c8` |
 
-A1 用 `cc-MODE0` 是因为第 22 页的原文样例就是这个值：
+该值采用 `cc-<build-profile>-<normalized-config-hash>` 形式，只描述标准化构建配置，
+不包含 commit、Job ID 或随机 UUID。相同配置可跨 Job、轮次和 commit 稳定复用；
+基础镜像、工具链、依赖集或构建参数变化时才生成新值。
 
-```json
-"baseline": { "configuration_id": "cc-MODE0" }
-```
+## 五、B2 已完成的三件事
 
-B2 的取值更具描述性（编码了编译器、构建类型与 commit），从工程角度更好。
-但**这个值必须全组统一**：`FULL_CHECK` 的 `input.environment.configuration_id`
-要逐字等于 DRAFT 输出的那个值，`INCREMENTAL_CHECK` 的基线匹配也靠它
-（第 21、22 页，以及 B1 在 `endpoints.md` 末尾补的一致性规则）。
-两边各用一个值，交接就对不上。
-
-A1 的建议：**采用 B2 的描述性格式，但由 DRAFT 单一产出、下游逐字引用**，
-即 A1 样例里的 `cc-MODE0` 改为 B2 风格的值。这需要 B2 确认格式、A2 确认消费方式，
-已记入 `../../BACKLOG.md`。在三人达成一致前，A1 样例暂留 `cc-MODE0`
-以保持与第 22 页原文可对照。
-
-## 五、请 B2 做的三件事
-
-A1 **没有**删除或改名 B2 的任何文件——`draft-request.json` 等三个文件被
-B2 自己的 `ADR-007-draft-buildchecker-contract.md`（第 23、35、69 行）和
-`CONTRIBUTIONS.md`（第 102–104 行）引用，擅自改名会连带弄坏 B2 的文档。
-这属于 B2 的所有权范围，应由 B2 执行：
+A1 没有擅自删除或改名 B2 文件；以下操作已由 B2 在自己的分支完成：
 
 1. **`draft-failed-response.json` → `draft.job-failed.json`**
-   这个文件内容不重复（A1 没有 DRAFT 的失败样例，只有 `job.failed.json`
-   用的是 `FULL_CHECK`），**应当保留**，只需改名以符合规范。
+   保留独有的失败样例并按规范改名。
 2. **`draft-request.json` 与 `draft-response.json`：与 A1 版本二选一后删除另一份。**
-   A1 建议保留 A1 的 `draft.request.json` / `draft.job-succeeded.json`
-   作为规范版本（它们被 `tests/` 与 `endpoints.md` 引用），
-   并把 B2 版本中更好的内容——即 `output.environment`——合并进来。
-   **这一步 A1 已经做完了**（见第三节），所以 B2 只需删除自己那两个文件，
-   不会丢失任何信息。若 B2 认为还有别的内容值得保留，请提 PR 合并进规范版本。
+   保留点号命名的规范文件，并把 B2 的环境、构建、轮次与制品信息合并进去。
 3. **同步更新 `ADR-007` 与 `CONTRIBUTIONS.md` 里的文件名引用。**
 
-若 B2 更希望由 A1 代为改名，请在 Issue 里说明，A1 会连同 `ADR-007`
-的三处引用一起改，并在 `CONTRIBUTIONS.md` 注明改动归属，不冒认 B2 的工作。
+上述修改通过 B2 的 Issue + PR 请求 A2 复核，不直接推送 `main`。
 
 ## 六、新增样例时的检查清单
 

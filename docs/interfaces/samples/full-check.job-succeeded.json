@@ -20,13 +20,13 @@
       "branch": "main"
     },
     "environment": {
-      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "configuration_id": "cc-MODE0"
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     },
     "build": {
       "command": "make all",
-      "clean_command": "make clean && make all",
-      "project_root": ".",
+      "clean_command": "make clean",
+      "project_root": "/workspace/project",
       "verify_command": "make test"
     }
   },
@@ -78,7 +78,7 @@
         "evidence": [
           {
             "kind": "DECLARATION",
-            "detail": "Makefile 第 27 行声明 util.o: legacy.h，但在 configuration cc-MODE0 的完整构建中未观察到对 legacy.h 的任何访问",
+            "detail": "Makefile 第 27 行声明 util.o: legacy.h，但在 configuration cc-gcc13-release-6f12a4c8 的完整构建中未观察到对 legacy.h 的任何访问",
             "artifact_uri": "artifact://pair09/job-full09/declared-graph.json"
           }
         ],
@@ -93,7 +93,7 @@
         "media_type": "application/json",
         "producer_job_id": "job-full09",
         "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "configuration_id": "cc-MODE0",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
         "sha256": "2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b",
         "size_bytes": 45210
       },
@@ -104,7 +104,7 @@
         "media_type": "application/json",
         "producer_job_id": "job-full09",
         "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "configuration_id": "cc-MODE0",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
         "sha256": "3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c",
         "size_bytes": 31884
       },
@@ -115,7 +115,7 @@
         "media_type": "application/json",
         "producer_job_id": "job-full09",
         "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "configuration_id": "cc-MODE0",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
         "sha256": "4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d",
         "size_bytes": 6712
       }

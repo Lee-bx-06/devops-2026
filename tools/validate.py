@@ -41,6 +41,8 @@ class Schema:
         self.job_id_re = re.compile(d["job_id"]["pattern"])
         self.trace_id_re = re.compile(d["trace_id"]["pattern"])
         self.artifact_uri_re = re.compile(d["artifact_uri"]["pattern"])
+        self.image_uri_re = re.compile(d["image_uri"]["pattern"])
+        self.project_root_re = re.compile(d["project_root"]["pattern"])
         self.commit_re = re.compile(d["commit_sha"]["pattern"])
         self.sha256_re = re.compile(d["sha256"]["pattern"])
         self.iso_re = re.compile(d["iso8601"]["pattern"])
@@ -235,10 +237,13 @@ class Validator:
         if not isinstance(value, dict):
             errors.append(f"{label} 必须是对象")
             return
-        self.check_str(value.get("image_uri"), f"{label}.image_uri", errors)
+        self.check_pattern(value.get("image_uri"), f"{label}.image_uri", errors,
+                           self.s.image_uri_re, "OCI/Docker image reference")
+        if _s(value.get("image_uri")) and value["image_uri"].endswith(":latest"):
+            errors.append(f"{label}.image_uri 禁止使用浮动标签 latest")
         self.check_str(value.get("configuration_id"), f"{label}.configuration_id", errors)
 
-    def check_build(self, value, label, errors, extra_required=()):
+    def check_build(self, value, label, errors, extra_required=(), strict_handoff=False):
         if not isinstance(value, dict):
             errors.append(f"{label} 必须是对象")
             return
@@ -247,6 +252,18 @@ class Validator:
         if missing:
             errors.append(f"{label} 缺少必填字段: {', '.join(sorted(missing))}")
         self.check_str(value.get("command"), f"{label}.command", errors)
+        for field in ("clean_command", "verify_command"):
+            if field in value:
+                self.check_str(value.get(field), f"{label}.{field}", errors)
+        if "project_root" in value and strict_handoff:
+            self.check_pattern(value.get("project_root"), f"{label}.project_root", errors,
+                               self.s.project_root_re, "绝对 POSIX 路径")
+        elif "project_root" in value:
+            self.check_str(value.get("project_root"), f"{label}.project_root", errors)
+        clean = value.get("clean_command")
+        if strict_handoff and _s(clean) and any(token in clean for token in ("&&", "||", ";")):
+            errors.append(
+                f"{label}.clean_command 只能负责清理，不得与构建命令串联")
 
     def check_input(self, job_type, value, label, errors):
         """第 20-23 页：服务专有输入。缺失必填项即违反契约，应在创建时被拒。"""
@@ -264,8 +281,9 @@ class Validator:
         if "environment" in value:
             self.check_environment(value["environment"], f"{label}.environment", errors)
         if "build" in value:
-            extra = ("clean_command", "project_root") if job_type == "FULL_CHECK" else ()
-            self.check_build(value["build"], f"{label}.build", errors, extra)
+            extra = ("clean_command", "verify_command", "project_root") if job_type == "FULL_CHECK" else ()
+            self.check_build(value["build"], f"{label}.build", errors, extra,
+                             strict_handoff=(job_type == "FULL_CHECK"))
 
         if job_type == "DRAFT" and "limits" in value:
             limits = value["limits"]
@@ -306,7 +324,7 @@ class Validator:
 
     # ---------- output ----------
 
-    def check_output(self, job_type, value, status, label, errors):
+    def check_output(self, job_type, value, status, label, errors, job=None):
         if not isinstance(value, dict):
             errors.append(f"{label} 必须是对象")
             return
@@ -323,15 +341,103 @@ class Validator:
         for req in self.s.output_required.get(job_type, set()):
             if req not in value:
                 errors.append(f"{label} 缺少 {job_type} 的输出必填字段: {req}")
-        if job_type == "DRAFT" and "environment" in value:
-            # 下游 FULL_CHECK / INCREMENTAL_CHECK / REPAIR 的 input.environment 要消费这里
-            env = value["environment"]
-            if not isinstance(env, dict):
-                errors.append(f"{label}.environment 必须是对象")
+        if job_type == "DRAFT":
+            environment = value.get("environment")
+            build = value.get("build")
+            self.check_environment(environment, f"{label}.environment", errors)
+            self.check_build(
+                build, f"{label}.build", errors,
+                ("clean_command", "verify_command", "project_root"),
+                strict_handoff=True)
+
+            result = value.get("build_result")
+            if not isinstance(result, dict):
+                errors.append(f"{label}.build_result 必须是对象")
             else:
-                self.check_str(env.get("image_uri"), f"{label}.environment.image_uri", errors)
-                self.check_str(env.get("configuration_id"),
-                               f"{label}.environment.configuration_id", errors)
+                for field in ("build_succeeded", "verify_succeeded"):
+                    if result.get(field) is not True:
+                        errors.append(f"{label}.build_result.{field} 在 SUCCEEDED 时必须为 true")
+                if not _is_int(result.get("iterations")) or result.get("iterations", -1) < 0:
+                    errors.append(f"{label}.build_result.iterations 必须是 >=0 的整数")
+                self.check_str(result.get("success_criteria"),
+                               f"{label}.build_result.success_criteria", errors)
+                if "image_ref" in result and isinstance(environment, dict):
+                    if result.get("image_ref") != environment.get("image_uri"):
+                        errors.append(
+                            f"{label}.build_result.image_ref 必须等于 environment.image_uri")
+
+            rounds = value.get("rounds")
+            if not isinstance(rounds, list):
+                errors.append(f"{label}.rounds 必须是数组")
+                rounds = []
+            else:
+                for index, round_item in enumerate(rounds):
+                    if not isinstance(round_item, dict):
+                        errors.append(f"{label}.rounds[{index}] 必须是对象")
+                        continue
+                    for field in ("index", "change", "rationale", "log_uri"):
+                        if field not in round_item:
+                            errors.append(f"{label}.rounds[{index}] 缺少必填字段: {field}")
+                    if round_item.get("index") != index + 1:
+                        errors.append(f"{label}.rounds[{index}].index 必须按 1 起连续编号")
+                    for field in ("change", "rationale"):
+                        self.check_str(round_item.get(field),
+                                       f"{label}.rounds[{index}].{field}", errors)
+                    self.check_pattern(round_item.get("log_uri"),
+                                       f"{label}.rounds[{index}].log_uri", errors,
+                                       self.s.artifact_uri_re, "artifact_uri")
+                if isinstance(result, dict) and _is_int(result.get("iterations")):
+                    if result["iterations"] != len(rounds):
+                        errors.append(
+                            f"{label}.build_result.iterations 表示环境修改轮数，"
+                            f"必须等于 rounds 长度 {len(rounds)}")
+
+            artifacts = value.get("artifacts")
+            if not isinstance(artifacts, list) or not artifacts:
+                errors.append(f"{label}.artifacts 必须是非空数组")
+                artifacts = []
+            artifact_by_uri = {
+                item.get("uri"): item for item in artifacts if isinstance(item, dict)
+            }
+            if not any(item.get("type") == "DOCKERFILE" for item in artifacts
+                       if isinstance(item, dict)):
+                errors.append(f"{label}.artifacts 必须包含 type=DOCKERFILE 的产物")
+            for index, round_item in enumerate(rounds):
+                if not isinstance(round_item, dict):
+                    continue
+                artifact = artifact_by_uri.get(round_item.get("log_uri"))
+                if artifact is None:
+                    errors.append(
+                        f"{label}.rounds[{index}].log_uri 在 artifacts 中没有对应记录")
+                elif artifact.get("type") != "BUILD_LOG":
+                    errors.append(
+                        f"{label}.rounds[{index}].log_uri 对应 artifact.type 必须是 BUILD_LOG")
+
+            if isinstance(job, dict):
+                job_input = job.get("input") if isinstance(job.get("input"), dict) else {}
+                repository = job_input.get("repository") if isinstance(job_input.get("repository"), dict) else {}
+                commit = repository.get("commit")
+                configuration_id = environment.get("configuration_id") if isinstance(environment, dict) else None
+                if _s(configuration_id):
+                    job_id = job.get("job_id")
+                    if ((_s(commit) and (commit in configuration_id or commit[:8] in configuration_id))
+                            or (_s(job_id) and job_id in configuration_id)):
+                        errors.append(
+                            f"{label}.environment.configuration_id 不得绑定 commit 或 Job ID")
+                    if re.fullmatch(
+                            r"[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+                            configuration_id, re.IGNORECASE):
+                        errors.append(
+                            f"{label}.environment.configuration_id 不得使用随机 UUID")
+                for index, artifact in enumerate(artifacts):
+                    if not isinstance(artifact, dict):
+                        continue
+                    if artifact.get("configuration_id") != configuration_id:
+                        errors.append(
+                            f"{label}.artifacts[{index}].configuration_id 必须与 environment 一致")
+                    if artifact.get("commit") != commit:
+                        errors.append(
+                            f"{label}.artifacts[{index}].commit 必须与 input.repository.commit 一致")
         if job_type == "INCREMENTAL_CHECK":
             for key in ("introduced", "resolved"):
                 items = value.get(key)
@@ -478,7 +584,7 @@ class Validator:
             if job_type in self.s.job_types:
                 self.check_input(job_type, data.get("input"), f"{name}.input", errors)
                 self.check_output(job_type, data.get("output"), data.get("status"),
-                                  f"{name}.output", errors)
+                                  f"{name}.output", errors, data)
             self.check_status_matrix(data, name, errors)
 
         else:  # artifact_record

@@ -92,13 +92,31 @@
       }
     },
 
+    "image_uri": {
+      "description": "OCI/Docker 镜像引用。禁止 latest 等浮动标签；可用不可变 tag，有 digest 时优先使用 digest。",
+      "type": "string",
+      "pattern": "^[a-z0-9.-]+(?::[0-9]+)?/[a-z0-9._/-]+(?::[A-Za-z0-9_][A-Za-z0-9._-]{0,127}|@sha256:[0-9a-f]{64})$"
+    },
+
+    "configuration_id": {
+      "description": "DRAFT 生成的 opaque 非空标识；只随基础镜像、工具链、依赖集或构建参数变化，不得绑定 commit、Job ID 或随机 UUID。",
+      "type": "string",
+      "minLength": 1
+    },
+
+    "project_root": {
+      "description": "容器内执行 clean/build/verify 命令的仓库根目录；必须是绝对 POSIX 路径。",
+      "type": "string",
+      "pattern": "^/(?:[A-Za-z0-9._-]+/?)+$"
+    },
+
     "environment": {
-      "description": "第 21 页：可运行镜像与 configuration_id。configuration_id 必须与 DRAFT 产出对得上 (第 21、22 页)。",
+      "description": "第 21 页：可拉取、可运行的镜像与 DRAFT 生成的 configuration_id。DRAFT 输出与 FULL_CHECK 输入必须原样一致。",
       "type": "object",
       "required": ["image_uri", "configuration_id"],
       "properties": {
-        "image_uri": {"type": "string", "minLength": 1},
-        "configuration_id": {"type": "string", "minLength": 1}
+        "image_uri": {"$ref": "#/$defs/image_uri"},
+        "configuration_id": {"$ref": "#/$defs/configuration_id"}
       }
     },
 
@@ -236,7 +254,8 @@
         "environment": {"$ref": "#/$defs/environment"},
         "build": {
           "allOf": [{"$ref": "#/$defs/build_spec"}],
-          "required": ["command", "clean_command", "project_root"]
+          "required": ["command", "clean_command", "verify_command", "project_root"],
+          "properties": {"project_root": {"$ref": "#/$defs/project_root"}}
         }
       }
     },
@@ -256,7 +275,7 @@
           "properties": {
             "actual_graph_uri": {"$ref": "#/$defs/artifact_uri"},
             "commit": {"$ref": "#/$defs/commit_sha"},
-            "configuration_id": {"type": "string", "minLength": 1}
+            "configuration_id": {"$ref": "#/$defs/configuration_id"}
           }
         }
       }
@@ -286,23 +305,27 @@
     },
 
     "output_draft": {
-      "description": "第 20 页 DRAFT 输出：Dockerfile 与镜像引用、每轮日志/修改/选择理由、最终构建和验证结果。成功判据必须明确。",
+      "description": "第 20、21 页及 A2/B2 约定：DRAFT 成功输出可直接映射为 FULL_CHECK.input，并包含 Dockerfile、每轮日志/修改/选择理由与明确成功判据。",
       "allOf": [{"$ref": "#/$defs/output_common"}],
       "type": "object",
-      "required": ["build_result"],
+      "required": ["environment", "build", "build_result", "rounds", "artifacts"],
       "properties": {
+        "environment": {"$ref": "#/$defs/environment"},
+        "build": {
+          "allOf": [{"$ref": "#/$defs/build_spec"}],
+          "required": ["command", "clean_command", "verify_command", "project_root"],
+          "properties": {"project_root": {"$ref": "#/$defs/project_root"}}
+        },
         "build_result": {
           "type": "object",
-          "required": ["build_succeeded", "verify_succeeded", "iterations"],
+          "required": ["build_succeeded", "verify_succeeded", "iterations", "success_criteria"],
           "properties": {
             "build_succeeded": {"type": "boolean"},
             "verify_succeeded": {"type": "boolean"},
-            "iterations": {"type": "integer", "minimum": 0},
-            "image_ref": {"$ref": "#/$defs/nullable_string"},
+            "iterations": {"type": "integer", "minimum": 0, "description": "环境配置发生修改的轮数，与 rounds 长度一致。"},
             "success_criteria": {"type": "string", "minLength": 1}
           }
         },
-        "environment": {"$ref": "#/$defs/produced_environment"},
         "rounds": {
           "type": "array",
           "items": {
@@ -315,7 +338,8 @@
               "log_uri": {"$ref": "#/$defs/artifact_uri"}
             }
           }
-        }
+        },
+        "artifacts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/artifact"}}
       }
     },
 

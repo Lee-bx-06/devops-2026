@@ -505,3 +505,23 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
 下一轮复核应优先检查「文档里的每条规则是否都有对应的机器约束」，
 而不是只看测试是否通过。
 
+### 条目 18：AI 建议把 A2–B2 交接写成说明，人工要求落成可执行契约
+
+- **工具/模型**：OpenAI Codex（本次会话）
+- **任务**：依据 `A2_B2_约定清单.md` 固化 DRAFT 到 FULL_CHECK 的环境交接
+- **AI 建议**：先在 ADR 和样例中描述 `image_uri`、`configuration_id` 与构建命令，
+  由 A2 联调时再决定是否升级 schema 和校验器
+- **人工判断：修改。** 仅有文字约定无法阻止字段遗漏、`:latest` 镜像、相对工作目录、
+  轮次日志缺失或 DRAFT/FULL_CHECK 两侧取值漂移，也不能满足清单要求的自动验收
+- **落实**：把 `output.environment`、`output.build` 写进正式 schema；要求镜像使用 OCI 引用
+  且禁用 `:latest`，构建/清理/验证命令分离，`project_root` 使用绝对 POSIX 路径；
+  校验器增加 DRAFT→FULL_CHECK 逐字段一致性、稳定配置 ID、轮次与制品关联检查。
+  同时删除重复命名的旧 DRAFT 样例，仅保留一条规范成功链，并补齐失败、超时和
+  达到最大迭代次数三条路径
+- **真实制品处理**：为 DRAFT 样例提交 Dockerfile 与三份日志，样例中的
+  `sha256` 和 `size_bytes` 由这些文件实际计算，不再使用说明性占位值
+- **关联文件**：`docs/interfaces/task.schema.json`、`docs/interfaces/samples/draft.*.json`、
+  `docs/interfaces/samples/full-check.*.json`、`docs/interfaces/artifacts/job-draft09/`、
+  `tools/validate.py`、`tests/test_validate.py`、`docs/adr/ADR-007-draft-buildchecker-contract.md`
+- **验证**：`make check`，其中新增 `TestA2B2DraftHandoff` 覆盖规范样例唯一性、
+  直接映射、缺字段拒绝、路径与镜像语义、真实哈希、跨字段漂移和失败路径

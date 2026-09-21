@@ -28,6 +28,21 @@
 同时更正 `BACKLOG.md` 第四节关于 `origin/e2b2`「不可直接合并、三个样例通不过校验」
 的判断：实测 `e2b2` 已完全并入 main，提交 `38f6694` 在仓库内不存在，
 三个样例单独校验全部通过。原文保留在 `git show 8eb7b4c`，更正附证据表。
+### B2：落实 A2–B2 环境交接约定
+
+- 将 DRAFT 成功输出的 `environment`、`build`、`build_result`、`rounds` 与
+  `artifacts` 纳入正式 schema；FULL_CHECK 输入同步要求清理、构建、验证三条命令
+  和绝对 POSIX `project_root`
+- 规范镜像为 OCI/Docker 引用并拒绝 `:latest`；`configuration_id` 定义为稳定、
+  不绑定提交、任务或 UUID 的不透明标识
+- DRAFT 成功输出可逐字段直接映射到 FULL_CHECK 输入；校验器会拒绝两侧漂移、
+  非连续迭代轮次、日志与制品不对应以及错误的提交/配置归属
+- 删除三份重复命名的旧 DRAFT 样例，保留唯一规范请求/成功链，新增构建失败样例，
+  并明确任务超时和达到最大迭代次数的终态
+- 新增一组 Dockerfile/轮次日志/最终验证日志测试制品，样例记录其真实 SHA-256
+  与字节数；新增 7 项 A2–B2 专项单元测试
+- 本变更只涉及 B2 所属的 DRAFT 契约及其与 A2 的明确交接边界，提交到 `e2b2`
+  并通过 PR 请求合入，不直接推送 `main`
 
 ### 待处理
 

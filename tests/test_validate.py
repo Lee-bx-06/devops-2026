@@ -4,6 +4,8 @@
 但这里也给它一条可执行的断言：把 MD 写进 output.findings 合法，
 把同一条 MD 写进 job.error 非法。
 """
+import copy
+import hashlib
 import importlib.util
 import json
 import pathlib
@@ -12,6 +14,7 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SAMPLES = ROOT / "docs" / "interfaces" / "samples"
+ARTIFACTS = ROOT / "docs" / "interfaces" / "artifacts"
 
 _spec = importlib.util.spec_from_file_location("validate", ROOT / "tools" / "validate.py")
 validate = importlib.util.module_from_spec(_spec)
@@ -349,6 +352,140 @@ class TestArtifactContract(unittest.TestCase):
         self.assertEqual(doc["input"]["md_report"]["type"], "ERROR_REPORT")
         doc["input"]["md_report"]["type"] = "ACTUAL_GRAPH"
         self.assertTrue(any("只消费 MD" in e for e in errors_of(doc)))
+
+
+class TestA2B2DraftHandoff(unittest.TestCase):
+    """A2/B2 约定：DRAFT 成功输出可不转换地交给 FULL_CHECK。"""
+
+    def setUp(self):
+        self.request = load("draft.request.json")
+        self.succeeded = load("draft.job-succeeded.json")
+        self.full_check = load("full-check.request.json")
+
+    def test_only_one_canonical_draft_request_and_success_exist(self):
+        draft_requests = []
+        draft_successes = []
+        for path in sorted(SAMPLES.glob("*.json")):
+            doc = json.loads(path.read_text(encoding="utf-8"))
+            if doc.get("job_type") != "DRAFT":
+                continue
+            if doc.get("kind") == "create_request":
+                draft_requests.append(path.name)
+            if doc.get("kind") == "job" and doc.get("status") == "SUCCEEDED":
+                draft_successes.append(path.name)
+        self.assertEqual(draft_requests, ["draft.request.json"])
+        self.assertEqual(draft_successes, ["draft.job-succeeded.json"])
+
+    def test_draft_output_maps_directly_to_full_check_input(self):
+        output = self.succeeded["output"]
+        full_input = self.full_check["input"]
+        self.assertEqual(output["environment"], full_input["environment"])
+        self.assertEqual(output["build"], full_input["build"])
+        self.assertEqual(
+            self.request["input"]["repository"], full_input["repository"])
+        self.assertEqual(
+            self.succeeded["input"]["repository"]["commit"],
+            full_input["repository"]["commit"])
+        self.assertEqual(self.succeeded["trace_id"], self.request["trace_id"])
+
+    def test_draft_handoff_required_fields_are_enforced(self):
+        mutations = (
+            (("environment",), "environment"),
+            (("environment", "configuration_id"), "configuration_id"),
+            (("build", "command"), "command"),
+            (("build", "clean_command"), "clean_command"),
+            (("build", "verify_command"), "verify_command"),
+            (("build", "project_root"), "project_root"),
+        )
+        for path, expected in mutations:
+            with self.subTest(field=".".join(path)):
+                doc = copy.deepcopy(self.succeeded)
+                target = doc["output"]
+                for key in path[:-1]:
+                    target = target[key]
+                del target[path[-1]]
+                found = errors_of(doc, "draft-mutated.json")
+                self.assertTrue(any(expected in item for item in found), found)
+
+    def test_image_configuration_and_build_semantics(self):
+        output = self.succeeded["output"]
+        image_uri = output["environment"]["image_uri"]
+        configuration_id = output["environment"]["configuration_id"]
+        commit = self.succeeded["input"]["repository"]["commit"]
+        self.assertRegex(image_uri, r"@sha256:[0-9a-f]{64}$")
+        self.assertNotIn(":latest", image_uri)
+        self.assertNotIn(commit, configuration_id)
+        self.assertNotIn(commit[:8], configuration_id)
+        self.assertNotIn(self.succeeded["job_id"], configuration_id)
+        self.assertIsNone(re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            configuration_id, re.IGNORECASE))
+        self.assertEqual(output["build"]["clean_command"], "make clean")
+        self.assertEqual(output["build"]["command"], "make all")
+        self.assertEqual(output["build"]["verify_command"], "make test")
+        self.assertTrue(output["build"]["project_root"].startswith("/"))
+        self.assertEqual(output["build_result"]["iterations"], len(output["rounds"]))
+
+    def test_artifacts_match_environment_rounds_and_fixture_hashes(self):
+        output = self.succeeded["output"]
+        commit = self.succeeded["input"]["repository"]["commit"]
+        configuration_id = output["environment"]["configuration_id"]
+        artifacts = {item["uri"]: item for item in output["artifacts"]}
+        self.assertIn("DOCKERFILE", {item["type"] for item in output["artifacts"]})
+        for round_item in output["rounds"]:
+            artifact = artifacts[round_item["log_uri"]]
+            self.assertEqual(artifact["type"], "BUILD_LOG")
+        for artifact in output["artifacts"]:
+            self.assertEqual(artifact["commit"], commit)
+            self.assertEqual(artifact["configuration_id"], configuration_id)
+            name = artifact["uri"].rsplit("/", 1)[-1]
+            fixture = ARTIFACTS / "job-draft09" / name
+            self.assertTrue(fixture.is_file(), fixture)
+            self.assertEqual(fixture.stat().st_size, artifact["size_bytes"])
+            self.assertEqual(
+                hashlib.sha256(fixture.read_bytes()).hexdigest(), artifact["sha256"])
+
+    def test_validator_rejects_cross_field_mismatches(self):
+        cases = []
+
+        wrong_config = copy.deepcopy(self.succeeded)
+        wrong_config["output"]["artifacts"][0]["configuration_id"] = "cc-other-deadbeef"
+        cases.append((wrong_config, "configuration_id 必须与 environment 一致"))
+
+        missing_log = copy.deepcopy(self.succeeded)
+        missing_log["output"]["rounds"][0]["log_uri"] = (
+            "artifact://pair09/job-draft09/missing.log")
+        cases.append((missing_log, "没有对应记录"))
+
+        floating_image = copy.deepcopy(self.succeeded)
+        floating_image["output"]["environment"]["image_uri"] = (
+            "registry.pair09.local/demo-make-project:latest")
+        cases.append((floating_image, "禁止使用浮动标签"))
+
+        overlapping_clean = copy.deepcopy(self.succeeded)
+        overlapping_clean["output"]["build"]["clean_command"] = "make clean && make all"
+        cases.append((overlapping_clean, "不得与构建命令串联"))
+
+        relative_root = copy.deepcopy(self.succeeded)
+        relative_root["output"]["build"]["project_root"] = "."
+        cases.append((relative_root, "绝对 POSIX 路径"))
+
+        for doc, expected in cases:
+            with self.subTest(expected=expected):
+                found = errors_of(doc, "draft-mutated.json")
+                self.assertTrue(any(expected in item for item in found), found)
+
+    def test_failed_timed_out_and_iteration_exhausted_paths(self):
+        failed = load("draft.job-failed.json")
+        timed_out = load("job.timed-out.json")
+        self.assertEqual((failed["status"], failed["error"]["code"], failed["output"]),
+                         ("FAILED", "ENV_3002", {}))
+        self.assertIn("max_iterations", failed["error"]["message"])
+        self.assertEqual(
+            (timed_out["status"], timed_out["error"]["code"], timed_out["output"]),
+            ("TIMED_OUT", "EXEC_4002", {}))
+        self.assertEqual(errors_of(failed, "draft.job-failed.json"), [])
+        self.assertEqual(errors_of(timed_out, "job.timed-out.json"), [])
 
 
 class TestSchemaAndValidatorAgree(unittest.TestCase):

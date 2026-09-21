@@ -93,7 +93,7 @@ docs/VALIDATION.md          A1   校验了什么、**没**校验什么
 docs/versioning.md          B1   版本规则、变更流程、消费者清单
 docs/CHANGELOG.md           B1   契约变更记录与待处理表
 tools/validate.py           A1 ★ 零依赖校验器
-tests/test_validate.py      A1   41 项单元测试
+tests/test_validate.py      A1/B2   48 项单元测试
 ```
 
 ★ = A1 核心交付物。

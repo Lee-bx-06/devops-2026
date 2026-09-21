@@ -105,10 +105,23 @@ python3 tools/validate.py ../B09/their-response.json
 
 | `job_type` | `SUCCEEDED` 时必填 |
 | --- | --- |
-| `DRAFT` | `build_result`（`build_succeeded` / `verify_succeeded` / `iterations`） |
+| `DRAFT` | `environment`、`build`（clean/build/verify/绝对 project_root）、`build_result`、`rounds`、`artifacts` |
 | `FULL_CHECK` | `counts`（`missing` / `redundant`） |
 | `INCREMENTAL_CHECK` | `introduced`、`resolved`、`updated_graph` |
 | `REPAIR` | `verification`（恰含 `build` / `test` / `recheck`）、`declaration_style` |
+
+### A2/B2 环境交接专项校验
+
+`tests/test_validate.py::TestA2B2DraftHandoff` 覆盖：
+
+- 仓库只有一份 canonical DRAFT 请求和成功响应；
+- `DRAFT.output.environment/build` 与 `FULL_CHECK.input.environment/build` 全等；
+- 缺 `environment`、`configuration_id`、任一命令或 `project_root` 时被拒绝；
+- 禁止 `latest`、相对 `project_root` 和串联构建的 `clean_command`；
+- `configuration_id` 不包含 commit、Job ID 或随机 UUID；
+- 每轮 `log_uri` 都有 `BUILD_LOG` artifact，所有 artifact 的 commit/configuration 一致；
+- 对仓库内 DRAFT artifact fixture 重算文件大小和 SHA-256；
+- `FAILED + ENV_3002`、`TIMED_OUT + EXEC_4002` 与迭代耗尽路径。
 
 ### finding（第 10 页）
 
@@ -153,15 +166,13 @@ python3 tools/validate.py ../B09/their-response.json
   已覆盖的是它在每个状态上留下的计时痕迹（见第三节迁移表）。
 - `output.artifacts[]` 与 `ERROR_REPORT` 内联 findings 的一致性。
 - `trace_id` 在跨服务调用链上的实际串联。
-- `sha256` 与产物本体是否真的匹配（需下载后计算）。
-- DRAFT 输出的 `configuration_id` 与下游 `FULL_CHECK` / `INCREMENTAL_CHECK`
-  输入里引用的值是否逐字一致（跨文档一致性，当前两组取值不同，见 BACKLOG）。
+- DRAFT canonical 样例的 `sha256` 已对仓库内 fixture 重算校验；其他服务的
+  说明性 artifact 仍需在真实下载后计算。
 
 ## 五、样例清单
 
-正例 19 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
-六种 `status` 各至少一个、一个独立 `artifact_record`，以及 B2 补的三个 DRAFT 样例。
-命名规范与 DRAFT 两套样例并存的处理方案见 `interfaces/samples/README.md`。
+正例 17 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
+六种 `status` 各至少一个、一个独立 `artifact_record`。
 
 负例 19 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，
@@ -171,7 +182,7 @@ python3 tools/validate.py ../B09/their-response.json
 下划线开头的键（`_note`、`expected_error`）是给人看的注解，校验前会被剥离，
 不属于线上载荷。
 
-> 所有 URI、SHA、commit、镜像名、时间戳均为**说明性值**，不对应真实仓库或真实
-> 检测结果。它们的作用是让 A09 与 B09 能用同一份具体例子确认彼此理解一致
-> （第 11 页：「用自己的例子证明双方理解一致」）。
+> 除 canonical DRAFT 成功样例的仓库内 fixture 外，URI、SHA、commit、镜像名、
+> 时间戳均为**说明性值**。DRAFT fixture 的 `sha256` 与 `size_bytes` 是文件真实值；
+> 镜像 URI 仍是契约示例，不表示已推送或部署。
 

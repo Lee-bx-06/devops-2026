@@ -44,7 +44,7 @@
 | 18 | 🟡 | URI 用完整 `job_id` 而非第 24 页简写 `full01` | **教师**（B1 已认同） | 有意偏离课件样例，需认可 |
 | 19 | ⬜ | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 | A2 的依赖图与报告字段 |
 | 20 | ⬜ | `INCREMENTAL_CHECK` 的 baseline 匹配规则与新增/消除 finding 语义 | A3 | A3 的 C0/C1 可追溯验收 |
-| 21 | 🟡 | `DRAFT` 的成功判据与每轮日志字段 | B2 已提案，待 A2 确认 | `draft-*.json` 与 ADR-007 对齐环境、成功判据和 `configuration_id`；`make check` 为硬门槛 |
+| 21 | 🟡 | `DRAFT` 的成功判据与每轮日志字段 | B2 已按 A2/B2 v0.1 清单落实，待 A2 在 PR 确认 | `output.environment/build` 已进入 schema，canonical 链路与 artifact 一致性由专项测试覆盖 |
 | 22 | ⬜ | `REPAIR` 的 patch 与拒绝原因字段 | B3 | B3 的「能解释 MD≠执行失败」验收 |
 
 第 14 至 17 项由 B1 于 2026-09-21 完成复核，结论与理由见
@@ -59,7 +59,7 @@
 | 部署任何 API | ⬜ 不做 | 第 7 页明确「E2 先定义，不要求部署 API」 | E3/E12 再评估 |
 | 让 B 组真的下载一次 artifact | ⬜ 未做 | 需要产物存储与 `GET /v1/artifacts/{id}` 实现，E2 不部署 | 第 24 页把它列为 E12 要求；本轮先冻结契约（ADR-003） |
 | 用 `jsonschema` 库替代手写校验器 | ⬜ 未做 | 本机实测未安装；第 2 页课堂仅 150 分钟且与 E3 共享，无法现场装包 | 若课前确认环境具备，按 ADR-006 的备选方案替换 |
-| 校验 `sha256` 与产物本体是否真的相符 | ⬜ 未做 | 样例中的哈希是说明性值，无对应真实文件 | 联调时对真实产物计算并比对 |
+| 校验 `sha256` 与产物本体是否真的相符 | 🟡 DRAFT 已做 | canonical DRAFT 已提供四个仓库内 fixture 并重算哈希；其他服务仍是说明性值 | E12 联调时对真实下载产物再次计算 |
 | 校验 `base_commit == baseline.commit` 与 `baseline.configuration_id == environment.configuration_id` | ⬜ **故意不做** | 第 5 页把这两项列为「接收方检查」，属运行期职责；ADR-005 的判据表述有误，已由 ADR-010 第四节修正 | 由 EChecker 在运行期落为 `FAILED` + `ENV_3003`；`tests/…TestBaselineConsistencyIsRuntimeNotContract` 钉住此边界 |
 | 与 B09 的三轮课堂交换 | ⬜ 未做 | 需课堂现场进行（第 16 页） | 每轮结束把结论写进 ADR、未决项写进本文件 |
 | Issue + PR 关联 | ✅ 已完成 | 走 fork 流程（A1 对上游无推送权限） | Issue #1 列出 11 项待确认；PR #2 承载全部 A1 交付物 |
@@ -72,6 +72,7 @@
 | `job.error.code` 排除 `VALIDATION_2xxx` | ✅ 已完成 | B1 在 `errors.md` 定了规则，但 schema 的正则写宽了，文档禁止的事契约放行 | 已拆为 `job_error_code` / `request_error_code`，见 ADR-010 |
 | B1 迁移表内 `QUEUED→FAILED` 与硬规则 2 冲突 | 🟡 待 B1 确认 | 表允许从 QUEUED 直达 FAILED，硬规则 2 却说 RUNNING 不可跳过 | A1 建议收窄硬规则 2，见 ADR-010 第二节 |
 | `schema_version` 是否因收紧 `error.code` 而递增 | 🟡 待 B1 裁定 | A1 判断不递增（是修 schema 与已定稿规范的偏差，非改规范） | 版本号归 B1 维护，见 ADR-010 第五节 |
+| A2–B2 v0.1 交接清单 | 🟡 B2 已实现 | canonical 样例、稳定配置 ID、独立命令、真实制品校验均已落地 | 提 Issue + PR，由 A2 复核 ADR-007；不直接推 main |
 
 ### 更正：B2 分支的合并前置条件已失效（A1，2026-09-21）
 
@@ -101,6 +102,11 @@ B1 列出的八类问题在当前 main 上**一个都不存在**。
 导致 DRAFT 有两套请求/响应样例。处理方案见 `interfaces/samples/README.md`。
 
 B1 原文末尾那条关于根 `README.md` 的澄清（B2 并未修改它）仍然有效，未受影响。
+
+**B2 后续进展（2026-09-21）：**上表保留为对旧提交 `38f6694` 的历史审计。
+当前 `e2b2` 已与 main 对齐，重复 DRAFT 请求/成功响应已删除，
+`output.environment/build` 已进入正式 schema，校验器与 A2/B2 专项测试已补齐。
+仍按本清单要求通过 Issue + PR 交由 A2 接受，不直接推 main。
 
 ## 五、变更规则
 

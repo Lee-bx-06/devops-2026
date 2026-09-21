@@ -1,0 +1,8 @@
+[round 2]
+configuration change: add libssl-dev
+clean command: make clean
+build command: make all
+verify command: make test
+build exit code: 0
+verify exit code: 0
+result: succeeded
