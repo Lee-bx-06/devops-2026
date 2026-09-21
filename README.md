@@ -1,7 +1,7 @@
 # devops-2026 · E2 接口契约（A09 ↔ B09）
 
-小组 **A09** ｜ 配对组 **B09** ｜ 契约版本 **1.0.0**
-A1 负责人：**谢浩天（241250033）**
+小组 **A09** ｜ 配对组 第 9 组（pair09） ｜ 契约版本 **1.0.0**
+A1 负责人：**谢浩天（241250033）** ｜ B1 负责人：**李秉轩**
 
 本仓库交付 E2 的**接口契约与设计文件**。
 按第 7 页：**E2 只定义契约，不要求部署 API**——这里没有任何可运行的服务，
@@ -11,7 +11,20 @@ A1 负责人：**谢浩天（241250033）**
 
 1. 找到同号配对组 → A09 ↔ B09
 2. 约定微服务之间怎样传数据 → `docs/interfaces/`
-3. 留下设计文件和个人贡献 → `docs/adr/`、`docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/CONTRIBUTIONS.md`
+3. 留下设计文件和个人贡献 → `docs/adr/`、`docs/CHANGELOG.md`、`docs/versioning.md`、`docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/CONTRIBUTIONS.md`
+
+## 一之二、文档地图
+
+| 想知道什么 | 看哪里 |
+| --- | --- |
+| 字段叫什么、必填哪些 | `docs/interfaces/task.schema.json` |
+| 端点怎么调、产物怎么读 | `docs/interfaces/endpoints.md` |
+| 为什么 MD 不算失败、错误码有哪些 | `docs/interfaces/errors.md` |
+| 为什么这样定，考虑过哪些替代方案 | `docs/adr/`，索引见 `docs/adr/README.md` |
+| 什么改动安全、什么改动会破坏兼容 | `docs/versioning.md` |
+| 改过什么、谁受影响 | `docs/CHANGELOG.md` |
+| 还没做完的 | `docs/BACKLOG.md` |
+| 谁做了什么 | `docs/CONTRIBUTIONS.md` |
 
 ## 二、四个服务与归属（第 3、4 页）
 

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Lee-bx-06/devops-2026/blob/main/docs/interfaces/task.schema.json",
   "title": "E2 公共任务契约 (A09 <-> B09)",
-  "description": "小组 A09 / 配对组 B09。依据《E2 需求与接口契约》第 6、7、8、9、10、19、20、21、22、23、24 页制定。A1 拥有并冻结三个顶层信封 (create_request / job / artifact_record) 与公共字段；input / output 内部按第 20-23 页拟定，属服务负责人 (A2/A3/B2/B3) 确认范围。E2 只定义契约，不部署 API (第 7 页)。",
+  "description": "小组 A09 / 配对组 第 9 组（pair09）。依据《E2 需求与接口契约》第 6、7、8、9、10、19、20、21、22、23、24 页制定。A1 拥有并冻结三个顶层信封 (create_request / job / artifact_record) 与公共字段；input / output 内部按第 20-23 页拟定，属服务负责人 (A2/A3/B2/B3) 确认范围。E2 只定义契约，不部署 API (第 7 页)。",
   "oneOf": [
     {"$ref": "#/$defs/create_request"},
     {"$ref": "#/$defs/job"},

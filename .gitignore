@@ -4,3 +4,52 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+
+# 运行日志：体积大且可重跑，不进 Git
+*.log
+*.out
+logs/
+
+# 产物目录：依赖图、MD/RD 报告、Patch 要提交，日志与打包文件不提交
+artifacts/**/*.log
+artifacts/**/*.out
+artifacts/**/*.tar
+artifacts/**/*.tar.gz
+artifacts/**/*.zip
+*.tar
+*.tar.gz
+
+# 任务存储：E2 不部署服务，本地试跑可能留下任务库
+*.db
+*.sqlite
+*.sqlite3
+
+# 凭据与本地配置
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 编辑器与 IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# 操作系统
+Thumbs.db
+desktop.ini
+
+# Office 临时锁文件，例如 ~$E2_需求与接口契约_20260910.pptx
+~$*
+
+# 课程材料：课件 pptx 与四篇论文 PDF 属于课程材料，不要提交到本仓库
+E2_需求与接口契约_*.pptx
+_ASE_*.pdf
+_ICSE_*.pdf
+_ISSTA_*.pdf
+_TSE_*.pdf
+
+# 本地临时目录：存放分析脚本与课件抽取文本，不入库
+_tools/
