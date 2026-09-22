@@ -91,8 +91,8 @@ docs/adr/
   ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，待 A3/B3/B1 复核
   （009 预留给 B3）
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
-docs/AI_USAGE.md            A1/B1/B2/A2  第 14 页格式，真实判断记录
-docs/CONTRIBUTIONS.md       A1/B1/B2/A2  作者、提交 SHA、Issue/PR
+docs/AI_USAGE.md            A1/B1/B2/A2/A3  第 14 页格式，真实判断记录
+docs/CONTRIBUTIONS.md       A1/B1/B2/A2/A3  作者、提交 SHA、Issue/PR
 docs/VALIDATION.md          A1   校验了什么、**没**校验什么
 docs/versioning.md          B1   版本规则、变更流程、消费者清单
 docs/CHANGELOG.md           B1   契约变更记录与待处理表

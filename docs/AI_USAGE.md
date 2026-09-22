@@ -594,3 +594,28 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
 - **验证**：合并后 `python tools/validate.py` 通过、
   `python -m unittest discover -s tests` 56 项全绿；
   `docs/VALIDATION.md` 第五节的正例/负例数与实际文件数一致（21 / 24）。
+
+---
+
+## A3（朱鸣涛，241250048）的记录
+
+### 条目 21：从“只有历史图”修正为“历史图与历史报告共同构成基线”
+
+- **工具/模型**：OpenAI Codex（本次会话）
+- **任务**：依据 ISSTA 2024 EChecker 论文与冻结的 A2 产物，完成
+  `INCREMENTAL_CHECK` 接口契约。
+- **AI 初步建议**：沿用原有 `baseline.actual_graph_uri`，直接设计 C1 更新图和
+  `introduced` / `resolved` 输出。
+- **人工判断：修改后采纳。** 用户确认 `resolved` 不能只从 C0 实际图推出；要计算
+  `F0-F1`，还必须读取 C0 ERROR_REPORT。因此批准新增必填
+  `baseline.error_report_uri`，同时保持 A2 artifact schema 与样例不变。
+- **人工对流程的修正**：AI 曾给出过长的 Issue 和单独的“上游兼容策略”清单；用户
+  明确要求 Issue 简洁、默认遵循冻结的 A2 内容。最终 Issue #7 只保留目标、工作内容
+  和验收边界，详细取舍进入 ADR-008，而不是堆在 Issue 中。
+- **落实**：新增 EChecker 契约与 ADR；补齐请求、成功响应、C1 ACTUAL_GRAPH 和
+  ERROR_REPORT；校验器强制 introduced/current 的子集关系、resolved/current 的互斥
+  关系、C0/C1 commit 归属与 updated_graph 归属，专项测试再结合 C0 报告验证精确差集。
+- **验证策略**：用户批准把 JSON 样例经 `tools/validate.py` 的行为作为公开测试缝，
+  不实现或部署真实 API；新增 12 项专项测试并执行全仓测试。
+- **关联**：Issue #7；`docs/interfaces/echecker-contract.md`、`ADR-008`、
+  `tests/test_echecker_contract.py`。
