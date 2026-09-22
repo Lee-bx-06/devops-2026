@@ -67,8 +67,12 @@
 | 加 `.gitattributes` 统一行尾 | ⬜ 未做 | 只影响 Windows 下的 LF/CRLF 警告，仓库内存储仍是 LF | 不影响验收，随时可加 |
 | 建 `artifacts/.gitkeep` 固定产物根目录 | ⬜ 未做 | E2 不部署服务，`artifact://` 目前只用于样例 | E3 落地产物存储前处理 |
 | B2 分支 `origin/e2b2` 合并 | ✅ **已合并，前置条件已失效** | B2 已按 schema 重写三个样例并合入 main | 见下方更正说明 |
-| DRAFT 样例两套并存、命名不统一 | 🟡 待 B2 处理 | B2 用连字符命名，与 A1 的点号规范冲突 | 见 `interfaces/samples/README.md` 第五节，由 B2 执行改名 |
-| `configuration_id` 取值两组不一致 | ⬜ 未定 | A1 用第 22 页原文的 `cc-MODE0`，B2 用 `draft-gcc13-release-9f8e7d6c` | 需 B2 定格式、A2 定消费方式，见 `interfaces/samples/README.md` 第四节 |
+| DRAFT 样例两套并存、命名不统一 | ✅ 已由 B2 处理 | B2 按 `interfaces/samples/README.md` 删除重复样例，并把 `draft-failed-response.json` 改名为 `draft.job-failed.json` | 无 |
+| `configuration_id` 取值两组不一致 | ✅ 已定，🟡 迁移未完 | A2/B2 定为 `cc-gcc13-release-6f12a4c8`（不绑定 commit，符合 `$defs.configuration_id` 定义），A1 初版的 `cc-MODE0` 退役 | A1 已迁移自己负责的 6 个样例；剩余见下三行 |
+| `job.running.json`、`job.baseline-mismatch-failed.json` 仍用 `cc-MODE0` + tag 形式镜像 | 🟡 待 A3 | A3 的 PR #8 迁移了 `incremental-check.*` 两个文件，但漏了这两个同为 INCREMENTAL_CHECK 的样例 | 请 A3 在 PR #8 上补；已登记在 `tests/test_cross_document_consistency.py` 的 `KNOWN_ENV_DEVIATIONS` |
+| `full-check.clean-project.json` 的 `image_uri` 与 `configuration_id` 不自洽 | 🟡 待 A2 裁定 | 用了 `draft:9f8e7d6c-iter4`（tag 形式）却配 `cc-gcc13-release-6f12a4c8`。按 A2 自己写的 `$defs.configuration_id` 定义「只随基础镜像、工具链、依赖集或构建参数变化」，镜像不同则该 ID 应不同；反之若 ID 相同则镜像应与规范值一致 | 二者必居其一，由 A2 决定；A1 不擅自改 A2 的样例 |
+| 跨文档一致性无守卫 | ✅ 已补 | 单文档校验看不出「同一 artifact 在两个文件里描述不同」，`artifact-full09-error-report` 的 `configuration_id` 曾有两种取值而 `make check` 全绿 | 新增 `tests/test_cross_document_consistency.py`；已知偏差登记在 `KNOWN_ENV_DEVIATIONS`，登记表收缩即在此勾掉 |
+| README 写死测试总数导致多份 PR 冲突 | ✅ 已消除 | A1 写 41、A2 改 56、A3 改 68，三者都对只是时点不同，且必然在同一行冲突 | README 不再写总数，改由 `TestDocsDoNotRot` 断言「任何文档不得写死测试总数」；样例数仍以 `VALIDATION.md` 第五节为唯一来源 |
 | `job.error.code` 排除 `VALIDATION_2xxx` | ✅ 已完成 | B1 在 `errors.md` 定了规则，但 schema 的正则写宽了，文档禁止的事契约放行 | 已拆为 `job_error_code` / `request_error_code`，见 ADR-010 |
 | B1 迁移表内 `QUEUED→FAILED` 与硬规则 2 冲突 | 🟡 待 B1 确认 | 表允许从 QUEUED 直达 FAILED，硬规则 2 却说 RUNNING 不可跳过 | A1 建议收窄硬规则 2，见 ADR-010 第二节 |
 | `schema_version` 是否因收紧 `error.code` 而递增 | 🟡 待 B1 裁定 | A1 判断不递增（是修 schema 与已定稿规范的偏差，非改规范） | 版本号归 B1 维护，见 ADR-010 第五节 |
