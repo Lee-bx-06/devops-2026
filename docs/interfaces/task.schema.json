@@ -359,7 +359,11 @@
       "required": ["repository", "build", "limits"],
       "properties": {
         "repository": {"$ref": "#/$defs/repository"},
-        "build": {"$ref": "#/$defs/build_spec"},
+        "build": {
+          "allOf": [{"$ref": "#/$defs/build_spec"}],
+          "required": ["command", "project_root"],
+          "properties": {"project_root": {"$ref": "#/$defs/project_root"}}
+        },
         "limits": {
           "type": "object",
           "required": ["max_iterations", "timeout_seconds"],
@@ -387,7 +391,7 @@
     },
 
     "input_incremental_check": {
-      "description": "第 22 页 INCREMENTAL_CHECK 输入，字段名照抄该页原文。baseline 必填 —— 缺 baseline 必须被拒 (第 12、25 页)。base_commit 必须等于 baseline.commit，否则基线与提交不匹配 (第 5、22 页)。",
+      "description": "第 22 页 INCREMENTAL_CHECK 输入。baseline 必填 —— 缺 baseline 必须被拒 (第 12、25 页)。A3 另要求 C0 ERROR_REPORT 以精确计算 introduced / resolved（ADR-008）。base_commit 必须等于 baseline.commit，否则基线与提交不匹配 (第 5、22 页)。",
       "type": "object",
       "required": ["base_commit", "repository", "environment", "build", "baseline"],
       "properties": {
@@ -397,9 +401,13 @@
         "build": {"$ref": "#/$defs/build_spec"},
         "baseline": {
           "type": "object",
-          "required": ["actual_graph_uri", "commit", "configuration_id"],
+          "required": ["actual_graph_uri", "error_report_uri", "commit", "configuration_id"],
           "properties": {
             "actual_graph_uri": {"$ref": "#/$defs/artifact_uri"},
+            "error_report_uri": {
+              "description": "C0 的 ERROR_REPORT，用于将 C0 findings 与 C1 findings 比较，计算 introduced / resolved。",
+              "$ref": "#/$defs/artifact_uri"
+            },
             "commit": {"$ref": "#/$defs/commit_sha"},
             "configuration_id": {"$ref": "#/$defs/configuration_id"}
           }
@@ -523,7 +531,7 @@
     },
 
     "status_matrix": {
-      "description": "第 8 页状态与结果的约束：QUEUED 对应 HTTP 202；QUEUED/RUNNING/CANCELLED 无 error 且 output 为空；SUCCEEDED 无 error，output 可含 MD/RD findings；FAILED/TIMED_OUT 必须有 error 且 output 为空。检出 MD 仍判 SUCCEEDED。另外把 B1 在 endpoints.md「状态迁移」一节的规则形式化为单文档可校验的 execution 计时约束：非终态不得有 finished_at；SUCCEEDED 与 TIMED_OUT 必须有 started_at（任务确实跑过）；FAILED 与 CANCELLED 允许 started_at 为 null（任务可能从未被执行器领取，即 B1 表中 QUEUED→FAILED 的环境准备失败路径）。这样既落实了「终态不可再迁移」，也解开了 B1 迁移表中 QUEUED→FAILED 与硬规则 2「RUNNING 不可跳过」的冲突，见 ADR-008。",
+      "description": "第 8 页状态与结果的约束：QUEUED 对应 HTTP 202；QUEUED/RUNNING/CANCELLED 无 error 且 output 为空；SUCCEEDED 无 error，output 可含 MD/RD findings；FAILED/TIMED_OUT 必须有 error 且 output 为空。检出 MD 仍判 SUCCEEDED。另外把 B1 在 endpoints.md「状态迁移」一节的规则形式化为单文档可校验的 execution 计时约束：非终态不得有 finished_at；SUCCEEDED 与 TIMED_OUT 必须有 started_at（任务确实跑过）；FAILED 与 CANCELLED 允许 started_at 为 null（任务可能从未被执行器领取，即 B1 表中 QUEUED→FAILED 的环境准备失败路径）。这样既落实了「终态不可再迁移」，也解开了 B1 迁移表中 QUEUED→FAILED 与硬规则 2「RUNNING 不可跳过」的冲突，见 ADR-010。",
       "oneOf": [
         {
           "properties": {

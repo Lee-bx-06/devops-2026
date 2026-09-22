@@ -1,0 +1,49 @@
+{
+  "kind": "actual_graph",
+  "schema_version": "1.0.0",
+  "commit": "abcdef0123456789abcdef0123456789abcdef01",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
+  "project_root": "/workspace/project",
+  "targets": [
+    {
+      "target": "main.o",
+      "dependencies": [
+        {
+          "path": "src/main.c",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": null
+        },
+        {
+          "path": "src/config.h",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": null
+        }
+      ]
+    },
+    {
+      "target": "util.o",
+      "dependencies": [
+        {
+          "path": "src/util.c",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": null
+        }
+      ]
+    },
+    {
+      "target": "app.o",
+      "dependencies": [
+        {
+          "path": "src/app.c",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": null
+        },
+        {
+          "path": "src/generated.h",
+          "observation": "FILE_ACCESS",
+          "evidence_uri": null
+        }
+      ]
+    }
+  ]
+}

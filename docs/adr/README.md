@@ -40,16 +40,16 @@
 | 005 | 创建期拒绝与运行期失败的边界 | Accepted | A1 |
 | 006 | 校验器零依赖，从 schema 读常量 | Accepted | A1 |
 | 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Accepted | B2 |
+| 008 | [增量检测的基线可比性与 finding 差集语义](ADR-008-incremental-baseline-and-finding-diff.md) | Proposed | A3 |
 | 010 | [状态迁移规则的形式化，兼修正 ADR-005 的判据表述](ADR-010-transition-timing-and-baseline-ownership.md) | Proposed | A1 |
 | 011 | [BuildChecker 输出与 artifact 本体契约](ADR-011-buildchecker-output-contract.md) | Proposed | A2 |
 
-008 与 009 仍按下表预留给 A3 与 B3，A1 与 A2 均未占用。
+009 仍按下表预留给 B3，A1、A2 与 A3 均未占用。
 
 预计需要但尚未认领的 ADR：
 
 | 建议编号 | 主题 | 建议认领人 |
 |---|---|---|
-| 008 | 增量检测的基线可比性判定 | A3 |
 | 009 | 候选补丁的接受与拒绝判据 | B3 |
 
 本表由 B1 维护。每新增一篇 ADR 必须同时在此登记，否则视为未完成。

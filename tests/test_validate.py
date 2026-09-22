@@ -230,7 +230,7 @@ class TestSlide25Check04MdIsNotExecutionFailure(unittest.TestCase):
 
 
 class TestTransitionTiming(unittest.TestCase):
-    """B1 在 endpoints.md「状态迁移」一节的规则，形式化为单文档计时约束（ADR-008）。"""
+    """B1 在 endpoints.md「状态迁移」一节的规则，形式化为单文档计时约束（ADR-010）。"""
 
     def test_queued_must_not_have_started_or_finished(self):
         doc = load("job.accepted-queued.json")

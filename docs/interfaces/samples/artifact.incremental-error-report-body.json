@@ -1,0 +1,54 @@
+{
+  "kind": "error_report",
+  "schema_version": "1.0.0",
+  "commit": "abcdef0123456789abcdef0123456789abcdef01",
+  "configuration_id": "cc-gcc13-release-6f12a4c8",
+  "counts": {
+    "missing": 2,
+    "redundant": 0
+  },
+  "findings": [
+    {
+      "id": "md-abcdef01-existing",
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "commit": "abcdef0123456789abcdef0123456789abcdef01",
+      "detector": "ECHECKER_INCREMENTAL",
+      "location": {
+        "path": "src/Makefile",
+        "line": 12,
+        "column": null
+      },
+      "evidence": [
+        {
+          "kind": "FILE_ACCESS",
+          "detail": "C1 增量构建仍观察到 main.o 读取 src/config.h，而当前 Makefile 仍未声明该 prerequisite",
+          "artifact_uri": "artifact://pair09/job-inc09/actual.json"
+        }
+      ],
+      "message": "C0 已存在的 main.o -> config.h 缺失声明在 C1 中仍然存在"
+    },
+    {
+      "id": "md-abcdef01-001",
+      "type": "MISSING",
+      "target": "app.o",
+      "dependency": "generated.h",
+      "commit": "abcdef0123456789abcdef0123456789abcdef01",
+      "detector": "ECHECKER_INCREMENTAL",
+      "location": {
+        "path": "src/Makefile",
+        "line": 20,
+        "column": null
+      },
+      "evidence": [
+        {
+          "kind": "FILE_ACCESS",
+          "detail": "C1 新增的 include 使 app.o 在增量构建中读取 src/generated.h，但 Makefile 未声明该 prerequisite",
+          "artifact_uri": "artifact://pair09/job-inc09/actual.json"
+        }
+      ],
+      "message": "C1 新增 app.o -> generated.h 的缺失声明"
+    }
+  ]
+}

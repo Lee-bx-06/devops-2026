@@ -26,12 +26,12 @@
     },
     "build": {
       "command": "make all",
-      "clean_command": "make clean && make all",
-      "project_root": ".",
+      "project_root": "/workspace/project",
       "verify_command": "make test"
     },
     "baseline": {
       "actual_graph_uri": "artifact://pair09/job-full08/actual.json",
+      "error_report_uri": "artifact://pair09/job-full08/error-report.json",
       "commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
       "configuration_id": "cc-MODE0"
     }

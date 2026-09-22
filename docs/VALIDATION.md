@@ -98,7 +98,7 @@ python3 tools/validate.py ../B09/their-response.json
 | --- | --- |
 | `DRAFT` | `repository`、`build`、`limits.max_iterations`、`limits.timeout_seconds` |
 | `FULL_CHECK` | `repository`、`environment`、`build`（含 `clean_command`、`project_root`） |
-| `INCREMENTAL_CHECK` | `base_commit`、`repository`、`environment`、`build`、**`baseline`**（含 `actual_graph_uri`、`commit`、`configuration_id`） |
+| `INCREMENTAL_CHECK` | `base_commit`、`repository`、`environment`、`build`、**`baseline`**（含 `actual_graph_uri`、`error_report_uri`、`commit`、`configuration_id`） |
 | `REPAIR` | `repository`、`environment`、`build`、**`md_report`（`type` 必须为 `ERROR_REPORT`）**、`makefile_path` |
 
 `REPAIR` 的 `md_report.type` 限制对应第 12、23 页「修复只消费 MD」。
@@ -142,6 +142,18 @@ FULL_CHECK 还额外强制：
 - 对仓库内 DRAFT artifact fixture 重算文件大小和 SHA-256；
 - `FAILED + ENV_3002`、`TIMED_OUT + EXEC_4002` 与迭代耗尽路径。
 
+### A3 EChecker 专项校验
+
+`tests/test_echecker_contract.py` 覆盖：
+
+- C0 的 ACTUAL_GRAPH 与 ERROR_REPORT 都是必需基线；
+- 请求中的 commit、configuration 和 project_root 与 A2 冻结的 artifact 一致；
+- `findings=F1`、`introduced=F1-F0`、`resolved=F0-F1`；
+- 当前/新增 finding 属于 C1，已消除 finding 可追溯到 C0；
+- `updated_graph` 是当前 Job 生成并列入 artifacts 的 C1 ACTUAL_GRAPH；
+- C1 ERROR_REPORT 与当前 findings 一致，可作为 B3 的修复输入；
+- 两份 A3 artifact fixture 的大小和 SHA-256 与元数据一致。
+
 ### finding（第 10 页）
 
 九个字段全必填：`id`、`type`、`target`、`dependency`、`commit`、`detector`、
@@ -183,19 +195,19 @@ FULL_CHECK 还额外强制：
   （「需要读产物才能比对」）不成立，已由 ADR-010 第四节修正。
 - 「终态不可再迁移」需要 Job 文档**序列**才能验证，单文档校验器看不到。
   已覆盖的是它在每个状态上留下的计时痕迹（见第三节迁移表）。
-- Job 内联 `output.findings` 与下载后的 `ERROR_REPORT` 文件本体是否一致：
+- 任意 Job 内联 `output.findings` 与下载后的 `ERROR_REPORT` 文件本体是否一致：
   需要读取 artifact 才能比对，校验期只能检查两者各自的 counts 与形状。
-  A2 的 `tests/test_buildchecker_contract.py` 用仓库内样例断言二者相等，
+  A2/A3 的专项测试用仓库内样例断言二者相等，
   但那是对样例的检查，不是对任意请求的校验。
 - `trace_id` 在跨服务调用链上的实际串联。
-- DRAFT canonical 样例的 `sha256` 已对仓库内 fixture 重算校验；其他服务的
-  说明性 artifact 仍需在真实下载后计算。
+- DRAFT canonical 样例与 A3 两份 artifact 的 `sha256` 已对仓库内 fixture 重算；
+  其他说明性 artifact 仍需在真实下载后计算。
 
 ## 五、样例清单
 
-正例 21 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
+正例 23 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
 六种 `status` 各至少一个、独立 `artifact_record`、B2 的 DRAFT 请求/成功/失败链、
-A2 的三种 artifact 本体和零发现路径。
+A2 的三种 artifact 本体和零发现路径，以及 A3 更新后的实际图与报告本体。
 
 负例 24 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，

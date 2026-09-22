@@ -410,9 +410,14 @@ class Validator:
         if "environment" in value:
             self.check_environment(value["environment"], f"{label}.environment", errors)
         if "build" in value:
-            extra = ("clean_command", "verify_command", "project_root") if job_type == "FULL_CHECK" else ()
+            if job_type == "FULL_CHECK":
+                extra = ("clean_command", "verify_command", "project_root")
+            elif job_type == "INCREMENTAL_CHECK":
+                extra = ("project_root",)
+            else:
+                extra = ()
             self.check_build(value["build"], f"{label}.build", errors, extra,
-                             strict_handoff=(job_type == "FULL_CHECK"))
+                             strict_handoff=(job_type in ("FULL_CHECK", "INCREMENTAL_CHECK")))
 
         if job_type == "DRAFT" and "limits" in value:
             limits = value["limits"]
@@ -432,10 +437,13 @@ class Validator:
                     "input.baseline 缺失或不是对象：INCREMENTAL_CHECK 必须携带基线，"
                     "缺 baseline 应被拒绝（第 12、22、25 页）")
             else:
-                for f in ("actual_graph_uri", "commit", "configuration_id"):
+                for f in ("actual_graph_uri", "error_report_uri", "commit", "configuration_id"):
                     if f not in baseline:
                         errors.append(f"input.baseline 缺少必填字段: {f}")
                 self.check_pattern(baseline.get("actual_graph_uri"), "input.baseline.actual_graph_uri",
+                                   errors, self.s.artifact_uri_re, "artifact_uri")
+                self.check_pattern(baseline.get("error_report_uri"),
+                                   "input.baseline.error_report_uri",
                                    errors, self.s.artifact_uri_re, "artifact_uri")
                 self.check_commit(baseline.get("commit"), "input.baseline.commit", errors)
                 self.check_str(baseline.get("configuration_id"),
@@ -590,8 +598,85 @@ class Validator:
                 else:
                     for i, f in enumerate(items):
                         self.check_finding(f, f"{label}.{key}[{i}]", errors)
+            current_findings = value.get("findings", [])
+            introduced = value.get("introduced", [])
+            resolved = value.get("resolved", [])
+            def finding_identity(finding):
+                if not isinstance(finding, dict):
+                    return None
+                return (
+                    finding.get("type"),
+                    finding.get("target"),
+                    finding.get("dependency"),
+                )
+
+            if isinstance(current_findings, list):
+                current_identities = {
+                    finding_identity(finding) for finding in current_findings
+                    if finding_identity(finding) is not None
+                }
+            else:
+                current_identities = set()
+            if isinstance(introduced, list):
+                for index, finding in enumerate(introduced):
+                    if finding_identity(finding) not in current_identities:
+                        errors.append(
+                            f"{label}.introduced[{index}] 必须同时存在于 findings，"
+                            "比较键为 type/target/dependency")
+            if isinstance(resolved, list):
+                for index, finding in enumerate(resolved):
+                    if finding_identity(finding) in current_identities:
+                        errors.append(
+                            f"{label}.resolved[{index}] 不得仍存在于 findings，"
+                            "比较键为 type/target/dependency")
+            if isinstance(job, dict):
+                job_input = job.get("input") if isinstance(job.get("input"), dict) else {}
+                c0_commit = job_input.get("base_commit")
+                repository = (job_input.get("repository")
+                              if isinstance(job_input.get("repository"), dict) else {})
+                c1_commit = repository.get("commit")
+                for collection_name in ("findings", "introduced"):
+                    collection = value.get(collection_name, [])
+                    if not isinstance(collection, list):
+                        continue
+                    for index, finding in enumerate(collection):
+                        if (isinstance(finding, dict) and _s(c1_commit)
+                                and finding.get("commit") != c1_commit):
+                            errors.append(
+                                f"{label}.{collection_name}[{index}].commit 必须等于 C1 commit")
+                if isinstance(resolved, list):
+                    for index, finding in enumerate(resolved):
+                        if (isinstance(finding, dict) and _s(c0_commit)
+                                and finding.get("commit") != c0_commit):
+                            errors.append(
+                                f"{label}.resolved[{index}].commit 必须等于 C0 commit")
             if "updated_graph" in value:
-                self.check_artifact(value["updated_graph"], f"{label}.updated_graph", errors)
+                updated_graph = value["updated_graph"]
+                self.check_artifact(updated_graph, f"{label}.updated_graph", errors)
+                if isinstance(updated_graph, dict):
+                    if updated_graph.get("type") != "ACTUAL_GRAPH":
+                        errors.append(f"{label}.updated_graph.type 必须是 ACTUAL_GRAPH")
+                    if isinstance(job, dict):
+                        job_input = (job.get("input")
+                                     if isinstance(job.get("input"), dict) else {})
+                        repository = (job_input.get("repository")
+                                      if isinstance(job_input.get("repository"), dict) else {})
+                        environment = (job_input.get("environment")
+                                       if isinstance(job_input.get("environment"), dict) else {})
+                        if updated_graph.get("producer_job_id") != job.get("job_id"):
+                            errors.append(
+                                f"{label}.updated_graph.producer_job_id 必须等于当前 job_id")
+                        if updated_graph.get("commit") != repository.get("commit"):
+                            errors.append(f"{label}.updated_graph.commit 必须等于 C1 commit")
+                        if (updated_graph.get("configuration_id")
+                                != environment.get("configuration_id")):
+                            errors.append(
+                                f"{label}.updated_graph.configuration_id 必须与执行环境一致")
+                    artifacts = value.get("artifacts", [])
+                    if (isinstance(artifacts, list)
+                            and updated_graph not in artifacts):
+                        errors.append(
+                            f"{label}.updated_graph 必须同时登记在 artifacts 中")
         if job_type == "REPAIR":
             if "patch" in value:
                 self.check_artifact(value["patch"], f"{label}.patch", errors)
@@ -638,7 +723,7 @@ class Validator:
 
         迁移本身是文档序列上的性质，单文档校验器看不到；但它在每个状态上留下
         必然的痕迹（started_at / finished_at 有无），这些痕迹是可校验的。
-        见 ADR-008。
+        见 ADR-010。
         """
         status = data.get("status")
         ex = data.get("execution")
