@@ -203,6 +203,30 @@ FULL_CHECK 还额外强制：
 - DRAFT canonical 样例与 A3 两份 artifact 的 `sha256` 已对仓库内 fixture 重算；
   其他说明性 artifact 仍需在真实下载后计算。
 
+### 已覆盖：跨文档一致性（`tests/test_cross_document_consistency.py`）
+
+单文档校验看不出「同一个 artifact 在两个文件里被描述成不同样子」。
+这曾导致 `artifact-full09-error-report` 的 `configuration_id` 在 5 个样例里
+出现两种取值而 `make check` 全绿：A2 迁移了 DRAFT → FULL_CHECK 那半条链，
+FULL_CHECK → MDFixer 那半没动。现由该测试文件断言：
+
+- 同一 `artifact_id` 在所有文件里的记录逐字段一致
+- `artifact_record` 与它所描述的本体在 `commit`、`configuration_id` 上一致
+- REPAIR 的 `input.md_report` 与 FULL_CHECK 实际产出的 `ERROR_REPORT` 记录逐字段一致
+  （即第 5 页「修复交接」的接收方检查项，落到样例层面）
+- `md_report.commit == repository.commit`、`md_report.configuration_id ==
+  environment.configuration_id`（B3 的 ADR-009 判据，提前在样例层验证）
+- 同一 commit 的检测/修复任务使用 DRAFT 为该 commit 产出的规范环境；
+  环境准备失败（`ENV_3002`）的场景按**错误码**排除，不按文件名排除
+
+已知偏差登记在该文件的 `KNOWN_ENV_DEVIATIONS`（含负责人与原因），
+守卫只拦登记表**之外**的新违规，不强制登记表收缩，以免 A1 的测试卡住别人的 PR。
+登记表的收缩记在 `BACKLOG.md`。
+
+> 教训：本节原来有一条「DRAFT 输出的 `configuration_id` 与下游是否逐字一致——未覆盖」。
+> A2 补上 DRAFT → FULL_CHECK 的断言后把整条删掉了，但交接链不止这一段，
+> 删掉整条等于宣称问题已解决。**部分覆盖不等于覆盖。**
+
 ## 五、样例清单
 
 正例 23 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、

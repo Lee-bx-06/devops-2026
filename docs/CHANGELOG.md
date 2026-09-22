@@ -20,6 +20,28 @@
 
 状态：A3 内容已在 `a3-echecker-contract` 分支形成稳定候选，Issue #7 已创建；
 待 B3/B1 评审并由 B1 判定新增必填字段的版本号影响。
+### A1 第三轮：修复交接链断裂并补跨文档一致性守卫（2026-09-21）
+
+| # | 变更 | 类型 | 影响面 |
+|---|---|---|---|
+| 1 | 6 个 A1 负责的样例迁移到规范环境值：`configuration_id` 由退役的 `cc-MODE0` 改为 `cc-gcc13-release-6f12a4c8`，`image_uri` 由 `draft:9f8e7d6c-iter3` 改为 digest 形式，`build.clean_command` 与 `project_root` 对齐 DRAFT 输出 | 样例修正 | `artifact.error-report.json`、`job.accepted-queued.json`、`job.analysis-failed.json`、`job.cancelled.json`、`repair.request.json`、`repair.job-succeeded.json`。无 schema 变更 |
+| 2 | 新增 `tests/test_cross_document_consistency.py` | 新增 | 断言同一 `artifact_id` 记录逐字段一致、记录与本体一致、REPAIR 的 `md_report` 与 FULL_CHECK 实际产出一致、环境链一致 |
+| 3 | `README.md` 不再写死测试总数 | 修正 | 该数字随每次新增测试过时，且 A1/A2/A3 三份 PR 必然在同一行冲突。改为断言「任何文档不得写死测试总数」 |
+
+**动因**：`artifact-full09-error-report` 的 `configuration_id` 曾在 5 个样例里
+出现两种取值，而 `make check` 全绿。A2 迁移了 DRAFT → FULL_CHECK 那半条链，
+FULL_CHECK → MDFixer 那半没动。`VALIDATION.md` 第四节原有「跨文档一致性未覆盖」
+一条，A2 补上 DRAFT → FULL_CHECK 的断言后把整条删掉了——但交接链不止一段。
+
+**已知偏差登记表**（`KNOWN_ENV_DEVIATIONS`，守卫只拦表外新违规，不阻塞他人 PR）：
+
+| 文件 | 负责人 | 原因 |
+|---|---|---|
+| `incremental-check.request.json` | A3 | PR #8 已迁移，待合并 |
+| `incremental-check.job-succeeded.json` | A3 | PR #8 已迁移，待合并 |
+| `job.running.json` | A3 | PR #8 未迁移 |
+| `job.baseline-mismatch-failed.json` | A3 | PR #8 未迁移 |
+| `full-check.clean-project.json` | A2 | `image_uri` 用 `iter4` tag 却配规范 `configuration_id`，按 A2 自己的 `$defs.configuration_id` 定义二者不自洽，需裁定 |
 
 ### 新增：A2 BuildChecker 输出与 artifact 本体
 

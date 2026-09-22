@@ -100,7 +100,11 @@ tools/validate.py           A1 ★ 零依赖校验器
 tests/test_validate.py      A1/B2   公共契约与 A2–B2 环境交接测试
 tests/test_buildchecker_contract.py A2 FULL_CHECK 与 artifact 本体测试
 tests/test_echecker_contract.py A3 INCREMENTAL_CHECK 基线、差集与 artifact 测试
-（以上三组合计 68 项单元测试，`make check` 全绿）
+
+tests/test_cross_document_consistency.py A1 跨文档一致性守卫（交接链两端逐字一致）
+（`make check` 运行 `tests/` 下全部测试。此处**不写测试总数**：每人加测试都会让它过时，
+且多份 PR 会在同一行冲突。数量以实际运行为准；样例数量的唯一来源是
+`docs/VALIDATION.md` 第五节，由 `TestDocsDoNotRot` 断言其与文件数一致。）
 ```
 
 ★ = A1 核心交付物。

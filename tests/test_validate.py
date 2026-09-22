@@ -77,28 +77,19 @@ class TestDocsDoNotRot(unittest.TestCase):
         self.assertEqual(int(m_neg.group(1)), neg,
                          f"VALIDATION.md 写负例 {m_neg.group(1)} 个，实际 {neg} 个")
 
-    def test_test_count_in_validation_md_matches_reality(self):
-        """README 与 VALIDATION.md 若写了测试项数，必须与实际一致。"""
-        actual = sum(1 for _ in _iter_test_ids())
+    def test_no_document_pins_a_total_test_count(self):
+        """测试总数不得写进任何文档。
+
+        与样例数不同，测试数没有单一来源可言——每个人加测试都会让它过时，
+        而且多份并行 PR 必然在同一行冲突（本仓库已发生过：A1 写 41、A2 改 56、
+        A3 改 68，三者都对，只是时点不同）。数量以实际运行为准。
+        """
         for doc in ("README.md", "docs/VALIDATION.md"):
             text = (ROOT / doc).read_text(encoding="utf-8")
-            for m in re.finditer(r"(\d+)\s*项单元测试", text):
-                self.assertEqual(int(m.group(1)), actual,
-                                 f"{doc} 写「{m.group(1)} 项单元测试」，实际 {actual} 项")
-
-
-def _iter_test_ids():
-    loader = unittest.TestLoader()
-    suite = loader.discover(str(ROOT / "tests"))
-
-    def walk(s):
-        for item in s:
-            if isinstance(item, unittest.TestSuite):
-                yield from walk(item)
-            else:
-                yield item
-
-    yield from walk(suite)
+            hits = re.findall(r"(\d+)\s*项(?:单元测试|测试)", text)
+            self.assertEqual(
+                hits, [],
+                f"{doc} 写死了测试总数 {hits}，该数字会随每次新增测试过时，请删除")
 
 
 class TestSlide25Check01FourJobTypes(unittest.TestCase):
@@ -509,6 +500,35 @@ class TestSchemaAndValidatorAgree(unittest.TestCase):
     def test_schema_file_is_valid_json(self):
         with (ROOT / "docs" / "interfaces" / "task.schema.json").open(encoding="utf-8") as fh:
             json.load(fh)
+
+    def test_kinds_do_not_drift_from_the_schema_oneof(self):
+        """ADR-006 的防漂移原则：校验器不得硬编码 schema 已经声明的东西。
+
+        `KINDS` 是个例外——A2 扩展时把它拆成 `ENVELOPE_KINDS` 与
+        `ARTIFACT_BODY_KINDS` 两组以便区别处理，而 schema 里没有这个区分，
+        无法直接派生。既然必须硬编码，就用本断言钉住它与 schema 顶层
+        `oneOf` 的集合相等：往 schema 加第七个 kind 而忘了改校验器时，
+        这里会红，而不是让该 kind 的文档被静默判为「kind 非法」。
+        """
+        with (ROOT / "docs" / "interfaces" / "task.schema.json").open(encoding="utf-8") as fh:
+            oneof = {branch["$ref"].split("/")[-1] for branch in json.load(fh)["oneOf"]}
+        envelope = set(validate.ENVELOPE_KINDS)
+        bodies = set(validate.ARTIFACT_BODY_KINDS)
+        self.assertEqual(set(validate.KINDS), oneof,
+                         "validate.py 的 KINDS 与 schema 顶层 oneOf 不一致")
+        self.assertEqual(envelope | bodies, oneof)
+        self.assertFalse(envelope & bodies, "两组 kind 不得重叠")
+
+    def test_every_kind_has_schema_definitions(self):
+        """Schema 类按 KINDS 从 $defs 取 properties/required，缺一个就会 KeyError。
+
+        显式断言一次，让失败信息指向真正的原因（有人加了 kind 但没写 $defs），
+        而不是抛一个难以定位的 KeyError。
+        """
+        for kind in validate.KINDS:
+            with self.subTest(kind=kind):
+                self.assertTrue(SCHEMA.envelope_fields.get(kind), f"{kind} 在 $defs 里没有 properties")
+                self.assertTrue(SCHEMA.envelope_required.get(kind), f"{kind} 在 $defs 里没有 required")
 
 
 if __name__ == "__main__":
