@@ -1,6 +1,6 @@
 # ADR-003：artifact 命名空间与解析约定
 
-- 状态：**已接受**（A1 谢浩天，A09）；解析端点待 B1 复核
+- 状态：**已接受**（A1 谢浩天，A09；B1 已接受解析端点与完整 `job_id` URI）
 - 日期：2026-09-21
 - 契约版本：1.0.0
 - 相关：第 5、15、21、24 页；`docs/interfaces/endpoints.md` 第四节
@@ -116,8 +116,8 @@ Job 响应里直接放完整的产物记录（八个字段全带），不再定�
 照抄课件最保险。但 `full01` 不是合法 `job_id`（schema 里 `job_id` 形如
 `job-full01`），于是 URI 里的段和 `producer_job_id` 对不上，
 无法用一条正则同时校验两者，也没法从 URI 直接反查生产任务。
-A1 选择用完整 `job_id`，让 URI 自解释且可被机器校验。**否决**（但这是对
-课件样例的有意偏离，已在 `endpoints.md` 注明，请 B1 与教师确认）。
+A1 选择用完整 `job_id`，让 URI 自解释且可被机器校验。**否决。** A09/B09 已将
+完整 `job_id` 接受为内部契约；课件 URI 仅作说明样例。
 
 ### `sha256` 设为可选（照第 24 页「需要核验完整性时使用」的字面意思）
 
@@ -149,8 +149,8 @@ A1 选择用完整 `job_id`，让 URI 自解释且可被机器校验。**否决*
   可接受。
 - 需要有人实现 `GET /v1/artifacts/{artifact_id}`。E2 不实现，
   E12 前必须落地，已记入 `BACKLOG.md`。
-- 对第 24 页样例 URI 的偏离需要教师/B1 认可，存在被要求改回的风险；
-  改回属破坏性变更，需升 `schema_version`。
+- A09/B09 已接受完整 `job_id` URI；如未来修改这项冻结约定，属破坏性变更，
+  需升 `schema_version`。
 
 **验证：**
 
@@ -161,5 +161,5 @@ A1 选择用完整 `job_id`，让 URI 自解释且可被机器校验。**否决*
 - `samples/incremental-check.request.json` —— `baseline.actual_graph_uri`
   用同一文法引用上游产物，形成 A2 → A3 的真实交接链
 
-**待 B1 复核：** `GET /v1/artifacts/{artifact_id}` 是否作为正式产物读取接口；
-URI 用完整 `job_id` 而非课件简写是否可接受；`type` 取值是否需要收敛成封闭枚举。
+**B1 复核结论：** 接受 `GET /v1/artifacts/{artifact_id}` 作为正式产物读取接口，
+并接受 URI 使用完整 `job_id`。

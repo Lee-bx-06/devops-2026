@@ -45,7 +45,7 @@ A1 交付内容集中于一次提交：
 | 单元测试 | `tests/test_validate.py` | `2a9bd2c` | Issue #1 / PR #2 | 27 项全绿 |
 | 设计记录 | `docs/adr/ADR-001..006` | `2a9bd2c` | Issue #1 / PR #2 | 六份，第 13 页四段式 |
 | 流程文档 | `docs/BACKLOG.md`、`docs/AI_USAGE.md`、`docs/VALIDATION.md` | `2a9bd2c` | Issue #1 / PR #2 | 第 12、14 页格式 |
-| 端点草案（B1 负责） | `docs/interfaces/endpoints.md` | `2a9bd2c` | Issue #1 / PR #2 | A1 起草，明确标注待 B1 定稿 |
+| 端点草案（B1 负责） | `docs/interfaces/endpoints.md` | `2a9bd2c` | Issue #1 / PR #2 | A1 起草，B1 已复核定稿 |
 
 > 回填 SHA 与 Issue/PR 号本身构成追加提交，故上表 SHA 指向**交付内容所在的那次提交**
 > （`2a9bd2c`），不是回填提交。
@@ -197,7 +197,7 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 | 远端分支 | 提交 | 作者 | 内容 | 状态 |
 | --- | --- | --- | --- | --- |
-| `origin/e2b2` | `e04364fe606376c9b9d7e790a9ed2301188795f7` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例、ADR-007 | 已与 `main` 同步；ADR-007 仍为 Proposed，待 A2 最终验收 |
+| `origin/e2b2` | `e04364fe606376c9b9d7e790a9ed2301188795f7` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例、ADR-007 | 已与 `main` 同步；ADR-007 已由 A2 接受 |
 
 ## 协作方式：fork + PR
 
@@ -248,18 +248,6 @@ Ran 56 tests
 OK
 ```
 
-## B3 提交追溯
-
-- **作者**：赵心泉（Git 作者 `Varecia`）
-- **学号**：241250068
-- **分支**：`b3-repair-contract`
-
-| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
-| --- | --- | --- | --- | --- |
-| REPAIR 候选被拒样例 | `interfaces/samples/repair.job-succeeded-rejected.json` | `<SHA>` | `<PR 号>` | `errors_of == []`，`make check` 全绿 |
-| MDFixer 决策记录 | `adr/ADR-009-patch-acceptance-criteria.md` | `<SHA>` | `<PR 号>` | 接受判据与拒绝原因码覆盖第 23 页要求 |
-| 文档同步 | `BACKLOG.md`、`VALIDATION.md`、`adr/README.md`、`CHANGELOG.md`、`AI_USAGE.md` | `<SHA>` | `<PR 号>` | `test_counts_in_validation_md_match_the_files` 通过 |
-
 ## 贡献约定
 
 - 公共字段、状态、版本或错误码命名空间的变更，必须在**同一个 PR** 内同步更新：
@@ -276,5 +264,4 @@ OK
 - [ ] B09 三位成员的姓名与学号（由 B1 填写）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
-- [ ] 三轮课堂交换的结论（第 16 页）落到 ADR 与 BACKLOG
-- [ ] PR #2 合并后，把 B1 复核结论回写到各 ADR 的「待 B1 复核」清单
+- [x] PR #2 合并后，B1 已确认的结论回写 ADR-001–005；ADR-010 保留待 B1 评审

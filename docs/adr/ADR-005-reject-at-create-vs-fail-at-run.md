@@ -1,6 +1,6 @@
 # ADR-005：创建期拒绝 vs 运行期失败
 
-- 状态：**已接受**（A1 谢浩天，A09）；待 B1 复核
+- 状态：**已接受**（A1 谢浩天，A09；创建期错误码边界经 B1 复核；相关判据修订见待评审 ADR-010）
 - 日期：2026-09-21
 - 契约版本：1.0.0
 - 相关：第 5、7、8、9、12、16、22、25 页；ADR-002；`docs/interfaces/errors.md` 第四节
@@ -173,5 +173,6 @@ POST /v1/incremental-check-jobs
 - `tests/…TestSlide25Check03MissingBaseline` —— 现场 `del input["baseline"]`、
   置空 `baseline`、删 `configuration_id`、改短 SHA，四种变异全部断言被拒
 
-**待 B1 复核：** `VALIDATION_2xxx` 命名空间；HTTP 400 响应体是否复用 Job 的
-`error` 形状；「只看请求体就能判定」这条判据是否作为 A09/B09 的统一规则。
+**B1 已确认：** `VALIDATION_2xxx` 只用于创建期 HTTP 4xx 响应体，不产生 Job，
+也不写入 `job.error`。请求结构与运行期语义的判据由 ADR-010 第四节修正，
+该修正仍待 B1 评审。
