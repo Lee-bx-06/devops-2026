@@ -86,7 +86,7 @@ docs/adr/
   ADR-005  创建期拒绝 vs 运行期失败            A1（判据表述由 ADR-010 修正）
   ADR-006  零依赖校验器                       A1
   ADR-007  DRAFT 与 BuildChecker 环境交接      B2   Accepted
-  ADR-008  EChecker 基线与 finding 差集         A3   Proposed，待 B3/B1 评审
+  ADR-008  EChecker 基线与 finding 差集         A3   Accepted，PR #8 已合并
   ADR-010  状态迁移形式化 + 基线一致性归属      A1   Proposed，待 B1 评审
   ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，待 A3/B3/B1 复核
   （009 预留给 B3）
