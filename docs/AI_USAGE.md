@@ -716,3 +716,19 @@ A2 补上 DRAFT → FULL_CHECK 的断言后，把「跨文档一致性未覆盖�
   B3 选择先开 Issue 问 A1，而非单方面改公共文件。
 - **关联文件**：`interfaces/task.schema.json`、`tools/validate.py`、`adr/ADR-009`
 - **验证**：`make check` 在当前 schema 下通过
+- - **结果**：A1 在 Issue #14 中确认新增字段可追加、封闭取值集同时写进
+  `task.schema.json` 与 `tools/validate.py`。PR #20 已合并
+  （内容提交 `feadb30`，合并提交 `877e7c4`）。
+
+### 条目 27：ADR-009 rebase 后措辞与仓库实际状态脱节，人工复核后修正
+
+- **工具/模型**：ChatGPT
+- **任务**：PR 提交前复核 ADR-009
+- **AI 发现**：Alternatives 第 4 条仍把「沿用 `cc-MODE0` 旧值」写成活选项，
+  但 B2 已在 Issue 中明确拒绝、A1 在 PR #16、A3 在 PR #8 已迁移全部样例，
+  `tests/test_cross_document_consistency.py` 会拦下任何新用旧值的样例。
+  Consequences 里三条（待 A1 确认、待登记、正例数 21→22）同样过时。
+- **人工判断：修正 6 处。** 保留 Alternatives 记录的价值，
+  但加「（已排除）」标注为历史选项；Consequences 按实际状态重写。
+- **关联文件**：`adr/ADR-009-patch-acceptance-criteria.md`
+- **验证**：`make check` 全绿

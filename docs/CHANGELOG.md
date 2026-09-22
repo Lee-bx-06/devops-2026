@@ -20,17 +20,17 @@
 | 文件 | 内容 |
 |---|---|
 | `interfaces/samples/repair.job-succeeded-rejected.json` | 消费 1 条 C1 MISSING，全部候选被拒，任务仍为 SUCCEEDED |
-| `adr/ADR-009-patch-acceptance-criteria.md` | 接受判据 7 条、拒绝原因码 8 个、字段追加 3+1 个 |
-| `interfaces/samples/repair.request.json`、`repair.job-succeeded.json` | 按 B2 的 canonical 规则规范化 `environment` / `build` / `md_report.configuration_id` |
+| `adr/ADR-009-patch-acceptance-criteria.md` | 接受判据 7 条、拒绝原因码 8 个、字段追加 3+1 个；回答 `configuration_id` 相等语义 |
+| `interfaces/task.schema.json` | `output_repair.rejected_candidates[].reason_code` 与 `output_repair.findings[].status` 加入封闭 enum |
+| `tools/validate.py` | `Schema` 类从 schema 读两个 enum；REPAIR 分支新增两条取值校验 |
+| `interfaces/samples/README.md` | 用途枚举登记 `job-succeeded-rejected` |
 
-状态：B3 已起草。`output.rejected_candidates[]` 的 `reason_code` /
-`finding_id` / `evidence_uri` 与 `output.findings[].status` 为新增可选字段。
-`validate.py` 已允许，是否登记进 `task.schema.json` 待 A1 确认。
-`VALIDATION.md` 第五节正例数由 21 改为 22。
+状态：已合并（PR #20，内容提交 `feadb30`，合并提交 `877e7c4`）。
+ADR-009 状态为 Accepted。`schema_version` 是否因新增封闭 enum 而递增，
+待 B1 按 `versioning.md` 第二节裁定。
 
-`incremental-check.*` 与 `job.cancelled.json` 中的旧值
-（`cc-MODE0` / `draft:...iter3` / 串联 `clean_command` / 相对 `project_root`）
-不在 B3 所有权内，已开 Issue 提请 A3 与 A1。
+后续：A3 在 PR #21（合并提交 `182de4d`）修复了 Windows CRLF 导致的 artifact
+`size_bytes` 偏差，`make check` 在 Windows 与 Unix 上均全绿。
 
 ### 新增：A3 EChecker 增量检测契约
 
