@@ -28,8 +28,8 @@
 | 7 | ✅ | 第 25 页检查 04 的书面解释 | `errors.md` 第一节 | 「MD 为什么不等于工具执行失败」有成文答案 + 可执行断言 |
 | 8 | ✅ | 零依赖校验器 | `tools/validate.py` | `python3 tools/validate.py` 在无第三方包的环境直接跑通 |
 | 9 | ✅ | 负例套件 | `samples/invalid/*.json`（24 个，含 A2 的 5 个 FULL_CHECK/本体负例与 B2 的 DRAFT 负例） | 每个负例按声明的 `expected_error` 被拒 |
-| 10 | ✅ | 单元测试 | `tests/test_validate.py` + `tests/test_buildchecker_contract.py` | `python3 -m unittest discover -s tests` 全绿（56 项） |
-| 11 | 🟡 | ADR 汇总 | `docs/adr/ADR-001`–`ADR-007`、`ADR-010`、`ADR-011` | A1 六份与 `ADR-010` 已完成；`ADR-007` 已由 A2 接受；`ADR-011` 待 A3/B3/B1 复核 |
+| 10 | ✅ | 单元测试 | `tests/test_validate.py` + `tests/test_buildchecker_contract.py` + `tests/test_echecker_contract.py` | `python3 -m unittest discover -s tests` 全绿（68 项） |
+| 11 | 🟡 | ADR 汇总 | `docs/adr/ADR-001`–`ADR-008`、`ADR-010`、`ADR-011` | A3 已起草 `ADR-008`；`ADR-007` 已接受；`ADR-008`、`ADR-010`、`ADR-011` 待相应评审 |
 | 12 | ✅ | 校验规则说明 | `docs/VALIDATION.md` | 列出已覆盖与**未覆盖**的约束，不夸大 |
 | 13 | ✅ | 端点草案 | `docs/interfaces/endpoints.md` | 第 27 页五端点齐备 + 交互示例；标注负责人为 B1 |
 
@@ -42,8 +42,8 @@
 | 16 | ✅ | 信封严格 / 载荷可扩展的分界线（ADR-004） | B1 已确认 | 四组能否自行扩展 `input`/`output` |
 | 17 | ✅ | `execution` 字段定义（第 19 页未解释，A1 自定） | B1 已确认，四组待确认 | 若推翻属破坏性变更，需升版本 |
 | 18 | 🟡 | URI 用完整 `job_id` 而非第 24 页简写 `full01` | **教师**（B1 已认同） | 有意偏离课件样例，需认可 |
-| 19 | 🟡 | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 已起草，待 A3/B3/B1 复核 | `docs/interfaces/buildchecker-contract.md`、`ADR-011`、三份 artifact 本体样例与测试 | `python tools/validate.py` 与 56 项测试通过；EChecker/MDFixer 消费字段待确认 |
-| 20 | ⬜ | `INCREMENTAL_CHECK` 的 baseline 匹配规则与新增/消除 finding 语义 | A3 | A3 的 C0/C1 可追溯验收 |
+| 19 | 🟡 | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 已起草；A3 已按原契约接入，待 B3/B1 复核 | `docs/interfaces/buildchecker-contract.md`、`ADR-011`、三份 artifact 本体样例与测试 | A3 样例已真实读取 A2 的 ACTUAL_GRAPH 与 ERROR_REPORT；MDFixer 消费字段待确认 |
+| 20 | 🟡 | `INCREMENTAL_CHECK` 的 baseline 匹配规则与新增/消除 finding 语义 | A3 已完成，待 B3/B1 评审 | `echecker-contract.md`、`ADR-008`、两份 artifact 本体、12 项专项测试均已落盘；Issue #7 |
 | 21 | ✅ | `DRAFT` 的成功判据与每轮日志字段 | B2 已按 A2/B2 v0.1 清单落实，A2 已复核并接受 `ADR-007` | `output.environment/build` 已进入 schema，canonical 链路与 artifact 一致性由专项测试覆盖 |
 | 22 | ⬜ | `REPAIR` 的 patch 与拒绝原因字段 | B3 | B3 的「能解释 MD≠执行失败」验收 |
 
@@ -59,7 +59,7 @@
 | 部署任何 API | ⬜ 不做 | 第 7 页明确「E2 先定义，不要求部署 API」 | E3/E12 再评估 |
 | 让 B 组真的下载一次 artifact | ⬜ 未做 | 需要产物存储与 `GET /v1/artifacts/{id}` 实现，E2 不部署 | 第 24 页把它列为 E12 要求；本轮先冻结契约（ADR-003） |
 | 用 `jsonschema` 库替代手写校验器 | ⬜ 未做 | 本机实测未安装；第 2 页课堂仅 150 分钟且与 E3 共享，无法现场装包 | 若课前确认环境具备，按 ADR-006 的备选方案替换 |
-| 校验 `sha256` 与产物本体是否真的相符 | 🟡 DRAFT 已做 | canonical DRAFT 已提供四个仓库内 fixture 并重算哈希；其他服务仍是说明性值 | E12 联调时对真实下载产物再次计算 |
+| 校验 `sha256` 与产物本体是否真的相符 | 🟡 DRAFT/A3 已做 | canonical DRAFT 与 A3 两份 artifact 已提供仓库内 fixture 并重算哈希；其他服务仍是说明性值 | E12 联调时对真实下载产物再次计算 |
 | 校验 `base_commit == baseline.commit` 与 `baseline.configuration_id == environment.configuration_id` | ⬜ **故意不做** | 第 5 页把这两项列为「接收方检查」，属运行期职责；ADR-005 的判据表述有误，已由 ADR-010 第四节修正 | 由 EChecker 在运行期落为 `FAILED` + `ENV_3003`；`tests/…TestBaselineConsistencyIsRuntimeNotContract` 钉住此边界 |
 | 与 B09 的三轮课堂交换 | ⬜ 未做 | 需课堂现场进行（第 16 页） | 每轮结束把结论写进 ADR、未决项写进本文件 |
 | Issue + PR 关联 | ✅ 已完成 | 走 fork 流程（A1 对上游无推送权限） | Issue #1 列出 11 项待确认；PR #2 承载全部 A1 交付物 |

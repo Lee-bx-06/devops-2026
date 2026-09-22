@@ -7,6 +7,20 @@
 
 ## [Unreleased]
 
+### 新增：A3 EChecker 增量检测契约
+
+- 新增 `interfaces/echecker-contract.md` 与 `ADR-008`，定义 C0/C1、基线运行期
+  匹配、finding 集合身份、`introduced` / `resolved` 差集和 B3 交接语义。
+- `baseline` 新增必填 `error_report_uri`，使 EChecker 能从 C0/C1 两份报告精确
+  计算新增与消除；旧的三字段增量请求需要补字段。
+- 成功响应中的 `updated_graph` 必须是当前 Job 生成的 C1 ACTUAL_GRAPH，并同时列入
+  `artifacts[]`；新增 C1 实际图与 ERROR_REPORT 两份可下载本体样例。
+- 校验器增加 introduced/resolved 集合关系、finding commit 归属和更新图归属检查；
+  新增 12 项 A3 专项测试。
+
+状态：A3 内容已在 `a3-echecker-contract` 分支形成稳定候选，Issue #7 已创建；
+待 B3/B1 评审并由 B1 判定新增必填字段的版本号影响。
+
 ### 新增：A2 BuildChecker 输出与 artifact 本体
 
 | 文件 | 内容 |
@@ -20,8 +34,8 @@
 | `tests/test_buildchecker_contract.py` | A2 的 artifact 与跨字段一致性测试 |
 | `tools/validate.py` | 增加 counts/findings、核心 artifact 类型和三种本体的校验 |
 
-状态：A2 已起草，与 B2 的 `324a32e` 合并后 `make check` 全绿（56 项），
-待 A3、B3、B1 复核。是否提升 `schema_version` 由 B1 按 `versioning.md` 判定。
+状态：A2 已起草，A3 已按其冻结产物完成基线接入；待 B3、B1 复核。
+是否提升 `schema_version` 由 B1 按 `versioning.md` 判定。
 ### A1 变更（2026-09-21，待 B1 评审）
 
 对应 ADR-010。三项改动，其中第 1 项涉及 `error.code`，版本号处理见下方待处理表第 6 项。
