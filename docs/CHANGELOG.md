@@ -18,8 +18,9 @@
 - 校验器增加 introduced/resolved 集合关系、finding commit 归属和更新图归属检查；
   新增 12 项 A3 专项测试。
 
-状态：A3 内容已在 `a3-echecker-contract` 分支形成稳定候选，Issue #7 已创建；
-待 B3/B1 评审并由 B1 判定新增必填字段的版本号影响。
+状态：B3/B1 已完成评审，ADR-008 已接受；PR #8 已合并，最终内容提交为
+`a45c3b7`，合并提交为 `f1d3dbb`。
+
 ### A1 第三轮：修复交接链断裂并补跨文档一致性守卫（2026-09-21）
 
 | # | 变更 | 类型 | 影响面 |
@@ -37,11 +38,10 @@ FULL_CHECK → MDFixer 那半没动。`VALIDATION.md` 第四节原有「跨文�
 
 | 文件 | 负责人 | 原因 |
 |---|---|---|
-| `incremental-check.request.json` | A3 | PR #8 已迁移，待合并 |
-| `incremental-check.job-succeeded.json` | A3 | PR #8 已迁移，待合并 |
-| `job.running.json` | A3 | PR #8 未迁移 |
-| `job.baseline-mismatch-failed.json` | A3 | PR #8 未迁移 |
 | `full-check.clean-project.json` | A2 | `image_uri` 用 `iter4` tag 却配规范 `configuration_id`，按 A2 自己的 `$defs.configuration_id` 定义二者不自洽，需裁定 |
+
+A3 的四项偏差已在 PR #8 中完成迁移，并由提交 `a45c3b7` 从
+`KNOWN_ENV_DEVIATIONS` 移除。
 
 ### 新增：A2 BuildChecker 输出与 artifact 本体
 

@@ -155,18 +155,20 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 - **分支**：`a3-echecker-contract`
 - **内容提交**：`f8a7fe9`（可执行契约）
 - **设计记录提交**：`e86ad0e`（BACKLOG / CHANGELOG / ADR-010 同步）
+- **环境一致性收尾提交**：`a45c3b7`
 - **关联 Issue**：[#7](https://github.com/Lee-bx-06/devops-2026/issues/7)
-- **PR**：待推送分支后创建
+- **PR**：[#8](https://github.com/Lee-bx-06/devops-2026/pull/8)（已合并）
+- **合并提交**：`f1d3dbb`
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| EChecker 接口契约 | `interfaces/echecker-contract.md` | `f8a7fe9` | Issue #7 | C0/C1、基线匹配、差集和 B3 交接均已定义 |
-| baseline 与增量输出 schema | `interfaces/task.schema.json`、`tools/validate.py` | `f8a7fe9` | Issue #7 | 缺历史报告、错误集合关系和不可消费更新图均被拒绝 |
-| 请求、成功与失败样例 | `interfaces/samples/incremental-check.*.json`、`job.baseline-mismatch-failed.json` | `f8a7fe9` | Issue #7 | 创建期与运行期失败边界可表达 |
-| C1 artifact 本体 | `artifact.incremental-actual-graph.json`、`artifact.incremental-error-report-body.json` | `f8a7fe9` | Issue #7 | 元数据、大小和 SHA-256 由测试重算 |
-| EChecker ADR | `adr/ADR-008-incremental-baseline-and-finding-diff.md` | `f8a7fe9` | Issue #7 | 记录历史报告、finding 身份、祖先关系和无基线策略 |
-| 项目状态同步 | `BACKLOG.md`、`CHANGELOG.md`、`adr/ADR-010-…md` | `e86ad0e` | Issue #7 | A3 状态、上游消费结论和新增基线字段均已登记 |
-| A3 专项测试 | `tests/test_echecker_contract.py` | `f8a7fe9` | Issue #7 | 12 项专项测试；全仓共 68 项 |
+| EChecker 接口契约 | `interfaces/echecker-contract.md` | `f8a7fe9` | Issue #7 / PR #8 | C0/C1、基线匹配、差集和 B3 交接均已定义 |
+| baseline 与增量输出 schema | `interfaces/task.schema.json`、`tools/validate.py` | `f8a7fe9` | Issue #7 / PR #8 | 缺历史报告、错误集合关系和不可消费更新图均被拒绝 |
+| 请求、成功与失败样例 | `interfaces/samples/incremental-check.*.json`、`job.baseline-mismatch-failed.json` | `f8a7fe9`、`a45c3b7` | Issue #7 / PR #8 | 创建期与运行期失败边界可表达，环境配置已与 canonical DRAFT 对齐 |
+| C1 artifact 本体 | `artifact.incremental-actual-graph.json`、`artifact.incremental-error-report-body.json` | `f8a7fe9` | Issue #7 / PR #8 | 元数据、大小和 SHA-256 由测试重算 |
+| EChecker ADR | `adr/ADR-008-incremental-baseline-and-finding-diff.md` | `f8a7fe9` | Issue #7 / PR #8 | 记录历史报告、finding 身份、祖先关系和无基线策略；B3/B1 已接受 |
+| 项目状态同步 | `BACKLOG.md`、`CHANGELOG.md`、`adr/ADR-010-…md` | `e86ad0e` | Issue #7 / PR #8 | A3 状态、上游消费结论和新增基线字段均已登记 |
+| A3 专项测试 | `tests/test_echecker_contract.py` | `f8a7fe9` | Issue #7 / PR #8 | 12 项专项测试通过；全仓测试结果以实际运行为准 |
 
 ## 其它分支
 
