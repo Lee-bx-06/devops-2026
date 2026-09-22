@@ -7,6 +7,23 @@
 
 ## [Unreleased]
 
+### 新增：B3 MDFixer 候选补丁拒绝判据
+
+| 文件 | 内容 |
+|---|---|
+| `interfaces/samples/repair.job-succeeded-rejected.json` | 消费 1 条 C1 MISSING，全部候选被拒，任务仍为 SUCCEEDED |
+| `adr/ADR-009-patch-acceptance-criteria.md` | 接受判据 7 条、拒绝原因码 8 个、字段追加 3+1 个 |
+| `interfaces/samples/repair.request.json`、`repair.job-succeeded.json` | 按 B2 的 canonical 规则规范化 `environment` / `build` / `md_report.configuration_id` |
+
+状态：B3 已起草。`output.rejected_candidates[]` 的 `reason_code` /
+`finding_id` / `evidence_uri` 与 `output.findings[].status` 为新增可选字段。
+`validate.py` 已允许，是否登记进 `task.schema.json` 待 A1 确认。
+`VALIDATION.md` 第五节正例数由 21 改为 22。
+
+`incremental-check.*` 与 `job.cancelled.json` 中的旧值
+（`cc-MODE0` / `draft:...iter3` / 串联 `clean_command` / 相对 `project_root`）
+不在 B3 所有权内，已开 Issue 提请 A3 与 A1。
+
 ### 新增：A3 EChecker 增量检测契约
 
 - 新增 `interfaces/echecker-contract.md` 与 `ADR-008`，定义 C0/C1、基线运行期

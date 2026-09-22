@@ -45,8 +45,7 @@
 | 19 | 🟡 | `FULL_CHECK` 的 `input`/`output` 字段名 | A2 已起草；A3 已按原契约接入，待 B3/B1 复核 | `docs/interfaces/buildchecker-contract.md`、`ADR-011`、三份 artifact 本体样例与测试 | A3 样例已真实读取 A2 的 ACTUAL_GRAPH 与 ERROR_REPORT；MDFixer 消费字段待确认 |
 | 20 | ✅ | `INCREMENTAL_CHECK` 的 baseline 匹配规则与新增/消除 finding 语义 | B3/B1 已评审并接受，PR #8 已合并 | `echecker-contract.md`、`ADR-008`、两份 artifact 本体和 12 项专项测试均已落盘；Issue #7 |
 | 21 | ✅ | `DRAFT` 的成功判据与每轮日志字段 | B2 已按 A2/B2 v0.1 清单落实，A2 已复核并接受 `ADR-007` | `output.environment/build` 已进入 schema，canonical 链路与 artifact 一致性由专项测试覆盖 |
-| 22 | ⬜ | `REPAIR` 的 patch 与拒绝原因字段 | B3 | B3 的「能解释 MD≠执行失败」验收 |
-
+| 22 | ✅ | `REPAIR` 的 patch 与拒绝原因字段 | B3 已完成 | `repair.job-succeeded-rejected.json` + `ADR-009`；拒绝原因码与 `findings.status` 见 ADR-009；A1 是否将新增字段登记进 schema 待确认 |
 第 14 至 17 项由 B1 于 2026-09-21 完成复核，结论与理由见
 `docs/CHANGELOG.md` 的 1.0.0 条目与 `docs/AI_USAGE.md` 条目 9。
 第 18 项超出 B1 的权限范围，需教师在课上确认。
@@ -77,6 +76,8 @@
 | B1 迁移表内 `QUEUED→FAILED` 与硬规则 2 冲突 | 🟡 待 B1 确认 | 表允许从 QUEUED 直达 FAILED，硬规则 2 却说 RUNNING 不可跳过 | A1 建议收窄硬规则 2，见 ADR-010 第二节 |
 | `schema_version` 是否因收紧 `error.code` 而递增 | 🟡 待 B1 裁定 | A1 判断不递增（是修 schema 与已定稿规范的偏差，非改规范） | 版本号归 B1 维护，见 ADR-010 第五节 |
 | A2–B2 v0.1 交接清单 | 🟡 B2 已实现 | canonical 样例、稳定配置 ID、独立命令、真实制品校验均已落地 | 提 Issue + PR，由 A2 复核 ADR-007；不直接推 main |
+| `reason_code` 等新增字段是否进 `task.schema.json` | 🟡 待 A1 确认 | `validate.py` 已允许，但 schema 未登记；`output_repair.rejected_candidates.items.properties` 与 `output_common.findings.items.properties` 是否要正式加 | 见 ADR-009 Consequences |
+| REPAIR 样例规范化为 canonical 值 | 🟡 待 A1 确认 | `repair.*` 已按 B2 规则规范化；`incremental-check.*` 与 `job.cancelled.json` 中的 `cc-MODE0` / `draft:...iter3` 待处理 | A3 处理 `incremental-check.*`；A1 处理 `job.cancelled.json` |
 
 ### 更正：B2 分支的合并前置条件已失效（A1，2026-09-21）
 
