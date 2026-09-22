@@ -7,6 +7,14 @@
 
 ## [Unreleased]
 
+### 修复：A3 artifact 在 Windows 下的完整性校验
+
+- 修复 Issue #19：EChecker 的两份文本 artifact 在 Windows 检出为 CRLF 时，
+  工作区字节数与仓库中的 LF blob 不同，导致 `size_bytes` / `sha256` 测试失败。
+- 在 `.gitattributes` 中将两份 artifact 固定为 LF，并让专项测试按 UTF-8/LF
+  规范字节计算大小与 SHA-256；样例中原有的规范元数据保持不变。
+- `echecker-contract.md` 明确记录完整性字段的计算口径。
+
 ### 新增：B3 MDFixer 候选补丁拒绝判据
 
 | 文件 | 内容 |

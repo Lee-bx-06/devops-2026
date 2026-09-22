@@ -1,1 +1,3 @@
 docs/interfaces/artifacts/** -text
+docs/interfaces/samples/artifact.incremental-actual-graph.json text eol=lf
+docs/interfaces/samples/artifact.incremental-error-report-body.json text eol=lf

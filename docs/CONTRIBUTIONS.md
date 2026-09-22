@@ -156,7 +156,9 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 - **内容提交**：`f8a7fe9`（可执行契约）
 - **设计记录提交**：`e86ad0e`（BACKLOG / CHANGELOG / ADR-010 同步）
 - **环境一致性收尾提交**：`a45c3b7`
+- **跨平台 artifact 完整性修复提交**：`703aca5`
 - **关联 Issue**：[#7](https://github.com/Lee-bx-06/devops-2026/issues/7)
+- **缺陷 Issue**：[#19](https://github.com/Lee-bx-06/devops-2026/issues/19)
 - **PR**：[#8](https://github.com/Lee-bx-06/devops-2026/pull/8)（已合并）
 - **合并提交**：`f1d3dbb`
 
@@ -169,6 +171,7 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | EChecker ADR | `adr/ADR-008-incremental-baseline-and-finding-diff.md` | `f8a7fe9` | Issue #7 / PR #8 | 记录历史报告、finding 身份、祖先关系和无基线策略；B3/B1 已接受 |
 | 项目状态同步 | `BACKLOG.md`、`CHANGELOG.md`、`adr/ADR-010-…md` | `e86ad0e` | Issue #7 / PR #8 | A3 状态、上游消费结论和新增基线字段均已登记 |
 | A3 专项测试 | `tests/test_echecker_contract.py` | `f8a7fe9` | Issue #7 / PR #8 | 12 项专项测试通过；全仓测试结果以实际运行为准 |
+| 跨平台 artifact 完整性校验 | `.gitattributes`、`tests/test_echecker_contract.py`、`interfaces/echecker-contract.md` | `703aca5` | Issue #19 | 固定两份 artifact 为 LF，并按 UTF-8/LF 规范字节校验大小与 SHA-256，避免 Windows CRLF 造成误报 |
 
 ## 其它分支
 
