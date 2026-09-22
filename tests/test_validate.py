@@ -77,28 +77,19 @@ class TestDocsDoNotRot(unittest.TestCase):
         self.assertEqual(int(m_neg.group(1)), neg,
                          f"VALIDATION.md 写负例 {m_neg.group(1)} 个，实际 {neg} 个")
 
-    def test_test_count_in_validation_md_matches_reality(self):
-        """README 与 VALIDATION.md 若写了测试项数，必须与实际一致。"""
-        actual = sum(1 for _ in _iter_test_ids())
+    def test_no_document_pins_a_total_test_count(self):
+        """测试总数不得写进任何文档。
+
+        与样例数不同，测试数没有单一来源可言——每个人加测试都会让它过时，
+        而且多份并行 PR 必然在同一行冲突（本仓库已发生过：A1 写 41、A2 改 56、
+        A3 改 68，三者都对，只是时点不同）。数量以实际运行为准。
+        """
         for doc in ("README.md", "docs/VALIDATION.md"):
             text = (ROOT / doc).read_text(encoding="utf-8")
-            for m in re.finditer(r"(\d+)\s*项单元测试", text):
-                self.assertEqual(int(m.group(1)), actual,
-                                 f"{doc} 写「{m.group(1)} 项单元测试」，实际 {actual} 项")
-
-
-def _iter_test_ids():
-    loader = unittest.TestLoader()
-    suite = loader.discover(str(ROOT / "tests"))
-
-    def walk(s):
-        for item in s:
-            if isinstance(item, unittest.TestSuite):
-                yield from walk(item)
-            else:
-                yield item
-
-    yield from walk(suite)
+            hits = re.findall(r"(\d+)\s*项(?:单元测试|测试)", text)
+            self.assertEqual(
+                hits, [],
+                f"{doc} 写死了测试总数 {hits}，该数字会随每次新增测试过时，请删除")
 
 
 class TestSlide25Check01FourJobTypes(unittest.TestCase):
