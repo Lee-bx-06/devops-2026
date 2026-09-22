@@ -231,7 +231,7 @@ FULL_CHECK → MDFixer 那半没动。现由该测试文件断言：
 
 正例 24 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
 六种 `status` 各至少一个、独立 `artifact_record`、B2 的 DRAFT 请求/成功/失败链、
-A2 的三种 artifact 本体和零发现路径，以及 A3 更新后的实际图与报告本体。
+A2 的三种 artifact 本体和零发现路径，以及 A3、B3 更新后的实际图与报告本体。
 
 负例 24 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，
