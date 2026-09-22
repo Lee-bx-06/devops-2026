@@ -63,7 +63,7 @@
 | 与 B09 的三轮课堂交换 | ⬜ 未做 | 需课堂现场进行（第 16 页） | 每轮结束把结论写进 ADR、未决项写进本文件 |
 | Issue + PR 关联 | ✅ 已完成 | 走 fork 流程（A1 对上游无推送权限） | Issue #1 列出 11 项待确认；PR #2 承载全部 A1 交付物 |
 | B1 独立契约与 A1 版本重复 | ✅ 已收敛 | 两人同时在写「只能有一份」的公共契约 | 已移除 `e2-pair09/`，B1 转为复核方；原文可 `git show bbf818a` 取回 |
-| 加 `.gitattributes` 统一行尾 | ⬜ 未做 | 只影响 Windows 下的 LF/CRLF 警告，仓库内存储仍是 LF | 不影响验收，随时可加 |
+| 加 `.gitattributes` 统一行尾 | ✅ A3 artifact 已处理 | Windows 的 CRLF 检出会改变文本 artifact 的工作区字节数，曾导致 Issue #19 的大小与 SHA-256 测试失败 | 两份 A3 artifact 固定为 LF，测试按 UTF-8/LF 规范字节校验；其他 artifact 按各服务需要继续补充 |
 | 建 `artifacts/.gitkeep` 固定产物根目录 | ⬜ 未做 | E2 不部署服务，`artifact://` 目前只用于样例 | E3 落地产物存储前处理 |
 | B2 分支 `origin/e2b2` 合并 | ✅ **已合并，前置条件已失效** | B2 已按 schema 重写三个样例并合入 main | 见下方更正说明 |
 | DRAFT 样例两套并存、命名不统一 | ✅ 已由 B2 处理 | B2 按 `interfaces/samples/README.md` 删除重复样例，并把 `draft-failed-response.json` 改名为 `draft.job-failed.json` | 无 |
