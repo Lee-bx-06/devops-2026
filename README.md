@@ -74,7 +74,7 @@ docs/interfaces/
   errors.md                 A1 ★ 两条错误通道 + 错误码注册表（注册表由 B1 维护）
   endpoints.md              B1   五端点 + 状态迁移表（A1 起草，B1 已定稿）
   samples/README.md         A1   命名规范与 DRAFT 重复样例的处理方案
-  samples/                  A1 / A2 / A3 / B2  23 个正例（四类请求响应 + 六种状态 + 产物记录 + 五份 artifact 本体）
+  samples/                  A1 / A2 / A3 / B2 / B3  24 个正例（四类请求响应 + 六种状态 + 产物记录 + 六份 artifact 本体 + REPAIR 候选被拒样例）
   samples/invalid/          A1 / A2 / B2  24 个负例，每个声明期望的拒绝原因
 docs/adr/
   README.md                 B1   ADR 索引与编号规则
@@ -87,12 +87,12 @@ docs/adr/
   ADR-006  零依赖校验器                       A1
   ADR-007  DRAFT 与 BuildChecker 环境交接      B2   Accepted
   ADR-008  EChecker 基线与 finding 差集         A3   Accepted，PR #8 已合并
+  ADR-009  MDFixer 候选补丁接受与拒绝判据       B3   Accepted，PR #20 已合并
   ADR-010  状态迁移形式化 + 基线一致性归属      A1   Proposed，待 B1 评审
   ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，待 A3/B3/B1 复核
-  （009 预留给 B3）
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
-docs/AI_USAGE.md            A1/B1/B2/A2/A3  第 14 页格式，真实判断记录
-docs/CONTRIBUTIONS.md       A1/B1/B2/A2/A3  作者、提交 SHA、Issue/PR
+docs/AI_USAGE.md            A1/B1/B2/A2/A3/B3  第 14 页格式，真实判断记录
+docs/CONTRIBUTIONS.md       A1/B1/B2/A2/A3/B3  作者、提交 SHA、Issue/PR
 docs/VALIDATION.md          A1   校验了什么、**没**校验什么
 docs/versioning.md          B1   版本规则、变更流程、消费者清单
 docs/CHANGELOG.md           B1   契约变更记录与待处理表
