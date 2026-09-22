@@ -69,7 +69,7 @@
 | B2 分支 `origin/e2b2` 合并 | ✅ **已合并，前置条件已失效** | B2 已按 schema 重写三个样例并合入 main | 见下方更正说明 |
 | DRAFT 样例两套并存、命名不统一 | ✅ 已由 B2 处理 | B2 按 `interfaces/samples/README.md` 删除重复样例，并把 `draft-failed-response.json` 改名为 `draft.job-failed.json` | 无 |
 | `configuration_id` 取值两组不一致 | ✅ 已定，🟡 迁移未完 | A2/B2 定为 `cc-gcc13-release-6f12a4c8`（不绑定 commit，符合 `$defs.configuration_id` 定义），A1 初版的 `cc-MODE0` 退役 | A1 已迁移自己负责的 6 个样例；剩余见下三行 |
-| `job.running.json`、`job.baseline-mismatch-failed.json` 仍用 `cc-MODE0` + tag 形式镜像 | 🟡 待 A3 | A3 的 PR #8 迁移了 `incremental-check.*` 两个文件，但漏了这两个同为 INCREMENTAL_CHECK 的样例 | 请 A3 在 PR #8 上补；已登记在 `tests/test_cross_document_consistency.py` 的 `KNOWN_ENV_DEVIATIONS` |
+| `job.running.json`、`job.baseline-mismatch-failed.json` 仍用 `cc-MODE0` + tag 形式镜像 | ✅ 已由 A3 处理 | 两个 INCREMENTAL_CHECK 样例的环境和 baseline 配置已迁移到规范值 | PR #8 已补齐，并从 `tests/test_cross_document_consistency.py` 的 `KNOWN_ENV_DEVIATIONS` 移除 |
 | `full-check.clean-project.json` 的 `image_uri` 与 `configuration_id` 不自洽 | 🟡 待 A2 裁定 | 用了 `draft:9f8e7d6c-iter4`（tag 形式）却配 `cc-gcc13-release-6f12a4c8`。按 A2 自己写的 `$defs.configuration_id` 定义「只随基础镜像、工具链、依赖集或构建参数变化」，镜像不同则该 ID 应不同；反之若 ID 相同则镜像应与规范值一致 | 二者必居其一，由 A2 决定；A1 不擅自改 A2 的样例 |
 | 跨文档一致性无守卫 | ✅ 已补 | 单文档校验看不出「同一 artifact 在两个文件里描述不同」，`artifact-full09-error-report` 的 `configuration_id` 曾有两种取值而 `make check` 全绿 | 新增 `tests/test_cross_document_consistency.py`；已知偏差登记在 `KNOWN_ENV_DEVIATIONS`，登记表收缩即在此勾掉 |
 | README 写死测试总数导致多份 PR 冲突 | ✅ 已消除 | A1 写 41、A2 改 56、A3 改 68，三者都对只是时点不同，且必然在同一行冲突 | README 不再写总数，改由 `TestDocsDoNotRot` 断言「任何文档不得写死测试总数」；样例数仍以 `VALIDATION.md` 第五节为唯一来源 |

@@ -21,8 +21,8 @@
       "branch": "main"
     },
     "environment": {
-      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "configuration_id": "cc-MODE0"
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     },
     "build": {
       "command": "make all",
@@ -33,7 +33,7 @@
       "actual_graph_uri": "artifact://pair09/job-full07/actual.json",
       "error_report_uri": "artifact://pair09/job-full07/error-report.json",
       "commit": "ffffffffffffffffffffffffffffffffffffffff",
-      "configuration_id": "cc-MODE0"
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     }
   },
   "output": {},
