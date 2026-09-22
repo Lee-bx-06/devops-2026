@@ -501,6 +501,35 @@ class TestSchemaAndValidatorAgree(unittest.TestCase):
         with (ROOT / "docs" / "interfaces" / "task.schema.json").open(encoding="utf-8") as fh:
             json.load(fh)
 
+    def test_kinds_do_not_drift_from_the_schema_oneof(self):
+        """ADR-006 的防漂移原则：校验器不得硬编码 schema 已经声明的东西。
+
+        `KINDS` 是个例外——A2 扩展时把它拆成 `ENVELOPE_KINDS` 与
+        `ARTIFACT_BODY_KINDS` 两组以便区别处理，而 schema 里没有这个区分，
+        无法直接派生。既然必须硬编码，就用本断言钉住它与 schema 顶层
+        `oneOf` 的集合相等：往 schema 加第七个 kind 而忘了改校验器时，
+        这里会红，而不是让该 kind 的文档被静默判为「kind 非法」。
+        """
+        with (ROOT / "docs" / "interfaces" / "task.schema.json").open(encoding="utf-8") as fh:
+            oneof = {branch["$ref"].split("/")[-1] for branch in json.load(fh)["oneOf"]}
+        envelope = set(validate.ENVELOPE_KINDS)
+        bodies = set(validate.ARTIFACT_BODY_KINDS)
+        self.assertEqual(set(validate.KINDS), oneof,
+                         "validate.py 的 KINDS 与 schema 顶层 oneOf 不一致")
+        self.assertEqual(envelope | bodies, oneof)
+        self.assertFalse(envelope & bodies, "两组 kind 不得重叠")
+
+    def test_every_kind_has_schema_definitions(self):
+        """Schema 类按 KINDS 从 $defs 取 properties/required，缺一个就会 KeyError。
+
+        显式断言一次，让失败信息指向真正的原因（有人加了 kind 但没写 $defs），
+        而不是抛一个难以定位的 KeyError。
+        """
+        for kind in validate.KINDS:
+            with self.subTest(kind=kind):
+                self.assertTrue(SCHEMA.envelope_fields.get(kind), f"{kind} 在 $defs 里没有 properties")
+                self.assertTrue(SCHEMA.envelope_required.get(kind), f"{kind} 在 $defs 里没有 required")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
