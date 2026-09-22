@@ -23,6 +23,11 @@ def load(name):
         return json.load(stream)
 
 
+def canonical_text_bytes(path):
+    """Return the UTF-8/LF bytes used for textual artifact integrity metadata."""
+    return path.read_text(encoding="utf-8").encode("utf-8")
+
+
 def errors_of(document, name="mutated.json"):
     return VALIDATOR.validate(document, name)
 
@@ -221,8 +226,9 @@ class TestIncrementalResult(unittest.TestCase):
         self.assertEqual(body["commit"], job["input"]["repository"]["commit"])
 
         graph_path = SAMPLES / "artifact.incremental-actual-graph.json"
-        self.assertEqual(updated["size_bytes"], graph_path.stat().st_size)
-        self.assertEqual(updated["sha256"], hashlib.sha256(graph_path.read_bytes()).hexdigest())
+        graph_bytes = canonical_text_bytes(graph_path)
+        self.assertEqual(updated["size_bytes"], len(graph_bytes))
+        self.assertEqual(updated["sha256"], hashlib.sha256(graph_bytes).hexdigest())
 
     def test_current_error_report_is_the_b3_handoff(self):
         job = load("incremental-check.job-succeeded.json")
@@ -250,9 +256,10 @@ class TestIncrementalResult(unittest.TestCase):
             if artifact["type"] == "ERROR_REPORT"
         )
         report_path = SAMPLES / "artifact.incremental-error-report-body.json"
-        self.assertEqual(report_record["size_bytes"], report_path.stat().st_size)
+        report_bytes = canonical_text_bytes(report_path)
+        self.assertEqual(report_record["size_bytes"], len(report_bytes))
         self.assertEqual(
-            report_record["sha256"], hashlib.sha256(report_path.read_bytes()).hexdigest()
+            report_record["sha256"], hashlib.sha256(report_bytes).hexdigest()
         )
 
 

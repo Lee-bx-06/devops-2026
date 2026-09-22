@@ -170,6 +170,10 @@ EChecker 同时生成 C1 的 `ERROR_REPORT` artifact：
 
 报告本体样例：`samples/artifact.incremental-error-report-body.json`。
 
+两份 JSON artifact 的 `size_bytes` 与 `sha256` 均基于 UTF-8 编码、LF 换行的
+规范字节计算。消费者应校验下载到的 artifact 字节；仓库测试会先把文本换行规范为
+LF，避免 Windows 工作区的 CRLF 自动转换改变校验结果。
+
 ## 八、状态与失败路径
 
 - 检出 MD/RD：`SUCCEEDED + error=null`，findings 是正常分析结果。
