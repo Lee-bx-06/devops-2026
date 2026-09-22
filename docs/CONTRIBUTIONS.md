@@ -117,7 +117,7 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 ### 第三段：版本裁定与 ADR-010 / ADR-011 复核（2026-09-22）
 
 - **作者**：李秉轩（Git 作者 `Lee-bx-06 <1928172695@qq.com>`）
-- **内容提交**：`<SHA>`（回填于后一次提交）
+- **内容提交**：`08dd1eefbec18b3bdd215b79b907c3a9a80e934b`（短 `08dd1ee`；回填提交紧随其后）
 - **关联 Issue**：[#1](https://github.com/Lee-bx-06/devops-2026/issues/1)
   （Issue #1 两个未勾选项中的 B1 项）
 - **起因**：`CHANGELOG.md` 待处理表第 6、7 项与 ADR-010 第五节各自点名要 B1 给结论；
@@ -125,13 +125,13 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| 三条 `schema_version` 裁定（维持 1.0.0）与判据 | `versioning.md` 第七节、`CHANGELOG.md` | `<SHA>` | Issue #1 | 未改动 `schema_version`，样例与校验器无需变更；`make check` 全绿 |
-| `endpoints.md` 硬规则 2 修订 | `interfaces/endpoints.md` | `<SHA>` | Issue #1 | 与迁移表第三行一致；`TestTransitionTiming` 七条通过 |
-| ADR-010 评审与状态 | `adr/ADR-010-transition-timing-and-baseline-ownership.md`、`adr/README.md` | `<SHA>` | Issue #1 | 四条待评审项逐条给出结论；状态 `Proposed → Accepted` |
-| ADR-011 的 B1 复核项 | `adr/ADR-011-buildchecker-output-contract.md`、`adr/README.md` | `<SHA>` | Issue #1 | 版本影响项已定；其余三项待 A2/B3/B2 在 Issue #1 确认 |
-| 错误码注册表复核关闭 | `interfaces/errors.md` 第五节 | `<SHA>` | Issue #1 | 四条待复核全部关闭，注册表定稿为八个码 |
-| 新增正例与计数同步 | `interfaces/samples/job.failed-before-start.json`、`VALIDATION.md`、`README.md` | `<SHA>` | Issue #1 | `test_counts_in_validation_md_match_the_files` 通过（正例 25） |
-| 设计过程记录 | `AI_USAGE.md` 条目 28–30 | `<SHA>` | Issue #1 | 第 14 页格式，三处人工判断均写明 |
+| 三条 `schema_version` 裁定（维持 1.0.0）与判据 | `versioning.md` 第七节、`CHANGELOG.md` | `08dd1ee` | Issue #1 | 未改动 `schema_version`，样例与校验器无需变更；`make check` 全绿 |
+| `endpoints.md` 硬规则 2 修订 | `interfaces/endpoints.md` | `08dd1ee` | Issue #1 | 与迁移表第三行一致；`TestTransitionTiming` 七条通过 |
+| ADR-010 评审与状态 | `adr/ADR-010-transition-timing-and-baseline-ownership.md`、`adr/README.md` | `08dd1ee` | Issue #1 | 四条待评审项逐条给出结论；状态 `Proposed → Accepted` |
+| ADR-011 的 B1 复核项 | `adr/ADR-011-buildchecker-output-contract.md`、`adr/README.md` | `08dd1ee` | Issue #1 | 版本影响项已定；其余三项待 A2/B3/B2 在 Issue #1 确认 |
+| 错误码注册表复核关闭 | `interfaces/errors.md` 第五节 | `08dd1ee` | Issue #1 | 四条待复核全部关闭，注册表定稿为八个码 |
+| 新增正例与计数同步 | `interfaces/samples/job.failed-before-start.json`、`VALIDATION.md`、`README.md` | `08dd1ee` | Issue #1 | `test_counts_in_validation_md_match_the_files` 通过（正例 25） |
+| 设计过程记录 | `AI_USAGE.md` 条目 28–30 | `08dd1ee` | Issue #1 | 第 14 页格式，三处人工判断均写明 |
 
 本段同时新增了一条版本判据（`versioning.md` 第七节「冻结期内的补齐与破坏性变更」），
 依据是第 7 页「E2 先定义，不要求部署 API」与第 26 页「改字段之前先考虑消费者」。

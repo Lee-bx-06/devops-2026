@@ -46,6 +46,9 @@ B1 按 `versioning.md` 完成 Issue #1 指定的版本裁定，修订 `endpoints
 | `interfaces/samples/job.failed-before-start.json` | 新增正例：`QUEUED→FAILED`，`started_at` 与 `duration_ms` 为 `null` |
 | `VALIDATION.md`、`README.md` | 正例数随之更新为 25 |
 
+状态：内容提交 `08dd1ee`（分支 `b1-version-ruling`），提交说明与追溯见
+`CONTRIBUTIONS.md`「B1 提交追溯」第三段。
+
 ### 修复：A3 artifact 在 Windows 下的完整性校验
 
 - 修复 Issue #19：EChecker 的两份文本 artifact 在 Windows 检出为 CRLF 时，
