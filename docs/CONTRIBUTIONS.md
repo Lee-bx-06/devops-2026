@@ -114,6 +114,29 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 本节的 SHA 在提交 `bcf217e` 之后回填，回填动作本身构成一次追加提交。
 沿用 A1 的做法：表内 SHA 指向**交付内容所在的那次提交**，不是回填提交本身。
 
+### 第三段：版本裁定与 ADR-010 / ADR-011 复核（2026-09-22）
+
+- **作者**：李秉轩（Git 作者 `Lee-bx-06 <1928172695@qq.com>`）
+- **内容提交**：`<SHA>`（回填于后一次提交）
+- **关联 Issue**：[#1](https://github.com/Lee-bx-06/devops-2026/issues/1)
+  （Issue #1 两个未勾选项中的 B1 项）
+- **起因**：`CHANGELOG.md` 待处理表第 6、7 项与 ADR-010 第五节各自点名要 B1 给结论；
+  Issue #1 把两件事合并成一条 B1 待办
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| 三条 `schema_version` 裁定（维持 1.0.0）与判据 | `versioning.md` 第七节、`CHANGELOG.md` | `<SHA>` | Issue #1 | 未改动 `schema_version`，样例与校验器无需变更；`make check` 全绿 |
+| `endpoints.md` 硬规则 2 修订 | `interfaces/endpoints.md` | `<SHA>` | Issue #1 | 与迁移表第三行一致；`TestTransitionTiming` 七条通过 |
+| ADR-010 评审与状态 | `adr/ADR-010-transition-timing-and-baseline-ownership.md`、`adr/README.md` | `<SHA>` | Issue #1 | 四条待评审项逐条给出结论；状态 `Proposed → Accepted` |
+| ADR-011 的 B1 复核项 | `adr/ADR-011-buildchecker-output-contract.md`、`adr/README.md` | `<SHA>` | Issue #1 | 版本影响项已定；其余三项待 A2/B3/B2 在 Issue #1 确认 |
+| 错误码注册表复核关闭 | `interfaces/errors.md` 第五节 | `<SHA>` | Issue #1 | 四条待复核全部关闭，注册表定稿为八个码 |
+| 新增正例与计数同步 | `interfaces/samples/job.failed-before-start.json`、`VALIDATION.md`、`README.md` | `<SHA>` | Issue #1 | `test_counts_in_validation_md_match_the_files` 通过（正例 25） |
+| 设计过程记录 | `AI_USAGE.md` 条目 28–30 | `<SHA>` | Issue #1 | 第 14 页格式，三处人工判断均写明 |
+
+本段同时新增了一条版本判据（`versioning.md` 第七节「冻结期内的补齐与破坏性变更」），
+依据是第 7 页「E2 先定义，不要求部署 API」与第 26 页「改字段之前先考虑消费者」。
+它只适用于尚无消费者的窗口，边界已在该节写明。
+
 ## B2 提交追溯
 
 - **Commit SHA**：`a587263bd82b88526769732004540c7766bd75b1`
@@ -273,8 +296,10 @@ OK
 ## 待补
 
 - [x] A3 的正式姓名与学号（朱鸣涛 / `241250048`）
-- [ ] B09 三位成员的姓名与学号（由 B1 填写）
+- [ ] B1 与 B2 的学号，以及 B2 的正式姓名（B3 = 赵心泉 / `241250068` 已齐；由本人在 Issue #1 补充）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
 - [ ] 三轮课堂交换的结论（第 16 页）落到 ADR 与 BACKLOG
-- [ ] PR #2 合并后，把 B1 复核结论回写到各 ADR 的「待 B1 复核」清单
+- [x] PR #2 合并后，把 B1 复核结论回写到各 ADR 的「待 B1 复核」清单
+  —— 2026-09-22 完成：ADR-010 与 ADR-011 的复核清单、`errors.md` 第五节
+  （见上方「B1 提交追溯」第三段）

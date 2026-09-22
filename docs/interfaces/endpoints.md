@@ -2,6 +2,7 @@
 
 小组 A09 / 配对组 第 9 组（pair09） ｜ 契约版本 1.0.0
 **负责人：B1** ｜ 本页由 A1 依第 7、27 页起草，供 B1 复核后定稿
+（2026-09-21 B1 复核定稿；2026-09-22 B1 修订「状态迁移」硬规则 2，修订记录见该节末）
 **E2 只定义契约，不要求部署 API（第 7 页）**——本页描述的是协议形状，不是已运行的服务。
 
 ## 一、四个创建端点 + 一个查询端点（第 27 页）
@@ -106,18 +107,32 @@ Content-Type: application/json
 | `RUNNING` | 超过时间限制 | `TIMED_OUT` | `error.code = EXEC_4002` |
 | `RUNNING` | 执行中取消 | `CANCELLED` | —— |
 
-三条硬规则：
+三条硬规则（第 2 条于 2026-09-22 修订，见本节末的修订记录）：
 
 1. **终态不可再迁移。** 同一 `job_id` 的状态只沿上表前进，不回退，也不从终态回到非终态。
-2. **`RUNNING` 不可跳过。** 任务是长耗时操作，从 `QUEUED` 直达终态意味着执行器没有记录开始时间，
-   `execution.started_at` 会缺失，而它是判断超时归属的凭据。
+2. **`SUCCEEDED` 与 `TIMED_OUT` 不可跳过 `RUNNING`，必须有 `execution.started_at`；
+   `FAILED` 与 `CANCELLED` 允许从 `QUEUED` 直达，此时 `started_at` 为 `null`。**
+   原表述是「`RUNNING` 不可跳过」，与迁移表第三行（`QUEUED` + 环境准备失败 → `FAILED`）
+   直接冲突：该任务从未被执行器领取，`started_at` 只能是 `null`。
+   收窄后规则的本意完整保留——判断超时归属靠的是 `started_at`，
+   而超时只可能是 `TIMED_OUT`，`TIMED_OUT` 仍必须有 `started_at`。
+   论证与替代方案见 `../adr/ADR-010` 第二节。
 3. **`retryable` 为 `true` 时重试产生新的 `attempt`，不产生新 `job_id`。** 见
    `task.schema.json` 的 `execution.attempt`。客户端重试则用同一个 `idempotency_key` 重放创建请求。
+
+#### 修订记录
+
+| 日期 | 修订人 | 内容 | 依据 |
+| --- | --- | --- | --- |
+| 2026-09-21 | B1 | 补入本节的迁移表与三条硬规则 | 第 5、8 页 |
+| 2026-09-22 | B1 | 硬规则 2 由「`RUNNING` 不可跳过」收窄为「`SUCCEEDED` 与 `TIMED_OUT` 不可跳过」。迁移表未改动 | `../adr/ADR-010` 第二节；迁移表第三行 |
 
 状态流转样例：`samples/job.accepted-queued.json` → `samples/job.running.json` →
 `samples/full-check.job-succeeded.json`；失败路径见 `samples/job.failed.json`、
 `samples/job.timed-out.json`、`samples/job.analysis-failed.json`、
-`samples/job.baseline-mismatch-failed.json`；取消见 `samples/job.cancelled.json`。
+`samples/job.baseline-mismatch-failed.json`；未进入 `RUNNING` 就终了的
+`samples/job.failed-before-start.json`（`QUEUED→FAILED`，`started_at` 为 `null`）；
+取消见 `samples/job.cancelled.json`。
 
 ## 四、产物读取（第 24 页，翻车点 #3）
 
@@ -134,7 +149,7 @@ artifact://pair09/{job_id}/{name}
 `pair09` = A09 与 B09 的共享命名空间（第 15 页要求接口文件写明配对组编号）。
 写成其他命名空间会被校验器拒绝，见 `samples/invalid/foreign-artifact-uri.json`。
 
-解析方式（A1 提案，**待 B1 复核**）：
+解析方式（A1 提案，B1 于 2026-09-21 复核**接受**）：
 
 ```http
 GET /v1/artifacts/{artifact_id}
@@ -178,14 +193,18 @@ E12 时任何一方实现都能对接。
 | 3 | 认证、分页、批量查询是否需要 | **E2 不做，E3 再定** | 第 7 页明确 E2 不部署 API。这三项属于部署期问题，现在约定会凭空增加四组的实现负担。E3 需要时按 `../versioning.md` 第四节走 MINOR 变更补入 |
 | 4 | 端点与 `job_type` 不一致时的错误码归属 | **归 `VALIDATION_2001`** | 端点与请求体不一致属于请求结构性违规，按 ADR-005 走创建期同步拒绝，返回 HTTP 400 且不产生 Job，因此不属于 `job.error` 的范畴。`VALIDATION_2xxx` 的适用范围见 `errors.md` 第二节 |
 
-### 一条需要教师确认的有意偏离
+### 一条有意偏离课件样例的写法（组内已定案）
 
 第 24 页的样例是 `artifact://pair01/full01/actual.json`，其中 `full01` 不是合法 `job_id`
 （本契约的 `job_id` 形如 `job-full09`）。若沿用课件写法，URI 与 `job_id` 无法用同一条正则校验，
 `artifact_record.producer_job_id` 与 URI 也对不上号。
 
 本组改为 `artifact://pair09/job-full09/actual.json`，属**对课件样例的有意偏离**，
-已记入 `../CHANGELOG.md` 的待处理表，请教师在课上确认。若被驳回，需要同步修改
+已记入 `../CHANGELOG.md` 的待处理表。
+
+2026-09-22 的组内结论（Issue #1）：课件第 24 页的 URI 是示例，A1 与 B1 均认可本写法，
+把它作为 **A09/B09 的组内协议**采用，不再列为「等教师批准才能继续」的阻塞项。
+仍建议在课上向教师说明这是一处有意偏离。若被驳回，需要同步修改
 `task.schema.json` 的 `artifact_uri` 模式、相关样例与 `tools/validate.py`。
 
 ### 第 5 页的交接验收清单

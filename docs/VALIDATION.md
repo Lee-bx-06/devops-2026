@@ -79,7 +79,9 @@ python3 tools/validate.py ../B09/their-response.json
 
 `FAILED` / `CANCELLED` 允许 `started_at` 为 `null`，对应 B1 迁移表里
 `QUEUED → FAILED`（受理后环境准备失败）与 `QUEUED → CANCELLED`（队列中取消）
-这两条从未进入 `RUNNING` 的路径。论证见 ADR-010 第二节。
+这两条从未进入 `RUNNING` 的路径。论证见 ADR-010 第二节；
+`QUEUED → FAILED` 这一形态的独立正例是 `samples/job.failed-before-start.json`
+（B1 于 2026-09-22 补，此前只有测试里的变异断言覆盖）。
 
 ### 错误码命名空间（第 9 页 + B1 于 2026-09-21 的边界限定）
 
@@ -229,9 +231,10 @@ FULL_CHECK → MDFixer 那半没动。现由该测试文件断言：
 
 ## 五、样例清单
 
-正例 24 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
+正例 25 个（`docs/interfaces/samples/`）：四类 `job_type` 各一对请求/响应、
 六种 `status` 各至少一个、独立 `artifact_record`、B2 的 DRAFT 请求/成功/失败链、
-A2 的三种 artifact 本体和零发现路径，以及 A3、B3 更新后的实际图与报告本体。
+A2 的三种 artifact 本体和零发现路径、A3、B3 更新后的实际图与报告本体，
+以及 B1 补的 `QUEUED→FAILED` 正例（`job.failed-before-start.json`）。
 
 负例 24 个（`docs/interfaces/samples/invalid/`），每个带 `expected_error`
 声明**期望的拒绝原因**；校验器不仅要求它被拒，还要求拒绝理由与声明相符，

@@ -7,6 +7,45 @@
 
 ## [Unreleased]
 
+### B1 版本裁定与复核（2026-09-22）
+
+B1 按 `versioning.md` 完成 Issue #1 指定的版本裁定，修订 `endpoints.md` 硬规则 2，
+并关闭 `errors.md` 与 ADR 上挂在自己名下的待复核项。本仓库的约定是「版本号归 B1 维护」，
+本节即该职权的行使记录。
+
+**裁定：三处变更均维持 `schema_version = 1.0.0`，不递增。**
+
+| # | 变更 | 来源 | 按 `versioning.md` 第一节的字面归类 | 裁定 |
+| --- | --- | --- | --- | --- |
+| 1 | `error.code` 收紧为 `job_error_code` / `request_error_code` 两个正则 | A1，ADR-010 | 改动 `error.code`，列为可能破坏兼容 | **不递增** |
+| 2 | `output_repair.rejected_candidates[].reason_code` 与 `output_repair.findings[].status` 引入封闭 enum | B3，ADR-009 / PR #20 | 取值集由开放收紧为封闭 | **不递增** |
+| 3 | 新增三种 artifact 本体 `kind`：`actual_graph` / `declared_graph` / `error_report` | A2，ADR-011 / PR #6 | 新增产物类型，列为 MINOR | **不递增** |
+
+共同理由：三处都落在**契约尚无任何消费者**的窗口内。第 7 页明确 E2 不部署 API，
+仓库外没有任何一方按 1.0.0 解析过这些文档，因此不存在「旧版本被解析之后语义改变」的场景。
+逐条补充：
+
+- 变更 1 是让 schema 符合 1.0.0 内 `errors.md` 已定稿的规则，规范本身没变（ADR-010 第五节）。
+- 变更 2 落在 B3 自己所有的 `output` 载荷内（ADR-004 第三节），消费者是 MDFixer 一方，
+  封闭取值同时写进 `task.schema.json` 与 `tools/validate.py`，没有跨组破坏。
+- 变更 3 只新增 `kind` 取值，不改既有取值的含义，属第 26 页「可兼容变化」一侧。
+
+**首次有服务按 1.0.0 消费之后，同样性质的变更必须按 `versioning.md` 第一节递增。**
+本判据、三条裁定的完整论证，以及「若日后改判为递增需要同步修改的五个位置」，
+见 `versioning.md` 第七节。
+
+本节落点：
+
+| 文件 | 变更 |
+| --- | --- |
+| `interfaces/endpoints.md` | 硬规则 2 收窄为「`SUCCEEDED` 与 `TIMED_OUT` 不可跳过 `RUNNING`」，并留修订记录；第四节去掉「待 B1 复核」标注 |
+| `adr/ADR-010-…md` | 状态 `Proposed` → `Accepted`，四条待评审项逐条给出结论 |
+| `adr/ADR-011-…md` | 「待复核」改为复核状态表；B1 的版本影响项已定，其余三项待本人确认 |
+| `adr/README.md` | 索引中 010 状态更新；011 注明 B1 项已完成 |
+| `interfaces/errors.md` | 第五节「待 B1 复核」四条全部关闭，注册表定稿为八个码 |
+| `interfaces/samples/job.failed-before-start.json` | 新增正例：`QUEUED→FAILED`，`started_at` 与 `duration_ms` 为 `null` |
+| `VALIDATION.md`、`README.md` | 正例数随之更新为 25 |
+
 ### 修复：A3 artifact 在 Windows 下的完整性校验
 
 - 修复 Issue #19：EChecker 的两份文本 artifact 在 Windows 检出为 CRLF 时，
@@ -132,17 +171,18 @@ A3 的四项偏差已在 PR #8 中完成迁移，并由提交 `a45c3b7` 从
 
 ### 待处理
 
-| # | 事项 | 需要谁给结论 | 影响 |
+| # | 事项 | 需要谁给结论 | 状态与影响 |
 |---|---|---|---|
-| 1 | `artifact://pair09/{job_id}/{name}` 用完整 `job_id` 是对第 24 页样例的有意偏离 | 教师确认 | 若被驳回，`artifact_uri` 模式、样例与校验器三处要同步改 |
-| 2 | 错误码注册表 `VALIDATION_2xxx` 命名空间为 A09/B09 自行扩展，非第 9 页给定 | 教师或助教确认 | 影响创建期拒绝的表示方式 |
-| 3 | `execution` 字段在第 19 页被列为公共字段但全篇未定义，现定义由 A1 给出 | A2、A3、B2、B3 确认可用 | 若服务侧需要更多计时字段，属可兼容扩展 |
-| 4 | `input` / `output` 内部字段由四个服务负责人最终确认 | A2、A3、B2、B3 | 见 Issue #1 第三节 |
-| 5 | 产物读取接口在 E2 不部署，E3 是否需要落地实现 | 全组 | 见 `interfaces/endpoints.md` 第四节 |
-| 6 | 收紧 `job.error.code`（上表 A1 变更第 1 项）是否需要递增 `schema_version` | **B1 裁定** | A1 判断不递增：1.0.0 的 `errors.md` 从未允许 `VALIDATION_2xxx` 进 `job.error`，是 schema 正则写宽了，本次是让 schema 符合已定稿规范。但 `versioning.md` 第二节把「改动 `error.code`」列在破坏兼容栏。若 B1 判定需递增，A1 将同步改 `const`、全部 38 个样例与测试。论证见 ADR-010 第五节 |
-| 7 | `endpoints.md`「状态迁移」硬规则 2 与迁移表第三行冲突（`QUEUED→FAILED` vs「`RUNNING` 不可跳过」） | **B1 修订** | A1 建议收窄硬规则 2 为「`SUCCEEDED` 与 `TIMED_OUT` 不可跳过 `RUNNING`」，保留 `QUEUED→FAILED` 路径。规则本意（超时归属可判定）不受影响。见 ADR-010 第二节 |
-| 8 | `configuration_id` 取值两组不一致：A1 用第 22 页原文的 `cc-MODE0`，B2 用 `draft-gcc13-release-9f8e7d6c` | B2 定格式、A2 定消费方式 | 该值必须全组统一，否则 DRAFT → BuildChecker 的环境交接对不上（第 21、22 页）。见 `interfaces/samples/README.md` 第四节 |
-| 9 | DRAFT 样例两套并存、命名规范不统一 | **B2 执行** | A1 未擅自改名，因三个文件被 B2 的 `ADR-007` 与 `CONTRIBUTIONS.md` 引用。方案见 `interfaces/samples/README.md` 第五节 |
+| 1 | `artifact://pair09/{job_id}/{name}` 用完整 `job_id` 是对第 24 页样例的有意偏离 | 教师（知情项，不阻塞） | 组内已定案：A1 与 B1 于 2026-09-22 认可为组内协议（Issue #1）。若教师在课上驳回，`artifact_uri` 模式、样例与校验器三处同步改，见 `interfaces/endpoints.md` 第五节 |
+| 2 | 错误码注册表 `VALIDATION_2xxx` 命名空间为 A09/B09 自行扩展，非第 9 页给定 | 教师或助教（知情项） | B1 已把适用边界限死为创建期拒绝，不写入 `job.error`；见 `interfaces/errors.md` 第二节与第五节 |
+| 3 | ADR-011 的消费侧复核 | A2、B3、B2 | 三方的复核项内容均已由各自 PR 落实（#6 / #20 / #5），本人在 Issue #1 确认后 ADR-011 由 `Proposed` 改 `Accepted` |
+| 4 | `full-check.clean-project.json` 的 `image_uri`（iter4 tag）与 `configuration_id`（规范值）是否自洽 | A2 裁定 | `KNOWN_ENV_DEVIATIONS` 中唯一未消除的偏差，二者必居其一 |
+| 5 | 产物读取接口 `GET /v1/artifacts/{artifact_id}` 是否在 E3 落地实现 | 全组（E3 决定） | E2 不部署（第 7 页）；契约已冻结，见 `interfaces/endpoints.md` 第四节 |
+
+原表的第 3 项（`execution` 定义）、第 4 项（`input` / `output` 内部字段）由四组在各自样例与
+PR 中落实；第 6 项（`schema_version`）、第 7 项（硬规则 2）已由 B1 于 2026-09-22 裁定；
+第 8 项（`configuration_id` 取值）已由 A1/A2/A3/B2 完成迁移，仅余 A2 的 `clean-project`
+一处偏差（上表第 4 项）；第 9 项（DRAFT 样例重复命名）已由 B2 完成。
 
 ## [1.0.0] - 2026-09-21
 

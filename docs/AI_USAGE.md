@@ -732,3 +732,50 @@ A2 补上 DRAFT → FULL_CHECK 的断言后，把「跨文档一致性未覆盖�
   但加「（已排除）」标注为历史选项；Consequences 按实际状态重写。
 - **关联文件**：`adr/ADR-009-patch-acceptance-criteria.md`
 - **验证**：`make check` 全绿
+
+## B1（李秉轩）第二轮记录（2026-09-22，Issue #1 收尾）
+
+### 条目 28：AI 建议三条版本裁定一并维持 1.0.0，人工要求先把判据写成规则
+
+- **工具/模型**：Codex（ChatGPT 系列编码代理）
+- **任务**：ADR-010 第五节、ADR-009（PR #20）与 ADR-011 各自留给 B1 的
+  `schema_version` 裁定——三处变更分别涉及 `error.code`、两个封闭 enum
+  和三个新增 artifact 本体 `kind`
+- **AI 建议**：一并维持 `1.0.0`。理由：第 7 页明确 E2 不部署 API，契约尚无消费者，
+  三处都属冻结前补齐；同时列出「若日后改判为递增需要同步修改的五个位置」
+- **人工判断：采纳，但要求补两件事。** ① 这条判断必须写进 `versioning.md` 成为**判据**，
+  而不是只在 `CHANGELOG.md` 留一句结论——否则 E3 服务上线后同样性质的变更会被照着
+  「不递增」办，正是第 26 页说的翻车方式；② 三条裁定要合到一份记录里，
+  不能散落在三个 ADR 的第五/末节，否则对不上 Issue #1
+- **关联文件**：`docs/versioning.md` 第七节、`docs/CHANGELOG.md`
+  「B1 版本裁定与复核（2026-09-22）」、`docs/adr/ADR-010`、`docs/adr/ADR-011`
+- **验证**：`make check` 全绿。`task.schema.json` 的 `schema_version` 未改动，
+  因此 25 个正例、24 个负例与三个测试文件都不需要返工
+
+### 条目 29：AI 起草硬规则 2 的修订措辞，人工确认保留原文与迁移表的可追溯
+
+- **工具/模型**：Codex（ChatGPT 系列编码代理）
+- **任务**：把 ADR-010 第二节的收窄结论落成 `endpoints.md` 的正式条文
+- **AI 建议**：把硬规则 2 改写为「`SUCCEEDED` 与 `TIMED_OUT` 不可跳过 `RUNNING`；
+  `FAILED` / `CANCELLED` 允许从 `QUEUED` 直达，`started_at` 为 `null`」，
+  并在该节末补一张修订记录表
+- **人工判断：采纳，并加两条约束。** ① 修订记录要写明**理由**（原表述与迁移表第三行冲突），
+  不能只写「已修订」——后来者要能判断这条规则为什么改；② 迁移表本身不动，
+  原文的规则本意（超时归属可判定）必须在正文里说明仍然成立
+- **关联文件**：`docs/interfaces/endpoints.md`、`docs/adr/ADR-010` 第二节
+- **验证**：`TestTransitionTiming` 七条通过；`samples/job.failed-before-start.json`
+  与迁移表第三行一致
+
+### 条目 30：AI 提议补「FAILED 且 started_at 为 null」的独立正例，人工确认连带更新计数
+
+- **工具/模型**：Codex（ChatGPT 系列编码代理）
+- **任务**：ADR-010 留待 B1 决定的第四项——该形态此前只有测试里的变异断言覆盖
+- **AI 建议**：新增 `samples/job.failed-before-start.json`，同时改 `VALIDATION.md`
+  与 `README.md` 的正例数
+- **人工判断：采纳。** 理由：变异断言只能证明校验器放行，别的组拿不到可直接核对的样例，
+  而第 11 页要求「用自己的例子证明双方理解一致」。连带更新计数是必须的——
+  `test_counts_in_validation_md_match_the_files` 会把漏改的文档数钉住
+- **关联文件**：`docs/interfaces/samples/job.failed-before-start.json`、
+  `docs/VALIDATION.md` 第五节、`README.md`
+- **验证**：`test_counts_in_validation_md_match_the_files` 通过（正例 25）；
+  `make check` 全绿

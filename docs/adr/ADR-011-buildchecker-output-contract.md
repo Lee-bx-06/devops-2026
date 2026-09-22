@@ -1,6 +1,7 @@
 # ADR-011：BuildChecker 输出与 artifact 本体契约
 
-- 状态：**Proposed**（A2 起草，待 A3、B3 和 B1 复核）
+- 状态：**Proposed**（A2 起草；B1 的复核项已于 2026-09-22 完成，其余三项待 A2/B3/B2
+  在 Issue #1 确认后改为 `Accepted`）
 - 日期：2026-09-21
 - 契约版本：1.0.0
 - 相关：第 9、10、21、22、23、24 页；`task.schema.json`、`buildchecker-contract.md`
@@ -113,9 +114,16 @@ findings 数。Job 内联 findings 和 ERROR_REPORT 本体应表达同一批结�
 - `samples/invalid/artifact.actual-graph-relative-root.json`
 - `tests/test_buildchecker_contract.py`
 
-## 待复核
+## 复核状态（截至 2026-09-22）
 
-- A3：历史实际图还需要哪些字段才能作为 baseline。
-- B3：MDFixer 消费 ERROR_REPORT 时是否需要额外字段。
-- B1：新增三种 artifact 本体是否按 MINOR 还是保持 1.0.0 冻结前补齐。
-- B2：DRAFT 输出的 `environment` / `build` 必须与 FULL_CHECK 输入使用同一语义。
+| 复核人 | 复核项 | 状态 | 依据 |
+| --- | --- | --- | --- |
+| B1 | 新增三种 artifact 本体是否按 MINOR 还是保持 1.0.0 冻结前补齐 | **已定：维持 `1.0.0`** | 三处变更一并裁定，理由与落地清单见 `../versioning.md` 第七节 |
+| A3 | 历史实际图还需要哪些字段才能作为 baseline | 内容已落实，待本人在 Issue #1 确认 | `interfaces/echecker-contract.md` 与 ADR-008 已把 `actual_graph_uri` + `error_report_uri` 定为 baseline 的必需引用（PR #8 已合并） |
+| B3 | MDFixer 消费 ERROR_REPORT 时是否需要额外字段 | 内容已落实，待本人在 Issue #1 确认 | B3 经 Issue #14 追加 `finding_id` / `evidence_uri` / `status` 三个字段并写入 schema 与校验器（PR #20 已合并） |
+| B2 | DRAFT 输出的 `environment` / `build` 必须与 FULL_CHECK 输入使用同一语义 | 内容已落实，待本人在 Issue #1 确认 | ADR-007 已由 A2 复核接受，`environment` / `build` 逐字段可直接映射（PR #5、#6 已合并） |
+
+**下一步**：A2、B3、B2 在 Issue #1 回复确认（或提出需要追加的字段）后，
+由 B1 把本篇与 `adr/README.md` 索引的状态改为 `Accepted`。
+「内容已落实」不等于「本人已确认」——本仓库不替任何一方宣称确认，
+这也是第 5 页「接收方检查」一栏的用法。

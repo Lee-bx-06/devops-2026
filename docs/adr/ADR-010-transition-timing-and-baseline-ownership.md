@@ -1,6 +1,6 @@
 # ADR-010：状态迁移规则的形式化，兼修正 ADR-005 的判据表述
 
-- 状态：**Proposed**（A1 谢浩天，A09）；待 B1 评审
+- 状态：**Accepted**（A1 谢浩天，A09 提出；B1 李秉轩于 2026-09-22 评审通过）
 - 日期：2026-09-21
 - 契约版本：1.0.0（未递增，理由见第五节）
 - 相关：第 5、8 页；ADR-001、ADR-005；`endpoints.md`「状态迁移（B1 补充）」一节
@@ -221,9 +221,20 @@ OK
   `job.error` → 被拒
 - `tests/…::test_schema_splits_the_two_code_namespaces`：断言两个正则互斥且各自正确
 
-**待 B1 评审：**
+**B1 评审结论（2026-09-22）：**
 
-- [ ] 硬规则 2 的收窄表述（第二节）
-- [ ] `schema_version` 是否递增（第五节）
-- [ ] 是否补一个「`FAILED` 且 `started_at` 为 null」的独立正例
-- [ ] 基线一致性归运行期是否与 A3 的实现计划一致（需 A3 参与）
+- [x] **硬规则 2 的收窄表述（第二节）——采纳。** `endpoints.md`「状态迁移」一节已按第二节
+      改写，并留下修订记录；迁移表本身未改动。原表述与本组定义的状态样例不再冲突。
+- [x] **`schema_version` 是否递增（第五节）——不递增，维持 `1.0.0`。**
+      本次与 ADR-009 的两个封闭 enum、ADR-011 的三种 artifact 本体一并裁定，
+      理由与落地清单见 `../versioning.md` 第七节，记录见 `../CHANGELOG.md`
+      「B1 版本裁定与复核（2026-09-22）」。
+- [x] **是否补一个「`FAILED` 且 `started_at` 为 null」的独立正例——补。**
+      新增 `samples/job.failed-before-start.json`（`QUEUED→FAILED`，`ENV_3002`，
+      `started_at` 与 `duration_ms` 均为 `null`），`VALIDATION.md` 第五节的正例数同步更新。
+      在这之前该形态只有测试里的变异断言覆盖，其它组无法直接拿样例核对。
+- [x] **基线一致性归运行期是否与 A3 的实现计划一致——一致。**
+      A3 已合并的 `interfaces/echecker-contract.md` 第四节把 commit / `configuration_id`
+      不匹配定义为**运行期接收方检查**，落为 `FAILED` + `ENV_3003`，与第三节结论相同；
+      `tests/…TestBaselineConsistencyIsRuntimeNotContract` 的三条断言钉住这条边界。
+      如 A3 对该表述有异议，在 Issue #1 提出即可，本 ADR 的状态随之回退为 `Proposed`。

@@ -42,8 +42,8 @@
 | 007 | [DRAFT 与 BuildChecker 的环境交接契约](ADR-007-draft-buildchecker-contract.md) | Accepted | B2 |
 | 008 | [增量检测的基线可比性与 finding 差集语义](ADR-008-incremental-baseline-and-finding-diff.md) | Accepted | A3 |
 | 009 | [候选补丁的接受与拒绝判据](ADR-009-patch-acceptance-criteria.md) | Accepted | B3 |
-| 010 | [状态迁移规则的形式化，兼修正 ADR-005 的判据表述](ADR-010-transition-timing-and-baseline-ownership.md) | Proposed | A1 |
-| 011 | [BuildChecker 输出与 artifact 本体契约](ADR-011-buildchecker-output-contract.md) | Proposed | A2 |
+| 010 | [状态迁移规则的形式化，兼修正 ADR-005 的判据表述](ADR-010-transition-timing-and-baseline-ownership.md) | Accepted（B1 于 2026-09-22 评审通过） | A1 |
+| 011 | [BuildChecker 输出与 artifact 本体契约](ADR-011-buildchecker-output-contract.md) | Proposed（B1 复核项已完成，待 A2/B3/B2 在 Issue #1 确认） | A2 |
 
 本表由 B1 维护。每新增一篇 ADR 必须同时在此登记，否则视为未完成。
 

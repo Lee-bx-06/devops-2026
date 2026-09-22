@@ -1,0 +1,41 @@
+{
+  "_note": "QUEUED→FAILED：受理后环境准备失败，任务从未被领取，started_at 为 null。B1 于 2026-09-22 按 ADR-010 第二节补的正例。",
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-full11",
+  "trace_id": "trace-a09-e2-006",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T16:00:00Z",
+    "started_at": null,
+    "finished_at": "2026-09-20T16:00:07Z",
+    "duration_ms": null,
+    "worker_id": null
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean",
+      "project_root": "/workspace/project",
+      "verify_command": "make test"
+    }
+  },
+  "output": {},
+  "error": {
+    "code": "ENV_3002",
+    "message": "镜像构建失败：受理后环境准备阶段 registry 不可达，镜像拉取与校验均未完成，任务未被执行器领取",
+    "retryable": true,
+    "detail": "这是 QUEUED→FAILED 路径（endpoints.md 迁移表第三行）。任务从未进入 RUNNING，所以 started_at 与 duration_ms 都是 null；它不是「检出 MD」，也没有任何 finding——分析根本没开始。"
+  }
+}
