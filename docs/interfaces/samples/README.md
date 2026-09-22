@@ -14,7 +14,7 @@
 | 服务 | `draft` / `full-check` / `incremental-check` / `repair` | `job_type` 的 kebab-case，与第 27 页端点名同构 |
 | 状态 | `job` | 不属于某一类服务、只演示状态或错误码的 Job 文档 |
 | 状态 | `artifact` | 独立的 `artifact_record` |
-| 用途 | `request` / `job-succeeded` / `accepted-queued` / `running` / `failed` / `timed-out` / `cancelled` / … | 该文档演示什么 |
+| 用途 | `request` / `job-succeeded` / `job-succeeded-rejected` / `accepted-queued` / `running` / `failed` / `timed-out` / `cancelled` / … | 该文档演示什么 |
 
 **分隔符统一用点号 `.`，不用连字符 `-`。** 连字符已经用在段内
 （`full-check`、`job-succeeded`），再用它做段分隔会让文件名无法机械解析。

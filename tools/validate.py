@@ -64,6 +64,13 @@ class Schema:
         self.actual_observations = set(
             d["actual_graph_dependency"]["properties"]["observation"]["enum"])
 
+        self.finding_status_enum = set(
+            d["output_repair"]["properties"]["findings"]["items"]["properties"]["status"]["enum"]
+        )
+        self.rejection_reason_code_enum = set(
+            d["output_repair"]["properties"]["rejected_candidates"]["items"]["properties"]["reason_code"]["enum"]
+        )
+
         # 每类 job 的 input 必填项与 input/output 的 $def 名
         self.input_required: dict[str, set] = {}
         for jt in self.job_types:
@@ -686,6 +693,22 @@ class Validator:
             elif not all(isinstance(ver[k], bool) for k in ver):
                 errors.append(f"{label}.verification 三项必须是布尔值")
             self.check_str(value.get("declaration_style"), f"{label}.declaration_style", errors)
+            for i, finding in enumerate(value.get("findings", [])):
+                if not isinstance(finding, dict):
+                    continue
+                status = finding.get("status")
+                if status is not None and status not in self.s.finding_status_enum:
+                    errors.append(
+                        f"{label}.findings[{i}].status 非法: {status!r}，必须是 "
+                        f"{'/'.join(sorted(self.s.finding_status_enum))}（ADR-009）")
+            for i, candidate in enumerate(value.get("rejected_candidates", [])):
+                if not isinstance(candidate, dict):
+                    continue
+                reason_code = candidate.get("reason_code")
+                if reason_code is not None and reason_code not in self.s.rejection_reason_code_enum:
+                    errors.append(
+                        f"{label}.rejected_candidates[{i}].reason_code 非法: {reason_code!r}，必须是 "
+                        f"{'/'.join(sorted(self.s.rejection_reason_code_enum))}（ADR-009）")
 
     # ---------- 状态矩阵 ----------
 

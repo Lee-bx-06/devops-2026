@@ -523,7 +523,35 @@
             "required": ["candidate", "reason"],
             "properties": {
               "candidate": {"type": "string", "minLength": 1},
-              "reason": {"type": "string", "minLength": 1}
+              "reason": {"type": "string", "minLength": 1},
+              "reason_code": {
+                "description": "ADR-009 拒绝原因码。封闭取值集。新增取值属破坏性变更。",
+                "enum": [
+                  "MD_COMMIT_MISMATCH",
+                  "MD_CONFIG_MISMATCH",
+                  "WRONG_FINDING_TYPE",
+                  "PATCH_CONFLICT",
+                  "BUILD_FAILED_AFTER_PATCH",
+                  "TEST_FAILED_AFTER_PATCH",
+                  "RECHECK_STILL_MISSING",
+                  "RECHECK_NEW_FINDING"
+                ]
+              },
+              "finding_id": {"type": "string", "minLength": 1},
+              "evidence_uri": {"$ref": "#/$defs/artifact_uri"}
+            }
+          }
+        },
+        "findings": {
+          "description": "REPAIR 的 findings 在 output_common 的 finding 基础上追加 status。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "description": "ADR-009 消费状态。FIXED 已修复；REJECTED 候选被拒；NOT_ATTEMPTED 未尝试。",
+                "enum": ["FIXED", "REJECTED", "NOT_ATTEMPTED"]
+              }
             }
           }
         }

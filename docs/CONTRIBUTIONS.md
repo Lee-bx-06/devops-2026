@@ -25,7 +25,7 @@
 | --- | --- | --- | --- | --- |
 | **李秉轩** | `<待填写>` | **B1** | 公共契约与版本：`CHANGELOG.md`、`versioning.md`、`adr/README.md`、`endpoints.md` 定稿、错误码注册表维护、Issue #1 复核 | A1 |
 | **zrh** | `<待填写>` | **B2** | DRAFT 接口（读 ICSE 2026）：`DRAFT` 请求/响应、成功判据与每轮日志字段 | A2 |
-| `<待填写>` | `<待填写>` | B3 | MDFixer 接口（读 ASE 2025）：`REPAIR` 样例、patch 与拒绝原因字段 | A3 |
+| **赵心泉** | **241250068** | B3 | MDFixer 接口（读 ASE 2025）：`REPAIR` 样例、patch 与拒绝原因字段 | A3 |
 
 ## A1 提交追溯
 
@@ -224,6 +224,18 @@ $ python -m unittest discover -s tests
 Ran 56 tests
 OK
 ```
+
+## B3 提交追溯
+
+- **作者**：赵心泉（Git 作者 `Varecia`）
+- **学号**：241250068
+- **分支**：`b3-repair-contract`
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| REPAIR 候选被拒样例 | `interfaces/samples/repair.job-succeeded-rejected.json` | `<SHA>` | `<PR 号>` | `errors_of == []`，`make check` 全绿 |
+| MDFixer 决策记录 | `adr/ADR-009-patch-acceptance-criteria.md` | `<SHA>` | `<PR 号>` | 接受判据与拒绝原因码覆盖第 23 页要求 |
+| 文档同步 | `BACKLOG.md`、`VALIDATION.md`、`adr/README.md`、`CHANGELOG.md`、`AI_USAGE.md` | `<SHA>` | `<PR 号>` | `test_counts_in_validation_md_match_the_files` 通过 |
 
 ## 贡献约定
 

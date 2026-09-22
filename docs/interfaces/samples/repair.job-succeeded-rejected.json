@@ -1,0 +1,101 @@
+{
+  "kind": "job",
+  "schema_version": "1.0.0",
+  "job_id": "job-repair09-rej01",
+  "trace_id": "trace-a09-e2-003",
+  "job_type": "REPAIR",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "queued_at": "2026-09-20T11:00:00Z",
+    "started_at": "2026-09-20T11:00:05Z",
+    "finished_at": "2026-09-20T11:01:10Z",
+    "duration_ms": 65000,
+    "worker_id": "b09-mdfixer-worker-1"
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/pair09/demo-make-project.git",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "branch": "main"
+    },
+    "environment": {
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
+    },
+    "build": {
+      "command": "make all",
+      "clean_command": "make clean",
+      "verify_command": "make test",
+      "project_root": "/workspace/project"
+    },
+    "md_report": {
+      "artifact_id": "artifact-full09-error-report",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://pair09/job-full09/error-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full09",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "configuration_id": "cc-gcc13-release-6f12a4c8",
+      "sha256": "4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d",
+      "size_bytes": 6712
+    },
+    "makefile_path": "src/Makefile"
+  },
+  "output": {
+    "summary": "消费 1 条 C1 MISSING 记录，全部候选被拒绝；未生成有效补丁，重检后该 MD 仍存在。注意：本任务只处理 MISSING，不处理 REDUNDANT；resolved 属 C0 历史变化，不进入 MDFixer 输入。",
+    "declaration_style": "本次未生成可接受的补丁，无声明风格变更。",
+    "verification": {
+      "build": false,
+      "test": false,
+      "recheck": false
+    },
+    "rejected_candidates": [
+      {
+        "candidate": "只加入 -I$(SRCDIR)/include 局部绕过，不补 config.h 的 prerequisite 声明",
+        "reason": "该候选改变编译搜索路径而非补全依赖声明，重检后 MD 仍存在；且会掩盖其他目标的真实依赖，属无效候选，按第 23 页记录拒绝原因",
+        "reason_code": "RECHECK_STILL_MISSING",
+        "finding_id": "md-9f8e7d6c-001",
+        "evidence_uri": "artifact://pair09/job-repair09-rej01/reject-cand-001.log"
+      }
+    ],
+    "findings": [
+      {
+        "id": "md-9f8e7d6c-001",
+        "type": "MISSING",
+        "target": "main.o",
+        "dependency": "config.h",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "detector": "INSTRUCTOR_ORACLE",
+        "location": {
+          "path": "src/Makefile",
+          "line": 12,
+          "column": null
+        },
+        "evidence": [
+          {
+            "kind": "INSTRUCTOR_SAMPLE",
+            "detail": "来自 job-full09 的 ERROR_REPORT，人工来源已标注",
+            "artifact_uri": "artifact://pair09/job-full09/error-report.json"
+          }
+        ],
+        "status": "REJECTED",
+        "message": "候选被拒绝：补丁改变编译搜索路径而非补全依赖声明，重检后该 MD 仍存在"
+      }
+    ],
+    "artifacts": [
+      {
+        "artifact_id": "artifact-repair09-rej01-log",
+        "type": "REJECTION_LOG",
+        "uri": "artifact://pair09/job-repair09-rej01/reject-cand-001.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-repair09-rej01",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f",
+        "size_bytes": 1024
+      }
+    ]
+  },
+  "error": null
+}

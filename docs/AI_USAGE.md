@@ -621,7 +621,7 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
   `tests/test_echecker_contract.py`。
 ## A1（谢浩天）第三轮记录（2026-09-21，A2/B2 合并后复核）
 
-### 条目 18：AI 建议把守卫写成「登记表必须与实际违规完全相等」，人工否决
+### 条目 22：AI 建议把守卫写成「登记表必须与实际违规完全相等」，人工否决
 
 - **工具/模型**：Qoder CLI agent（本会话）
 - **任务**：修复 `configuration_id` 交接链断裂，并加一个防止复发的守卫
@@ -641,7 +641,7 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
 > 这条是**「加约束时别把自己的测试变成别人的合并障碍」**。
 > 守卫的价值在于拦新增问题，不在于逼所有人同步修历史问题。
 
-### 条目 19：AI 想同步更新 README 里的测试总数，人工改为取消这个数字
+### 条目 23：AI 想同步更新 README 里的测试总数，人工改为取消这个数字
 
 - **工具/模型**：Qoder CLI agent（本会话）
 - **任务**：新增测试文件后，README 写的「56 项单元测试」过时，`TestDocsDoNotRot` 变红
@@ -672,3 +672,47 @@ A2、A3、B3 尚未确认各自负责的 `input` / `output` 字段。B2 已在
 A2 补上 DRAFT → FULL_CHECK 的断言后，把「跨文档一致性未覆盖」整条删掉了，
 但交接链还有 FULL_CHECK → EChecker → MDFixer 两段。
 删掉整条等于向后来者宣称问题已解决。
+
+## B3 的记录
+
+### 条目 24：AI 起草的 REPAIR 拒绝样例被校验器打回，人工按 validate.py 修正
+
+- **工具/模型**：ChatGPT
+- **任务**：起草 `repair.job-succeeded-rejected.json` 与 ADR-009
+- **AI 建议**：把候选被拒场景写成 `patch: null` + `declaration_style: null`
+- **人工判断：修改。** `validate.py` 的 `check_artifact` 要求 `patch` 必须是对象，
+  `check_str` 要求 `declaration_style` 必须是非空字符串。写 `null` 会直接报错。
+  修正为：不出现 `patch` 键；`declaration_style` 写成非空说明字符串。
+- **关联文件**：`interfaces/samples/repair.job-succeeded-rejected.json`、
+  `adr/ADR-009-patch-acceptance-criteria.md`
+- **验证**：`python3 tools/validate.py` 通过；`make check` 全绿
+
+### 条目 25：B2 的 canonical 规则暴露现有 REPAIR 样例的旧值，人工决定一并规范化
+
+- **工具/模型**：ChatGPT
+- **任务**：B2 回复 environment / configuration_id / image_uri / 命令语义后，
+  评估 B3 新样例与现有 REPAIR 样例
+- **AI 发现**：`repair.request.json` 与 `repair.job-succeeded.json` 使用
+  `image_uri: registry.pair09.local/draft:9f8e7d6c-iter3`、
+  `configuration_id: cc-MODE0`、`clean_command: "make clean && make all"`、
+  `project_root: "."`；B2 已明确这些是旧样例值。
+  同时 `incremental-check.*` 与 `job.cancelled.json` 也用旧值。
+- **人工判断：修改。** B3 决定：在自己 PR 内一并规范化
+  `repair.request.json` 与 `repair.job-succeeded.json` 的四处；
+  `incremental-check.*`（A3 所有权）与 `job.cancelled.json`（公共）开 Issue 提请。
+  理由：B2 已明确旧值不能作为新契约依据；若只在新样例用 canonical，
+  REPAIR 切片会内部不一致；既然要改，就按切片改。
+- **关联文件**：`interfaces/samples/repair.*.json`、`adr/ADR-009`、
+  `docs/BACKLOG.md` 第四节
+- **验证**：`make check` 全绿
+
+### 条目 26：AI 建议直接把新增字段写进 task.schema.json，人工决定先问 A1
+
+- **工具/模型**：ChatGPT
+- **任务**：新增 `reason_code` / `finding_id` / `evidence_uri` / `status`
+- **AI 建议**：直接改 `task.schema.json`
+- **人工判断：先问 A1。** 按 ADR-004，`input` / `output` 内部属服务负责人，
+  B3 有权改；但 `output_common.findings` 是跨服务的公共字段。
+  B3 选择先开 Issue 问 A1，而非单方面改公共文件。
+- **关联文件**：`interfaces/task.schema.json`、`tools/validate.py`、`adr/ADR-009`
+- **验证**：`make check` 在当前 schema 下通过
