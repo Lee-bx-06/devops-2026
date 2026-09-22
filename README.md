@@ -70,10 +70,11 @@ python3 tools/validate.py path/to/their-file.json
 docs/interfaces/
   task.schema.json          A1 ★ 公共契约，唯一权威定义（含 B2 的 DRAFT 输出与 A2 的 artifact 本体）
   buildchecker-contract.md  A2 ★ FULL_CHECK 请求/输出与依赖图契约
+  echecker-contract.md      A3   INCREMENTAL_CHECK 基线、差集与下游交接契约
   errors.md                 A1 ★ 两条错误通道 + 错误码注册表（注册表由 B1 维护）
   endpoints.md              B1   五端点 + 状态迁移表（A1 起草，B1 已定稿）
   samples/README.md         A1   命名规范与 DRAFT 重复样例的处理方案
-  samples/                  A1 / A2 / B2  21 个正例（四类请求响应 + 六种状态 + 产物记录 + 三份 artifact 本体）
+  samples/                  A1 / A2 / A3 / B2  23 个正例（四类请求响应 + 六种状态 + 产物记录 + 五份 artifact 本体）
   samples/invalid/          A1 / A2 / B2  24 个负例，每个声明期望的拒绝原因
 docs/adr/
   README.md                 B1   ADR 索引与编号规则
@@ -85,18 +86,21 @@ docs/adr/
   ADR-005  创建期拒绝 vs 运行期失败            A1（判据表述由 ADR-010 修正）
   ADR-006  零依赖校验器                       A1
   ADR-007  DRAFT 与 BuildChecker 环境交接      B2   Accepted
+  ADR-008  EChecker 基线与 finding 差集         A3   Proposed，待 B3/B1 评审
   ADR-010  状态迁移形式化 + 基线一致性归属      A1   Proposed，待 B1 评审
   ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，待 A3/B3/B1 复核
-  （008 / 009 预留给 A3 与 B3）
+  （009 预留给 B3）
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
-docs/AI_USAGE.md            A1/B1/B2/A2  第 14 页格式，真实判断记录
-docs/CONTRIBUTIONS.md       A1/B1/B2/A2  作者、提交 SHA、Issue/PR
+docs/AI_USAGE.md            A1/B1/B2/A2/A3  第 14 页格式，真实判断记录
+docs/CONTRIBUTIONS.md       A1/B1/B2/A2/A3  作者、提交 SHA、Issue/PR
 docs/VALIDATION.md          A1   校验了什么、**没**校验什么
 docs/versioning.md          B1   版本规则、变更流程、消费者清单
 docs/CHANGELOG.md           B1   契约变更记录与待处理表
 tools/validate.py           A1 ★ 零依赖校验器
 tests/test_validate.py      A1/B2   公共契约与 A2–B2 环境交接测试
 tests/test_buildchecker_contract.py A2 FULL_CHECK 与 artifact 本体测试
+tests/test_echecker_contract.py A3 INCREMENTAL_CHECK 基线、差集与 artifact 测试
+
 tests/test_cross_document_consistency.py A1 跨文档一致性守卫（交接链两端逐字一致）
 （`make check` 运行 `tests/` 下全部测试。此处**不写测试总数**：每人加测试都会让它过时，
 且多份 PR 会在同一行冲突。数量以实际运行为准；样例数量的唯一来源是

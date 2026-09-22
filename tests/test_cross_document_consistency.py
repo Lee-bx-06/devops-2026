@@ -61,11 +61,6 @@ ENV_FAILURE_CODES = {"ENV_3002"}
 # 守卫只拦「表外的新违规」，不强制本表收缩，免得 A1 的测试卡住别人的 PR。
 # 本表的收缩记在 docs/BACKLOG.md。
 KNOWN_ENV_DEVIATIONS = {
-    # A3 的 PR #8 迁移了前两个；后两个在该 PR 上仍是旧值，需 A3 补齐。
-    "incremental-check.request.json": ("A3", "PR #8 已迁移，待合并"),
-    "incremental-check.job-succeeded.json": ("A3", "PR #8 已迁移，待合并"),
-    "job.running.json": ("A3", "PR #8 未迁移，仍是 cc-MODE0 + tag 形式镜像"),
-    "job.baseline-mismatch-failed.json": ("A3", "PR #8 未迁移，仍是 cc-MODE0 + tag 形式镜像"),
     # A2 的这个样例用了 iter4 tag 而非 DRAFT 产出的 digest，但 configuration_id
     # 与规范值相同。按 A2 自己写的 $defs.configuration_id 定义（「只随基础镜像、
     # 工具链、依赖集或构建参数变化」），镜像不同则 configuration_id 应当不同。

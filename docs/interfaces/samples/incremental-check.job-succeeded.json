@@ -14,38 +14,38 @@
     "worker_id": "a09-echecker-worker-1"
   },
   "input": {
-    "base_commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+    "base_commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
     "repository": {
       "url": "https://github.com/pair09/demo-make-project.git",
-      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "commit": "abcdef0123456789abcdef0123456789abcdef01",
       "branch": "main"
     },
     "environment": {
-      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "configuration_id": "cc-MODE0"
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     },
     "build": {
       "command": "make all",
-      "clean_command": "make clean && make all",
-      "project_root": ".",
+      "project_root": "/workspace/project",
       "verify_command": "make test"
     },
     "baseline": {
-      "actual_graph_uri": "artifact://pair09/job-full08/actual.json",
-      "commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
-      "configuration_id": "cc-MODE0"
+      "actual_graph_uri": "artifact://pair09/job-full09/actual.json",
+      "error_report_uri": "artifact://pair09/job-full09/error-report.json",
+      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     }
   },
   "output": {
-    "summary": "基线 C0=a1b2c3d4 与 configuration cc-MODE0 匹配校验通过。相较基线新增 1 个 MD，消除 1 个 RD。C0/C1 均可由 commit 字段追溯。",
+    "summary": "基线 C0=9f8e7d6c 与 configuration cc-gcc13-release-6f12a4c8 匹配校验通过。C1 保留 1 个既有 MD，新增 1 个 MD，并消除 1 个 RD。",
     "findings": [
       {
-        "id": "md-9f8e7d6c-001",
+        "id": "md-abcdef01-existing",
         "type": "MISSING",
         "target": "main.o",
         "dependency": "config.h",
-        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "detector": "INSTRUCTOR_ORACLE",
+        "commit": "abcdef0123456789abcdef0123456789abcdef01",
+        "detector": "ECHECKER_INCREMENTAL",
         "location": {
           "path": "src/Makefile",
           "line": 12,
@@ -53,63 +53,79 @@
         },
         "evidence": [
           {
-            "kind": "INSTRUCTOR_SAMPLE",
-            "detail": "教师提供的人工样本，detector 标为 INSTRUCTOR_ORACLE 以标明人工来源",
-            "artifact_uri": null
-          },
-          {
             "kind": "FILE_ACCESS",
-            "detail": "ptrace 显示编译 main.c 时进程实际读取了 src/config.h；Makefile 未声明该 prerequisite",
-            "artifact_uri": "artifact://pair09/job-inc09/proc-trace-main-o.log"
+            "detail": "C1 增量构建仍观察到 main.o 读取 src/config.h，而当前 Makefile 仍未声明该 prerequisite",
+            "artifact_uri": "artifact://pair09/job-inc09/actual.json"
           }
         ],
-        "message": "main.o 实际需要 config.h，但 Makefile 第 12 行未声明该依赖"
+        "message": "C0 已存在的 main.o -> config.h 缺失声明在 C1 中仍然存在"
+      },
+      {
+        "id": "md-abcdef01-001",
+        "type": "MISSING",
+        "target": "app.o",
+        "dependency": "generated.h",
+        "commit": "abcdef0123456789abcdef0123456789abcdef01",
+        "detector": "ECHECKER_INCREMENTAL",
+        "location": {
+          "path": "src/Makefile",
+          "line": 20,
+          "column": null
+        },
+        "evidence": [
+          {
+            "kind": "FILE_ACCESS",
+            "detail": "C1 新增的 include 使 app.o 在增量构建中读取 src/generated.h，但 Makefile 未声明该 prerequisite",
+            "artifact_uri": "artifact://pair09/job-inc09/actual.json"
+          }
+        ],
+        "message": "C1 新增 app.o -> generated.h 的缺失声明"
       }
     ],
     "introduced": [
       {
-        "id": "md-9f8e7d6c-001",
+        "id": "md-abcdef01-001",
         "type": "MISSING",
-        "target": "main.o",
-        "dependency": "config.h",
-        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "detector": "INSTRUCTOR_ORACLE",
+        "target": "app.o",
+        "dependency": "generated.h",
+        "commit": "abcdef0123456789abcdef0123456789abcdef01",
+        "detector": "ECHECKER_INCREMENTAL",
         "location": {
           "path": "src/Makefile",
-          "line": 12,
+          "line": 20,
           "column": null
         },
         "evidence": [
           {
             "kind": "FILE_ACCESS",
-            "detail": "C1 新增了对 config.h 的包含；基线 C0 的实际图中不存在 main.o -> config.h 边",
-            "artifact_uri": "artifact://pair09/job-inc09/proc-trace-main-o.log"
+            "detail": "C1 新增的 include 使 app.o 在增量构建中读取 src/generated.h，但 Makefile 未声明该 prerequisite",
+            "artifact_uri": "artifact://pair09/job-inc09/actual.json"
           }
         ],
-        "message": "本次提交新引入的缺失声明"
+        "message": "C1 新增 app.o -> generated.h 的缺失声明"
       }
     ],
     "resolved": [
       {
-        "id": "rd-a1b2c3d4-002",
+        "id": "rd-9f8e7d6c-001",
         "type": "REDUNDANT",
-        "target": "parser.o",
-        "dependency": "table.h",
-        "commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+        "target": "util.o",
+        "dependency": "legacy.h",
+        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
         "detector": "BUILDCHECKER_DYNAMIC",
         "location": {
           "path": "src/Makefile",
-          "line": 31,
+          "line": 27,
           "column": null
         },
         "evidence": [
           {
-            "kind": "FILE_ACCESS",
-            "detail": "C1 中 parser.c 开始包含 table.h，基线里报告的冗余声明已不再成立",
-            "artifact_uri": "artifact://pair09/job-inc09/actual.json"
+            "kind": "DECLARATION",
+            "detail": "C0 ERROR_REPORT 中的 util.o -> legacy.h 冗余声明在 C1 已不存在",
+            "artifact_uri": "artifact://pair09/job-full09/error-report.json"
           }
         ],
-        "message": "基线中的冗余声明在本次提交已被消除"
+        "message": "C0 中 util.o -> legacy.h 的冗余声明在 C1 已消除"
       }
     ],
     "updated_graph": {
@@ -118,22 +134,33 @@
       "uri": "artifact://pair09/job-inc09/actual.json",
       "media_type": "application/json",
       "producer_job_id": "job-inc09",
-      "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-      "configuration_id": "cc-MODE0",
-      "sha256": "5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e",
-      "size_bytes": 46002
+      "commit": "abcdef0123456789abcdef0123456789abcdef01",
+      "configuration_id": "cc-gcc13-release-6f12a4c8",
+      "sha256": "35b2a7b8044bfa9c47bbe350184f2280798144cc0933d3672e0b00194684a9a2",
+      "size_bytes": 1059
     },
     "artifacts": [
+      {
+        "artifact_id": "artifact-inc09-actual-graph",
+        "type": "ACTUAL_GRAPH",
+        "uri": "artifact://pair09/job-inc09/actual.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-inc09",
+        "commit": "abcdef0123456789abcdef0123456789abcdef01",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "35b2a7b8044bfa9c47bbe350184f2280798144cc0933d3672e0b00194684a9a2",
+        "size_bytes": 1059
+      },
       {
         "artifact_id": "artifact-inc09-error-report",
         "type": "ERROR_REPORT",
         "uri": "artifact://pair09/job-inc09/error-report.json",
         "media_type": "application/json",
         "producer_job_id": "job-inc09",
-        "commit": "9f8e7d6c5b4a39281706f5e4d3c2b1a098765432",
-        "configuration_id": "cc-MODE0",
-        "sha256": "60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f",
-        "size_bytes": 4180
+        "commit": "abcdef0123456789abcdef0123456789abcdef01",
+        "configuration_id": "cc-gcc13-release-6f12a4c8",
+        "sha256": "07b20da0f19ca9ce0c636c5e274e9e3fb1e2d56ca2dda54036e1f0093a27bd11",
+        "size_bytes": 1633
       }
     ]
   },

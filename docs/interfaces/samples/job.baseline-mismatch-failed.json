@@ -21,19 +21,19 @@
       "branch": "main"
     },
     "environment": {
-      "image_uri": "registry.pair09.local/draft:9f8e7d6c-iter3",
-      "configuration_id": "cc-MODE0"
+      "image_uri": "registry.pair09.local/demo-make-project@sha256:cff7f9af0c145703d0dc3607b8e1812a5d925257690294e51a681d58a8b84d02",
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     },
     "build": {
       "command": "make all",
-      "clean_command": "make clean && make all",
-      "project_root": ".",
+      "project_root": "/workspace/project",
       "verify_command": "make test"
     },
     "baseline": {
       "actual_graph_uri": "artifact://pair09/job-full07/actual.json",
+      "error_report_uri": "artifact://pair09/job-full07/error-report.json",
       "commit": "ffffffffffffffffffffffffffffffffffffffff",
-      "configuration_id": "cc-MODE0"
+      "configuration_id": "cc-gcc13-release-6f12a4c8"
     }
   },
   "output": {},
@@ -41,6 +41,6 @@
     "code": "ENV_3003",
     "message": "基线不匹配：baseline.commit=ffffffff... 与 input.base_commit=a1b2c3d4... 不一致，历史图无法追溯到 base commit",
     "retryable": false,
-    "detail": "结构上 baseline 三个字段齐全，因此请求通过了 POST 校验并被受理；语义不匹配只能在执行期发现，故落为 FAILED + job.error（见 ADR-005）。这与「删掉 baseline」不同：后者是结构违规，在创建时就被拒，不会产生 Job。"
+    "detail": "结构上 baseline 四个字段齐全，因此请求通过了 POST 校验并被受理；语义不匹配由 EChecker 在运行期检查，故落为 FAILED + job.error（见 ADR-008、ADR-010）。这与「删掉 baseline」不同：后者是结构违规，在创建时就被拒，不会产生 Job。"
   }
 }

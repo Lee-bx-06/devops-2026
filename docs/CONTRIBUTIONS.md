@@ -17,7 +17,7 @@
 | --- | --- | --- | --- | --- |
 | **谢浩天** | **241250033** | **A1** | 公共契约与集成：`task.schema.json`、`errors.md`、`tools/validate.py`、样例套件、ADR | B1 |
 | **殷晓瑞** | `241250014` | A2 | BuildChecker 接口（读 TSE）：`FULL_CHECK` 请求/响应、依赖图与 MD/RD 报告字段 | B2 |
-| `<待填写>` | `<待填写>` | A3 | EChecker 接口（读 ISSTA 2024）：`INCREMENTAL_CHECK` 样例、baseline 匹配规则 | B3 |
+| **朱鸣涛** | `241250048` | A3 | EChecker 接口（读 ISSTA 2024）：`INCREMENTAL_CHECK` 样例、baseline 匹配规则 | B3 |
 
 ## B09 成员与分工
 
@@ -148,6 +148,26 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | TSE 语义复核 | `interfaces/buildchecker-contract.md`、`task.schema.json`、相关样例 | `26bda5c` | PR #6 | 隐式目标、GNU Make 动态数据库、外部依赖过滤和 MD 不导致 clean build 失败均已写入契约 |
 | 复核 B2 的 DRAFT 交接 | `interfaces/samples/draft.job-succeeded.json`、`adr/ADR-007-…md`、`adr/README.md` | `74c69d2` | PR #6 | 五项待确认全部满足，`ADR-007` 改为 `Accepted`；按 blob 实际字节改正 Dockerfile 制品的 `size_bytes` / `sha256` |
 
+## A3 提交追溯
+
+- **Git 作者**：`zhumingtao <2830849787@qq.com>`
+- **正式姓名 / 学号**：朱鸣涛 / `241250048`
+- **分支**：`a3-echecker-contract`
+- **内容提交**：`f8a7fe9`（可执行契约）
+- **设计记录提交**：`e86ad0e`（BACKLOG / CHANGELOG / ADR-010 同步）
+- **关联 Issue**：[#7](https://github.com/Lee-bx-06/devops-2026/issues/7)
+- **PR**：待推送分支后创建
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| EChecker 接口契约 | `interfaces/echecker-contract.md` | `f8a7fe9` | Issue #7 | C0/C1、基线匹配、差集和 B3 交接均已定义 |
+| baseline 与增量输出 schema | `interfaces/task.schema.json`、`tools/validate.py` | `f8a7fe9` | Issue #7 | 缺历史报告、错误集合关系和不可消费更新图均被拒绝 |
+| 请求、成功与失败样例 | `interfaces/samples/incremental-check.*.json`、`job.baseline-mismatch-failed.json` | `f8a7fe9` | Issue #7 | 创建期与运行期失败边界可表达 |
+| C1 artifact 本体 | `artifact.incremental-actual-graph.json`、`artifact.incremental-error-report-body.json` | `f8a7fe9` | Issue #7 | 元数据、大小和 SHA-256 由测试重算 |
+| EChecker ADR | `adr/ADR-008-incremental-baseline-and-finding-diff.md` | `f8a7fe9` | Issue #7 | 记录历史报告、finding 身份、祖先关系和无基线策略 |
+| 项目状态同步 | `BACKLOG.md`、`CHANGELOG.md`、`adr/ADR-010-…md` | `e86ad0e` | Issue #7 | A3 状态、上游消费结论和新增基线字段均已登记 |
+| A3 专项测试 | `tests/test_echecker_contract.py` | `f8a7fe9` | Issue #7 | 12 项专项测试；全仓共 68 项 |
+
 ## 其它分支
 
 | 远端分支 | 提交 | 作者 | 内容 | 状态 |
@@ -215,7 +235,7 @@ OK
 
 ## 待补
 
-- [ ] A3 的姓名与学号（A2 已补：殷晓瑞 / `241250014`）
+- [x] A3 的正式姓名与学号（朱鸣涛 / `241250048`）
 - [ ] B09 三位成员的姓名与学号（由 B1 填写）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
