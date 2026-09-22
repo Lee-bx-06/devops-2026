@@ -173,6 +173,26 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | A3 专项测试 | `tests/test_echecker_contract.py` | `f8a7fe9` | Issue #7 / PR #8 | 12 项专项测试通过；全仓测试结果以实际运行为准 |
 | 跨平台 artifact 完整性校验 | `.gitattributes`、`tests/test_echecker_contract.py`、`interfaces/echecker-contract.md` | `703aca5` | Issue #19 | 固定两份 artifact 为 LF，并按 UTF-8/LF 规范字节校验大小与 SHA-256，避免 Windows CRLF 造成误报 |
 
+## B3 提交追溯
+
+- **作者**：赵心泉（Git 作者 `Varecia`）
+- **学号**：241250068
+- **分支**：`b3-repair-contract`（已合并）
+- **内容提交**：`feadb30`
+- **PR 合并提交**：`877e7c4`
+- **关联 Issue**：[#14](https://github.com/Lee-bx-06/devops-2026/issues/14)（B3 追踪）
+- **PR**：[#20](https://github.com/Lee-bx-06/devops-2026/pull/20)（已合并）
+- **协作 Issue**：[#19](https://github.com/Lee-bx-06/devops-2026/issues/19)（Windows CRLF 报告）
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| REPAIR 候选被拒样例 | `interfaces/samples/repair.job-succeeded-rejected.json` | `feadb30` | Issue #14 / PR #20 | `errors_of == []`，正例通过 |
+| MDFixer 决策记录 | `adr/ADR-009-patch-acceptance-criteria.md` | `feadb30` | Issue #14 / PR #20 | 7 条接受判据、8 个拒绝原因码、3+1 字段追加；回答 A1 的 `configuration_id` 语义问题 |
+| schema 与校验器联动 | `interfaces/task.schema.json`、`tools/validate.py` | `feadb30` | Issue #14 / PR #20 | 两个封闭 enum 从 schema 读取；REPAIR 分支新增两条取值校验 |
+| 样例命名规范登记 | `interfaces/samples/README.md` | `feadb30` | Issue #14 / PR #20 | 用途枚举登记 `job-succeeded-rejected` |
+| 文档同步 | `VALIDATION.md`、`adr/README.md` | `feadb30` | Issue #14 / PR #20 | `test_counts_in_validation_md_match_the_files` 通过 |
+| CRLF 遗留报告与验证 | Issue #19；A3 的 `a3-fix-artifact-line-endings` | `182de4d`（合并） | Issue #19 / PR #21 | Windows `make check` 由红转绿 |
+
 ## 其它分支
 
 | 远端分支 | 提交 | 作者 | 内容 | 状态 |
