@@ -1,0 +1,928 @@
+[
+  {
+    "index": 1,
+    "name": "version-python",
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "--version"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/001-version-python.stdout.log",
+    "stderr_log": "logs/001-version-python.stderr.log"
+  },
+  {
+    "index": 2,
+    "name": "version-make",
+    "argv": [
+      "make",
+      "--version"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/002-version-make.stdout.log",
+    "stderr_log": "logs/002-version-make.stderr.log"
+  },
+  {
+    "index": 3,
+    "name": "version-compiler",
+    "argv": [
+      "cc",
+      "--version"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/003-version-compiler.stdout.log",
+    "stderr_log": "logs/003-version-compiler.stderr.log"
+  },
+  {
+    "index": 4,
+    "name": "version-git",
+    "argv": [
+      "git",
+      "--version"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/004-version-git.stdout.log",
+    "stderr_log": "logs/004-version-git.stderr.log"
+  },
+  {
+    "index": 5,
+    "name": "version-uname",
+    "argv": [
+      "uname",
+      "-a"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/005-version-uname.stdout.log",
+    "stderr_log": "logs/005-version-uname.stderr.log"
+  },
+  {
+    "index": 6,
+    "name": "mdrd-git-init",
+    "argv": [
+      "git",
+      "init",
+      "-b",
+      "main"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/006-mdrd-git-init.stdout.log",
+    "stderr_log": "logs/006-mdrd-git-init.stderr.log"
+  },
+  {
+    "index": 7,
+    "name": "mdrd-git-config-user.name",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "E3 Baseline Fixture (automated local fixture)"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/007-mdrd-git-config-user.name.stdout.log",
+    "stderr_log": "logs/007-mdrd-git-config-user.name.stderr.log"
+  },
+  {
+    "index": 8,
+    "name": "mdrd-git-config-user.email",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "e3-baseline-fixture@localhost"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/008-mdrd-git-config-user.email.stdout.log",
+    "stderr_log": "logs/008-mdrd-git-config-user.email.stderr.log"
+  },
+  {
+    "index": 9,
+    "name": "mdrd-git-config-commit.gpgsign",
+    "argv": [
+      "git",
+      "config",
+      "commit.gpgsign",
+      "false"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/009-mdrd-git-config-commit.gpgsign.stdout.log",
+    "stderr_log": "logs/009-mdrd-git-config-commit.gpgsign.stderr.log"
+  },
+  {
+    "index": 10,
+    "name": "git-add-mdrd-initial",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/010-git-add-mdrd-initial.stdout.log",
+    "stderr_log": "logs/010-git-add-mdrd-initial.stderr.log"
+  },
+  {
+    "index": 11,
+    "name": "git-commit-mdrd-initial",
+    "argv": [
+      "git",
+      "commit",
+      "-m",
+      "mdrd-initial"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/011-git-commit-mdrd-initial.stdout.log",
+    "stderr_log": "logs/011-git-commit-mdrd-initial.stderr.log"
+  },
+  {
+    "index": 12,
+    "name": "git-rev-parse-mdrd-initial",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/012-git-rev-parse-mdrd-initial.stdout.log",
+    "stderr_log": "logs/012-git-rev-parse-mdrd-initial.stderr.log"
+  },
+  {
+    "index": 13,
+    "name": "mdrd-git-tag-initial",
+    "argv": [
+      "git",
+      "tag",
+      "MD-RD-INITIAL"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/013-mdrd-git-tag-initial.stdout.log",
+    "stderr_log": "logs/013-mdrd-git-tag-initial.stderr.log"
+  },
+  {
+    "index": 14,
+    "name": "bundle-create-md-rd",
+    "argv": [
+      "git",
+      "bundle",
+      "create",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/bundles/md-rd.bundle",
+      "--all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/014-bundle-create-md-rd.stdout.log",
+    "stderr_log": "logs/014-bundle-create-md-rd.stderr.log"
+  },
+  {
+    "index": 15,
+    "name": "bundle-verify-md-rd",
+    "argv": [
+      "git",
+      "bundle",
+      "verify",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/bundles/md-rd.bundle"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/015-bundle-verify-md-rd.stdout.log",
+    "stderr_log": "logs/015-bundle-verify-md-rd.stderr.log"
+  },
+  {
+    "index": 16,
+    "name": "bundle-clone-md-rd",
+    "argv": [
+      "git",
+      "clone",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/bundles/md-rd.bundle",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/replay/md-rd"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/016-bundle-clone-md-rd.stdout.log",
+    "stderr_log": "logs/016-bundle-clone-md-rd.stderr.log"
+  },
+  {
+    "index": 17,
+    "name": "resolve-original-md-rd-MD-RD-INITIAL",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/MD-RD-INITIAL^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/017-resolve-original-md-rd-MD-RD-INITIAL.stdout.log",
+    "stderr_log": "logs/017-resolve-original-md-rd-MD-RD-INITIAL.stderr.log"
+  },
+  {
+    "index": 18,
+    "name": "resolve-replay-md-rd-MD-RD-INITIAL",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/MD-RD-INITIAL^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/replay/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/018-resolve-replay-md-rd-MD-RD-INITIAL.stdout.log",
+    "stderr_log": "logs/018-resolve-replay-md-rd-MD-RD-INITIAL.stderr.log"
+  },
+  {
+    "index": 19,
+    "name": "mdrd-clean-1",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/019-mdrd-clean-1.stdout.log",
+    "stderr_log": "logs/019-mdrd-clean-1.stderr.log"
+  },
+  {
+    "index": 20,
+    "name": "mdrd-build-1",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/020-mdrd-build-1.stdout.log",
+    "stderr_log": "logs/020-mdrd-build-1.stderr.log"
+  },
+  {
+    "index": 21,
+    "name": "mdrd-output-1",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/021-mdrd-output-1.stdout.log",
+    "stderr_log": "logs/021-mdrd-output-1.stderr.log"
+  },
+  {
+    "index": 22,
+    "name": "mdrd-incremental-after-config",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/022-mdrd-incremental-after-config.stdout.log",
+    "stderr_log": "logs/022-mdrd-incremental-after-config.stderr.log"
+  },
+  {
+    "index": 23,
+    "name": "mdrd-output-after-config",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/023-mdrd-output-after-config.stdout.log",
+    "stderr_log": "logs/023-mdrd-output-after-config.stderr.log"
+  },
+  {
+    "index": 24,
+    "name": "mdrd-clean-2",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/024-mdrd-clean-2.stdout.log",
+    "stderr_log": "logs/024-mdrd-clean-2.stderr.log"
+  },
+  {
+    "index": 25,
+    "name": "mdrd-build-2",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/025-mdrd-build-2.stdout.log",
+    "stderr_log": "logs/025-mdrd-build-2.stderr.log"
+  },
+  {
+    "index": 26,
+    "name": "mdrd-output-clean-2",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/026-mdrd-output-clean-2.stdout.log",
+    "stderr_log": "logs/026-mdrd-output-clean-2.stderr.log"
+  },
+  {
+    "index": 27,
+    "name": "mdrd-incremental-after-unused",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/027-mdrd-incremental-after-unused.stdout.log",
+    "stderr_log": "logs/027-mdrd-incremental-after-unused.stderr.log"
+  },
+  {
+    "index": 28,
+    "name": "mdrd-output-after-unused",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/028-mdrd-output-after-unused.stdout.log",
+    "stderr_log": "logs/028-mdrd-output-after-unused.stderr.log"
+  },
+  {
+    "index": 29,
+    "name": "git-init",
+    "argv": [
+      "git",
+      "init",
+      "-b",
+      "main"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/029-git-init.stdout.log",
+    "stderr_log": "logs/029-git-init.stderr.log"
+  },
+  {
+    "index": 30,
+    "name": "git-config-user.name",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "E3 Baseline Fixture (automated local fixture)"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/030-git-config-user.name.stdout.log",
+    "stderr_log": "logs/030-git-config-user.name.stderr.log"
+  },
+  {
+    "index": 31,
+    "name": "git-config-user.email",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "e3-baseline-fixture@localhost"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/031-git-config-user.email.stdout.log",
+    "stderr_log": "logs/031-git-config-user.email.stderr.log"
+  },
+  {
+    "index": 32,
+    "name": "git-config-commit.gpgsign",
+    "argv": [
+      "git",
+      "config",
+      "commit.gpgsign",
+      "false"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/032-git-config-commit.gpgsign.stdout.log",
+    "stderr_log": "logs/032-git-config-commit.gpgsign.stderr.log"
+  },
+  {
+    "index": 33,
+    "name": "git-add-C0",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/033-git-add-C0.stdout.log",
+    "stderr_log": "logs/033-git-add-C0.stderr.log"
+  },
+  {
+    "index": 34,
+    "name": "git-commit-C0",
+    "argv": [
+      "git",
+      "commit",
+      "-m",
+      "C0"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/034-git-commit-C0.stdout.log",
+    "stderr_log": "logs/034-git-commit-C0.stderr.log"
+  },
+  {
+    "index": 35,
+    "name": "git-rev-parse-C0",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/035-git-rev-parse-C0.stdout.log",
+    "stderr_log": "logs/035-git-rev-parse-C0.stderr.log"
+  },
+  {
+    "index": 36,
+    "name": "git-tag-C0",
+    "argv": [
+      "git",
+      "tag",
+      "C0"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/036-git-tag-C0.stdout.log",
+    "stderr_log": "logs/036-git-tag-C0.stderr.log"
+  },
+  {
+    "index": 37,
+    "name": "c0-clean",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/037-c0-clean.stdout.log",
+    "stderr_log": "logs/037-c0-clean.stderr.log"
+  },
+  {
+    "index": 38,
+    "name": "c0-build",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/038-c0-build.stdout.log",
+    "stderr_log": "logs/038-c0-build.stderr.log"
+  },
+  {
+    "index": 39,
+    "name": "c0-output",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/039-c0-output.stdout.log",
+    "stderr_log": "logs/039-c0-output.stderr.log"
+  },
+  {
+    "index": 40,
+    "name": "c0-clean-before-c1",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/040-c0-clean-before-c1.stdout.log",
+    "stderr_log": "logs/040-c0-clean-before-c1.stderr.log"
+  },
+  {
+    "index": 41,
+    "name": "git-add-C1",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/041-git-add-C1.stdout.log",
+    "stderr_log": "logs/041-git-add-C1.stderr.log"
+  },
+  {
+    "index": 42,
+    "name": "git-commit-C1",
+    "argv": [
+      "git",
+      "commit",
+      "-m",
+      "C1"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/042-git-commit-C1.stdout.log",
+    "stderr_log": "logs/042-git-commit-C1.stderr.log"
+  },
+  {
+    "index": 43,
+    "name": "git-rev-parse-C1",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/043-git-rev-parse-C1.stdout.log",
+    "stderr_log": "logs/043-git-rev-parse-C1.stderr.log"
+  },
+  {
+    "index": 44,
+    "name": "git-tag-C1",
+    "argv": [
+      "git",
+      "tag",
+      "C1"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/044-git-tag-C1.stdout.log",
+    "stderr_log": "logs/044-git-tag-C1.stderr.log"
+  },
+  {
+    "index": 45,
+    "name": "c1-clean",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/045-c1-clean.stdout.log",
+    "stderr_log": "logs/045-c1-clean.stderr.log"
+  },
+  {
+    "index": 46,
+    "name": "c1-build",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/046-c1-build.stdout.log",
+    "stderr_log": "logs/046-c1-build.stderr.log"
+  },
+  {
+    "index": 47,
+    "name": "c1-output",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/047-c1-output.stdout.log",
+    "stderr_log": "logs/047-c1-output.stderr.log"
+  },
+  {
+    "index": 48,
+    "name": "c1-make-dryrun",
+    "argv": [
+      "make",
+      "-n",
+      "-B",
+      "main.o"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/048-c1-make-dryrun.stdout.log",
+    "stderr_log": "logs/048-c1-make-dryrun.stderr.log"
+  },
+  {
+    "index": 49,
+    "name": "git-add-C2",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "Makefile"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/049-git-add-C2.stdout.log",
+    "stderr_log": "logs/049-git-add-C2.stderr.log"
+  },
+  {
+    "index": 50,
+    "name": "git-commit-C2",
+    "argv": [
+      "git",
+      "commit",
+      "-m",
+      "C2"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/050-git-commit-C2.stdout.log",
+    "stderr_log": "logs/050-git-commit-C2.stderr.log"
+  },
+  {
+    "index": 51,
+    "name": "git-rev-parse-C2",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/051-git-rev-parse-C2.stdout.log",
+    "stderr_log": "logs/051-git-rev-parse-C2.stderr.log"
+  },
+  {
+    "index": 52,
+    "name": "git-tag-C2",
+    "argv": [
+      "git",
+      "tag",
+      "C2"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/052-git-tag-C2.stdout.log",
+    "stderr_log": "logs/052-git-tag-C2.stderr.log"
+  },
+  {
+    "index": 53,
+    "name": "c2-make-dryrun",
+    "argv": [
+      "make",
+      "-n",
+      "-B",
+      "main.o"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/053-c2-make-dryrun.stdout.log",
+    "stderr_log": "logs/053-c2-make-dryrun.stderr.log"
+  },
+  {
+    "index": 54,
+    "name": "c2-incremental-build",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/054-c2-incremental-build.stdout.log",
+    "stderr_log": "logs/054-c2-incremental-build.stderr.log"
+  },
+  {
+    "index": 55,
+    "name": "c2-output-incremental",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/055-c2-output-incremental.stdout.log",
+    "stderr_log": "logs/055-c2-output-incremental.stderr.log"
+  },
+  {
+    "index": 56,
+    "name": "c2-clean",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/056-c2-clean.stdout.log",
+    "stderr_log": "logs/056-c2-clean.stderr.log"
+  },
+  {
+    "index": 57,
+    "name": "c2-clean-build",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/057-c2-clean-build.stdout.log",
+    "stderr_log": "logs/057-c2-clean-build.stderr.log"
+  },
+  {
+    "index": 58,
+    "name": "c2-output-clean",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/058-c2-output-clean.stdout.log",
+    "stderr_log": "logs/058-c2-output-clean.stderr.log"
+  },
+  {
+    "index": 59,
+    "name": "bundle-create-commits",
+    "argv": [
+      "git",
+      "bundle",
+      "create",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/bundles/commits.bundle",
+      "--all"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/059-bundle-create-commits.stdout.log",
+    "stderr_log": "logs/059-bundle-create-commits.stderr.log"
+  },
+  {
+    "index": 60,
+    "name": "bundle-verify-commits",
+    "argv": [
+      "git",
+      "bundle",
+      "verify",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/bundles/commits.bundle"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/060-bundle-verify-commits.stdout.log",
+    "stderr_log": "logs/060-bundle-verify-commits.stderr.log"
+  },
+  {
+    "index": 61,
+    "name": "bundle-clone-commits",
+    "argv": [
+      "git",
+      "clone",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/bundles/commits.bundle",
+      "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/replay/commits"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/061-bundle-clone-commits.stdout.log",
+    "stderr_log": "logs/061-bundle-clone-commits.stderr.log"
+  },
+  {
+    "index": 62,
+    "name": "resolve-original-commits-C0",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/C0^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/062-resolve-original-commits-C0.stdout.log",
+    "stderr_log": "logs/062-resolve-original-commits-C0.stderr.log"
+  },
+  {
+    "index": 63,
+    "name": "resolve-replay-commits-C0",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/C0^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/replay/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/063-resolve-replay-commits-C0.stdout.log",
+    "stderr_log": "logs/063-resolve-replay-commits-C0.stderr.log"
+  },
+  {
+    "index": 64,
+    "name": "resolve-original-commits-C1",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/C1^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/064-resolve-original-commits-C1.stdout.log",
+    "stderr_log": "logs/064-resolve-original-commits-C1.stderr.log"
+  },
+  {
+    "index": 65,
+    "name": "resolve-replay-commits-C1",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/C1^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/replay/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/065-resolve-replay-commits-C1.stdout.log",
+    "stderr_log": "logs/065-resolve-replay-commits-C1.stderr.log"
+  },
+  {
+    "index": 66,
+    "name": "resolve-original-commits-C2",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/C2^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/repos/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/066-resolve-original-commits-C2.stdout.log",
+    "stderr_log": "logs/066-resolve-original-commits-C2.stderr.log"
+  },
+  {
+    "index": 67,
+    "name": "resolve-replay-commits-C2",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/C2^{commit}"
+    ],
+    "cwd": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588/replay/commits",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/067-resolve-replay-commits-C2.stdout.log",
+    "stderr_log": "logs/067-resolve-replay-commits-C2.stderr.log"
+  }
+]

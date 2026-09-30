@@ -1,0 +1,54 @@
+{
+  "date_local": "2026-09-30",
+  "timezone": "Asia/Shanghai",
+  "baseline_script": "e3/scripts/run_baseline.py",
+  "runner_sha256": "4e6bc7820c2f1e2e57426d05247b9ad6862f20b3a59d0a45cc82d42ff2d890d1",
+  "primary_run": "run-20260930T023602Z-c2ff9588",
+  "original_run_path": "/Users/mcjiansheng/Documents/软件工程/devops/devops-2026/e3/work/run-20260930T023602Z-c2ff9588",
+  "independent_second_run": "/private/tmp/e3-root-verification/run-20260930T023647Z-3dad3971",
+  "source_repository_head": "7ae820ca2736e721c7b293538e2ef027882c33b9",
+  "upstream_reviewed_head": "071d637b8a54aeb82a3282d2321fcd4a30aa3228",
+  "e2_checks": [
+    {
+      "scope": "local working tree including README/e3 changes",
+      "exit": 0,
+      "tests": 77,
+      "log": "validation/e3-local-check.log"
+    },
+    {
+      "scope": "isolated upstream main plus e3 overlay",
+      "exit": 0,
+      "tests": 77,
+      "positive_samples": 25,
+      "negative_samples": 24,
+      "log": "validation/e3-upstream-check.log"
+    }
+  ],
+  "failure_injection_checks": [
+    {
+      "case": "wrong-output",
+      "expected_runner_exit": 1,
+      "retained_manifest": "validation/wrong-output/manifest.json"
+    },
+    {
+      "case": "missing-tool",
+      "expected_runner_exit": 1,
+      "retained_manifest": "validation/missing-tool/manifest.json"
+    }
+  ],
+  "failure_injection_note": "Runner acceptance tests only: wrong-output uses VALUE 99 instead of 1; missing-tool uses an empty PATH. Not detector output or original baseline failure.",
+  "review": "Independent reviewer found no significant issues in runner, fixtures, documentation, and retained primary run.",
+  "verification": [
+    "both bundles SHA256 matches manifest; clone replay preserves tags",
+    "C0 ancestor of C2; C1-C2 diff is Makefile CFLAGS only",
+    "commit trees contain source files only",
+    "header mtimes newer than main.o before Make",
+    "runner py_compile succeeded"
+  ],
+  "not_verified": [
+    "Linux system-call tracing",
+    "BuildChecker or EChecker implementations",
+    "configuration_id assignment/peer acceptance",
+    "remote publication of these E3 changes"
+  ]
+}

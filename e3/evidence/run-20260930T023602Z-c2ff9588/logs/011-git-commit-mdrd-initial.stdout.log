@@ -1,0 +1,7 @@
+[main (root-commit) a5b6b42] mdrd-initial
+ 5 files changed, 27 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 Makefile
+ create mode 100644 config.h
+ create mode 100644 main.c
+ create mode 100644 unused.h

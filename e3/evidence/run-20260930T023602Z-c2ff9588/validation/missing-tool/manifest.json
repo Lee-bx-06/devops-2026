@@ -1,0 +1,48 @@
+{
+  "schema": "e3-baseline-run-v1",
+  "status": "failed",
+  "started_at_utc": "2026-09-30T02:36:48Z",
+  "platform": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]"
+  },
+  "source_snapshot_sha256": {
+    "md-rd": {
+      ".gitignore": "5ddd99fb8a2cda16c352479615b24bcd94b4f1c9940f1bb55321cfc89def2197",
+      "Makefile": "84295ff11a6fcedccb575614954203b78dc99b2b13684e4a8c91663a0edf0859",
+      "config.h": "8304215ff191c0833b184d81c19b0950f090a29265df54041d24bc0f198074b6",
+      "main.c": "a1bbac023098d5bdd6302977e565b57c4959ee2c34d0787c1c5b2ea5c208ee9f",
+      "unused.h": "c315bc55f8ec3f10df0de369c61dc4a83e3dd3e188cd4342cc4d394af1a460a4"
+    },
+    "fixtures": {
+      "commits/C0/Makefile": "e8f810f8cc18d4ef5a8afb8f9a61b4f7c0ea1f6400da5a45cb43f8c76735b103",
+      "commits/C0/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+      "commits/C0/main.c": "b646865a08bd18d68df47ec51516f00d38c11cd14a906fd7f3ce208d6ec5a99b",
+      "commits/C1/Makefile": "45687471451551f5eea60b444c12d52164d407ad00419228b0309d31be5e2ab8",
+      "commits/C1/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+      "commits/C1/feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+      "commits/C1/main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce",
+      "commits/C2/Makefile": "55f4fe664162e5d298e0275229b0c01e92db72baa2d2f3ef4e1dd5a0e00d9397",
+      "commits/C2/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+      "commits/C2/feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+      "commits/C2/main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce",
+      "md-rd/.gitignore": "5ddd99fb8a2cda16c352479615b24bcd94b4f1c9940f1bb55321cfc89def2197",
+      "md-rd/Makefile": "84295ff11a6fcedccb575614954203b78dc99b2b13684e4a8c91663a0edf0859",
+      "md-rd/config.h": "8304215ff191c0833b184d81c19b0950f090a29265df54041d24bc0f198074b6",
+      "md-rd/main.c": "a1bbac023098d5bdd6302977e565b57c4959ee2c34d0787c1c5b2ea5c208ee9f",
+      "md-rd/unused.h": "c315bc55f8ec3f10df0de369c61dc4a83e3dd3e188cd4342cc4d394af1a460a4"
+    }
+  },
+  "runner_sha256": "4e6bc7820c2f1e2e57426d05247b9ad6862f20b3a59d0a45cc82d42ff2d890d1",
+  "environment_snapshot": {},
+  "observations": {},
+  "repositories": {},
+  "artifacts": {},
+  "failure": {
+    "type": "RuntimeError",
+    "message": "version-make: exit None, expected 0; see /private/tmp/e3-negative-6duxcs8e/missing-tool/run-20260930T023648Z-70d4afb8/logs/002-version-make.stdout.log and /private/tmp/e3-negative-6duxcs8e/missing-tool/run-20260930T023648Z-70d4afb8/logs/002-version-make.stderr.log"
+  },
+  "finished_at_utc": "2026-09-30T02:36:48Z"
+}

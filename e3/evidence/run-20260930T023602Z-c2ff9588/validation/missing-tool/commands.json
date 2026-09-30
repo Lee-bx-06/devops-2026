@@ -1,0 +1,29 @@
+[
+  {
+    "index": 1,
+    "name": "version-python",
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "--version"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/001-version-python.stdout.log",
+    "stderr_log": "logs/001-version-python.stderr.log"
+  },
+  {
+    "index": 2,
+    "name": "version-make",
+    "argv": [
+      "make",
+      "--version"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": null,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/002-version-make.stdout.log",
+    "stderr_log": "logs/002-version-make.stderr.log",
+    "execution_error": "FileNotFoundError: [Errno 2] No such file or directory: 'make'"
+  }
+]

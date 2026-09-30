@@ -1,0 +1,5 @@
+[main (root-commit) b96ccad] C0
+ 3 files changed, 29 insertions(+)
+ create mode 100644 Makefile
+ create mode 100644 config.h
+ create mode 100644 main.c

@@ -1,0 +1,8 @@
+# Generated, per-run evidence. Keep logs despite any parent *.log ignore rule.
+work/
+*.log
+*.out
+logs/
+!evidence/
+!evidence/**
+!evidence/**/*.log

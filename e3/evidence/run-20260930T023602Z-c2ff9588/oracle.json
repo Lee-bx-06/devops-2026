@@ -1,0 +1,164 @@
+{
+  "provenance": "COURSE_DERIVED_ORACLE",
+  "kind": "human_expected_project_edges_and_findings",
+  "project_edges_only": true,
+  "excludes_system_headers": true,
+  "not_detector_output": true,
+  "stages": {
+    "md-rd": {
+      "actual_project_includes": [
+        [
+          "main.c",
+          "config.h"
+        ]
+      ],
+      "actual_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ]
+      ],
+      "declared_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "unused.h"
+        ]
+      ],
+      "expected_findings": [
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "config.h"
+        },
+        {
+          "type": "REDUNDANT",
+          "target": "main.o",
+          "dependency": "unused.h"
+        }
+      ]
+    },
+    "C0": {
+      "actual_project_includes": [
+        [
+          "main.c",
+          "config.h"
+        ]
+      ],
+      "actual_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ]
+      ],
+      "declared_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ]
+      ],
+      "expected_findings": []
+    },
+    "C1": {
+      "actual_project_includes": [
+        [
+          "main.c",
+          "config.h"
+        ],
+        [
+          "main.c",
+          "feature.h"
+        ]
+      ],
+      "actual_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ],
+        [
+          "main.o",
+          "feature.h"
+        ]
+      ],
+      "declared_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ]
+      ],
+      "expected_findings": [
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "feature.h"
+        }
+      ]
+    },
+    "C2": {
+      "actual_project_includes": [
+        [
+          "main.c",
+          "config.h"
+        ],
+        [
+          "main.c",
+          "feature.h"
+        ]
+      ],
+      "actual_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ],
+        [
+          "main.o",
+          "feature.h"
+        ]
+      ],
+      "declared_project_dependencies": [
+        [
+          "main.o",
+          "main.c"
+        ],
+        [
+          "main.o",
+          "config.h"
+        ]
+      ],
+      "expected_findings": [
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "feature.h"
+        }
+      ]
+    }
+  }
+}

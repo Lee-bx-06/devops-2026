@@ -1,0 +1,218 @@
+{
+  "schema": "e3-baseline-run-v1",
+  "status": "succeeded",
+  "started_at_utc": "2026-09-30T02:36:02Z",
+  "platform": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]"
+  },
+  "source_snapshot_sha256": {
+    "md-rd": {
+      ".gitignore": "5ddd99fb8a2cda16c352479615b24bcd94b4f1c9940f1bb55321cfc89def2197",
+      "Makefile": "84295ff11a6fcedccb575614954203b78dc99b2b13684e4a8c91663a0edf0859",
+      "config.h": "ac32a92f4af359517c993d6e8583ea2d9b053c2ad171b4c602bc242894bd9696",
+      "main.c": "a1bbac023098d5bdd6302977e565b57c4959ee2c34d0787c1c5b2ea5c208ee9f",
+      "unused.h": "c315bc55f8ec3f10df0de369c61dc4a83e3dd3e188cd4342cc4d394af1a460a4"
+    },
+    "fixtures": {
+      "commits/C0/Makefile": "e8f810f8cc18d4ef5a8afb8f9a61b4f7c0ea1f6400da5a45cb43f8c76735b103",
+      "commits/C0/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+      "commits/C0/main.c": "b646865a08bd18d68df47ec51516f00d38c11cd14a906fd7f3ce208d6ec5a99b",
+      "commits/C1/Makefile": "45687471451551f5eea60b444c12d52164d407ad00419228b0309d31be5e2ab8",
+      "commits/C1/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+      "commits/C1/feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+      "commits/C1/main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce",
+      "commits/C2/Makefile": "55f4fe664162e5d298e0275229b0c01e92db72baa2d2f3ef4e1dd5a0e00d9397",
+      "commits/C2/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+      "commits/C2/feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+      "commits/C2/main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce",
+      "md-rd/.gitignore": "5ddd99fb8a2cda16c352479615b24bcd94b4f1c9940f1bb55321cfc89def2197",
+      "md-rd/Makefile": "84295ff11a6fcedccb575614954203b78dc99b2b13684e4a8c91663a0edf0859",
+      "md-rd/config.h": "ac32a92f4af359517c993d6e8583ea2d9b053c2ad171b4c602bc242894bd9696",
+      "md-rd/main.c": "a1bbac023098d5bdd6302977e565b57c4959ee2c34d0787c1c5b2ea5c208ee9f",
+      "md-rd/unused.h": "c315bc55f8ec3f10df0de369c61dc4a83e3dd3e188cd4342cc4d394af1a460a4"
+    }
+  },
+  "runner_sha256": "4e6bc7820c2f1e2e57426d05247b9ad6862f20b3a59d0a45cc82d42ff2d890d1",
+  "environment_snapshot": {},
+  "observations": {
+    "md-rd": {
+      "outputs": {
+        "initial": "1",
+        "after_config_incremental": "1",
+        "after_config_clean": "2",
+        "after_unused_incremental": "2"
+      },
+      "mtimes_before_config_change": {
+        "Makefile": 1790735743.0,
+        "main.c": 1790735743.0,
+        "unused.h": 1790735743.0,
+        "config.h": 1790735743.0,
+        "main.o": 1790735743.0,
+        "app": 1790735743.0
+      },
+      "mtimes_after_config_change_before_make": {
+        "Makefile": 1790735743.0,
+        "main.c": 1790735743.0,
+        "unused.h": 1790735743.0,
+        "config.h": 1790735763.428777,
+        "main.o": 1790735743.0,
+        "app": 1790735743.0
+      },
+      "mtimes_before_unused_change": {
+        "Makefile": 1790735743.0,
+        "main.c": 1790735743.0,
+        "config.h": 1790735743.0,
+        "unused.h": 1790735743.0,
+        "main.o": 1790735744.0,
+        "app": 1790735745.0
+      },
+      "mtimes_after_unused_change_before_make": {
+        "Makefile": 1790735743.0,
+        "main.c": 1790735743.0,
+        "config.h": 1790735743.0,
+        "unused.h": 1790735764.001608,
+        "main.o": 1790735744.0,
+        "app": 1790735745.0
+      },
+      "mtimes_after_unused_change": {
+        "Makefile": 1790735743.0,
+        "main.c": 1790735743.0,
+        "config.h": 1790735743.0,
+        "unused.h": 1790735764.001608,
+        "main.o": 1790735764.025747,
+        "app": 1790735764.049757
+      },
+      "unused_header_change_recompiled_main_o": true
+    },
+    "commits": {
+      "outputs": {
+        "C0_clean": "10",
+        "C1_clean": "12",
+        "C2_incremental": "12",
+        "C2_clean": "19"
+      },
+      "C1_C2_makefile_sha256": {
+        "C1": "45687471451551f5eea60b444c12d52164d407ad00419228b0309d31be5e2ab8",
+        "C2": "55f4fe664162e5d298e0275229b0c01e92db72baa2d2f3ef4e1dd5a0e00d9397"
+      },
+      "C2_fixture_source_sha256": {
+        "config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+        "feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+        "main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce"
+      },
+      "C1_C2_raw_makefile": {
+        "C1": "CC ?= cc\nCFLAGS ?= -O0\nSOURCES = main.c\n\nall: app\n\napp: main.o\n\t$(CC) $(CFLAGS) -o $@ main.o\n\n# Deliberately still omits feature.h.\nmain.o: $(SOURCES) config.h\n\t$(CC) $(CFLAGS) -c main.c -o main.o\n\nclean:\n\trm -f app main.o\n\n.PHONY: all clean\n",
+        "C2": "CC ?= cc\nCFLAGS ?= -O0 -DMODE=7\nSOURCES = main.c\n\nall: app\n\napp: main.o\n\t$(CC) $(CFLAGS) -o $@ main.o\n\n# Deliberately still omits feature.h.\nmain.o: $(SOURCES) config.h\n\t$(CC) $(CFLAGS) -c main.c -o main.o\n\nclean:\n\trm -f app main.o\n\n.PHONY: all clean\n"
+      },
+      "C1_C2_make_n_B_main_o": {
+        "C1": "cc -O0 -c main.c -o main.o",
+        "C2": "cc -O0 -DMODE=7 -c main.c -o main.o"
+      },
+      "C1_C2_make_n_B_sha256": {
+        "C1": "a25a930a041c20df744b86228cb61d9e3fa4dcbfd1cc7ae229861289be6ff4c1",
+        "C2": "4a15750b39a973b75ba0a404021f2c37d3c0405fb35004042bc20d142ee72b05"
+      },
+      "C2_flags_only_change": true
+    }
+  },
+  "repositories": {
+    "md-rd": {
+      "identity": "LOCAL automated fixture identity",
+      "commits": {
+        "initial": "a5b6b42dd7ef5fa52a6d9eeb112b541cd24064cb"
+      },
+      "tags": [
+        "MD-RD-INITIAL"
+      ],
+      "bundle": {
+        "path": "bundles/md-rd.bundle",
+        "sha256": "9a4a73a731ab5e2452c77e2f1594aa0c809fc55820739f5f85367a394bffb4b6",
+        "verification": "The bundle contains these 3 refs:\na5b6b42dd7ef5fa52a6d9eeb112b541cd24064cb refs/heads/main\na5b6b42dd7ef5fa52a6d9eeb112b541cd24064cb refs/tags/MD-RD-INITIAL\na5b6b42dd7ef5fa52a6d9eeb112b541cd24064cb HEAD\nThe bundle records a complete history.\nThe bundle uses this hash algorithm: sha1",
+        "tag_commits_replayed": {
+          "MD-RD-INITIAL": "a5b6b42dd7ef5fa52a6d9eeb112b541cd24064cb"
+        }
+      }
+    },
+    "commits": {
+      "identity": "LOCAL automated fixture identity",
+      "commits": {
+        "C0": "b96ccadeed36ec72eca1901895a13ddb56990d4b",
+        "C1": "06185dafc5bb05254cb83a040fcb043de07b1eb6",
+        "C2": "f5949ebfabf41565f7416a8b843160e5f1e6f7a4"
+      },
+      "tags": [
+        "C0",
+        "C1",
+        "C2"
+      ],
+      "bundle": {
+        "path": "bundles/commits.bundle",
+        "sha256": "5f63eb401ec9e3d620ec0768dbb8120428fe0141c11c039e905ec7493e1a1925",
+        "verification": "The bundle contains these 5 refs:\nf5949ebfabf41565f7416a8b843160e5f1e6f7a4 refs/heads/main\nb96ccadeed36ec72eca1901895a13ddb56990d4b refs/tags/C0\n06185dafc5bb05254cb83a040fcb043de07b1eb6 refs/tags/C1\nf5949ebfabf41565f7416a8b843160e5f1e6f7a4 refs/tags/C2\nf5949ebfabf41565f7416a8b843160e5f1e6f7a4 HEAD\nThe bundle records a complete history.\nThe bundle uses this hash algorithm: sha1",
+        "tag_commits_replayed": {
+          "C0": "b96ccadeed36ec72eca1901895a13ddb56990d4b",
+          "C1": "06185dafc5bb05254cb83a040fcb043de07b1eb6",
+          "C2": "f5949ebfabf41565f7416a8b843160e5f1e6f7a4"
+        }
+      }
+    }
+  },
+  "artifacts": {
+    "md-rd": {
+      "fixture_sha256": {
+        ".gitignore": "5ddd99fb8a2cda16c352479615b24bcd94b4f1c9940f1bb55321cfc89def2197",
+        "Makefile": "84295ff11a6fcedccb575614954203b78dc99b2b13684e4a8c91663a0edf0859",
+        "config.h": "ac32a92f4af359517c993d6e8583ea2d9b053c2ad171b4c602bc242894bd9696",
+        "main.c": "a1bbac023098d5bdd6302977e565b57c4959ee2c34d0787c1c5b2ea5c208ee9f",
+        "unused.h": "c315bc55f8ec3f10df0de369c61dc4a83e3dd3e188cd4342cc4d394af1a460a4"
+      },
+      "run_tree_sha256": {
+        ".gitignore": "5ddd99fb8a2cda16c352479615b24bcd94b4f1c9940f1bb55321cfc89def2197",
+        "Makefile": "84295ff11a6fcedccb575614954203b78dc99b2b13684e4a8c91663a0edf0859",
+        "app": "ca7f04b54452d402050f62ee65ae0f3902c4b48f163e95a2d1dd01aaffb840c5",
+        "config.h": "69973c572daaea0005b15535dffa2f73cfac069a6f179fbca2ed88737355cd9b",
+        "main.c": "a1bbac023098d5bdd6302977e565b57c4959ee2c34d0787c1c5b2ea5c208ee9f",
+        "main.o": "67e7be64105d673543b3cfe5f5d0e65631777347d067ee91c91f116b5e2a7b2a",
+        "unused.h": "6576522936cca80c7879154fa8006d323113f1813282676373477e6be8bd8271"
+      }
+    },
+    "commits": {
+      "fixture_sha256": {
+        "C0/Makefile": "e8f810f8cc18d4ef5a8afb8f9a61b4f7c0ea1f6400da5a45cb43f8c76735b103",
+        "C0/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+        "C0/main.c": "b646865a08bd18d68df47ec51516f00d38c11cd14a906fd7f3ce208d6ec5a99b",
+        "C1/Makefile": "45687471451551f5eea60b444c12d52164d407ad00419228b0309d31be5e2ab8",
+        "C1/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+        "C1/feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+        "C1/main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce",
+        "C2/Makefile": "55f4fe664162e5d298e0275229b0c01e92db72baa2d2f3ef4e1dd5a0e00d9397",
+        "C2/config.h": "7c6cf8b86288fda770dffa103a6f8a050f3d92e9db410bf4b1a18728f0870e73",
+        "C2/feature.h": "d152792215e983e4cfefcfbc34dabe4208fbd0ba389c6118993d9a2abfe89630",
+        "C2/main.c": "8c53f5c4d575167beba0b4a122f8c2e134d31c014a1b7ecc9f6c6c8c774039ce"
+      },
+      "bundle_sha256": "5f63eb401ec9e3d620ec0768dbb8120428fe0141c11c039e905ec7493e1a1925"
+    }
+  },
+  "tool_versions": {
+    "python": "Python 3.14.6",
+    "make": "GNU Make 3.81",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "git": "git version 2.50.1 (Apple Git-155)",
+    "uname": "Darwin XieHaotiandeMacBook-Air.local 27.0.0 Darwin Kernel Version 27.0.0: Tue Aug 11 21:02:59 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T8142 arm64"
+  },
+  "oracle": {
+    "path": "oracle.json",
+    "sha256": "452bc58da10807690a5ad87b4bcd5ac0e351e975ab3f656f594ab04ff4d412f0",
+    "provenance": "COURSE_DERIVED_ORACLE"
+  },
+  "oracle_stage_commits": {
+    "md-rd": "a5b6b42dd7ef5fa52a6d9eeb112b541cd24064cb",
+    "C0": "b96ccadeed36ec72eca1901895a13ddb56990d4b",
+    "C1": "06185dafc5bb05254cb83a040fcb043de07b1eb6",
+    "C2": "f5949ebfabf41565f7416a8b843160e5f1e6f7a4"
+  },
+  "finished_at_utc": "2026-09-30T02:36:06Z"
+}

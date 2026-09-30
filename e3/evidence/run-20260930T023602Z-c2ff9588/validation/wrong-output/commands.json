@@ -1,0 +1,296 @@
+[
+  {
+    "index": 1,
+    "name": "version-python",
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "--version"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/001-version-python.stdout.log",
+    "stderr_log": "logs/001-version-python.stderr.log"
+  },
+  {
+    "index": 2,
+    "name": "version-make",
+    "argv": [
+      "make",
+      "--version"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/002-version-make.stdout.log",
+    "stderr_log": "logs/002-version-make.stderr.log"
+  },
+  {
+    "index": 3,
+    "name": "version-compiler",
+    "argv": [
+      "cc",
+      "--version"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/003-version-compiler.stdout.log",
+    "stderr_log": "logs/003-version-compiler.stderr.log"
+  },
+  {
+    "index": 4,
+    "name": "version-git",
+    "argv": [
+      "git",
+      "--version"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/004-version-git.stdout.log",
+    "stderr_log": "logs/004-version-git.stderr.log"
+  },
+  {
+    "index": 5,
+    "name": "version-uname",
+    "argv": [
+      "uname",
+      "-a"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/005-version-uname.stdout.log",
+    "stderr_log": "logs/005-version-uname.stderr.log"
+  },
+  {
+    "index": 6,
+    "name": "mdrd-git-init",
+    "argv": [
+      "git",
+      "init",
+      "-b",
+      "main"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/006-mdrd-git-init.stdout.log",
+    "stderr_log": "logs/006-mdrd-git-init.stderr.log"
+  },
+  {
+    "index": 7,
+    "name": "mdrd-git-config-user.name",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "E3 Baseline Fixture (automated local fixture)"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/007-mdrd-git-config-user.name.stdout.log",
+    "stderr_log": "logs/007-mdrd-git-config-user.name.stderr.log"
+  },
+  {
+    "index": 8,
+    "name": "mdrd-git-config-user.email",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "e3-baseline-fixture@localhost"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/008-mdrd-git-config-user.email.stdout.log",
+    "stderr_log": "logs/008-mdrd-git-config-user.email.stderr.log"
+  },
+  {
+    "index": 9,
+    "name": "mdrd-git-config-commit.gpgsign",
+    "argv": [
+      "git",
+      "config",
+      "commit.gpgsign",
+      "false"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/009-mdrd-git-config-commit.gpgsign.stdout.log",
+    "stderr_log": "logs/009-mdrd-git-config-commit.gpgsign.stderr.log"
+  },
+  {
+    "index": 10,
+    "name": "git-add-mdrd-initial",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/010-git-add-mdrd-initial.stdout.log",
+    "stderr_log": "logs/010-git-add-mdrd-initial.stderr.log"
+  },
+  {
+    "index": 11,
+    "name": "git-commit-mdrd-initial",
+    "argv": [
+      "git",
+      "commit",
+      "-m",
+      "mdrd-initial"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/011-git-commit-mdrd-initial.stdout.log",
+    "stderr_log": "logs/011-git-commit-mdrd-initial.stderr.log"
+  },
+  {
+    "index": 12,
+    "name": "git-rev-parse-mdrd-initial",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/012-git-rev-parse-mdrd-initial.stdout.log",
+    "stderr_log": "logs/012-git-rev-parse-mdrd-initial.stderr.log"
+  },
+  {
+    "index": 13,
+    "name": "mdrd-git-tag-initial",
+    "argv": [
+      "git",
+      "tag",
+      "MD-RD-INITIAL"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/013-mdrd-git-tag-initial.stdout.log",
+    "stderr_log": "logs/013-mdrd-git-tag-initial.stderr.log"
+  },
+  {
+    "index": 14,
+    "name": "bundle-create-md-rd",
+    "argv": [
+      "git",
+      "bundle",
+      "create",
+      "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/bundles/md-rd.bundle",
+      "--all"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/014-bundle-create-md-rd.stdout.log",
+    "stderr_log": "logs/014-bundle-create-md-rd.stderr.log"
+  },
+  {
+    "index": 15,
+    "name": "bundle-verify-md-rd",
+    "argv": [
+      "git",
+      "bundle",
+      "verify",
+      "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/bundles/md-rd.bundle"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/015-bundle-verify-md-rd.stdout.log",
+    "stderr_log": "logs/015-bundle-verify-md-rd.stderr.log"
+  },
+  {
+    "index": 16,
+    "name": "bundle-clone-md-rd",
+    "argv": [
+      "git",
+      "clone",
+      "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/bundles/md-rd.bundle",
+      "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/replay/md-rd"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/016-bundle-clone-md-rd.stdout.log",
+    "stderr_log": "logs/016-bundle-clone-md-rd.stderr.log"
+  },
+  {
+    "index": 17,
+    "name": "resolve-original-md-rd-MD-RD-INITIAL",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/MD-RD-INITIAL^{commit}"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/017-resolve-original-md-rd-MD-RD-INITIAL.stdout.log",
+    "stderr_log": "logs/017-resolve-original-md-rd-MD-RD-INITIAL.stderr.log"
+  },
+  {
+    "index": 18,
+    "name": "resolve-replay-md-rd-MD-RD-INITIAL",
+    "argv": [
+      "git",
+      "rev-parse",
+      "refs/tags/MD-RD-INITIAL^{commit}"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/replay/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/018-resolve-replay-md-rd-MD-RD-INITIAL.stdout.log",
+    "stderr_log": "logs/018-resolve-replay-md-rd-MD-RD-INITIAL.stderr.log"
+  },
+  {
+    "index": 19,
+    "name": "mdrd-clean-1",
+    "argv": [
+      "make",
+      "clean"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/019-mdrd-clean-1.stdout.log",
+    "stderr_log": "logs/019-mdrd-clean-1.stderr.log"
+  },
+  {
+    "index": 20,
+    "name": "mdrd-build-1",
+    "argv": [
+      "make",
+      "all"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/020-mdrd-build-1.stdout.log",
+    "stderr_log": "logs/020-mdrd-build-1.stderr.log"
+  },
+  {
+    "index": 21,
+    "name": "mdrd-output-1",
+    "argv": [
+      "./app"
+    ],
+    "cwd": "/private/tmp/e3-negative-6duxcs8e/wrong-output/run-20260930T023648Z-fc9f51aa/work/md-rd",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs/021-mdrd-output-1.stdout.log",
+    "stderr_log": "logs/021-mdrd-output-1.stderr.log"
+  }
+]
