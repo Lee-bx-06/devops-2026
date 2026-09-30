@@ -7,6 +7,14 @@
 
 ## [Unreleased]
 
+### 文档导航补记：E3 A1 基线（2026-09-30）
+
+- 增加 E3 A1 可重复参考基线、实测命令/日志和可还原 fixture 提交；人工 oracle 与运行器观察分开记录。
+- 根 README 与流程文档补充 E3 入口、环境、证据导航、责任边界和当前待办。
+- 本次只增加样例与文档，不修改 E2 公共 schema、端点或契约字段；契约版本保持 `1.0.0`。
+- 本补记说明文档范围；E3 进度和个人贡献分别见 [当前状态](../e3/STATUS.md) 和 [发布记录](../e3/PUBLICATION.md)，不新增契约版本条目。
+- E3 当前是基线/样例阶段，不表示 API 或四个服务已部署；`GET /v1/artifacts/{artifact_id}` 的实现与真实跨组读取仍待后续服务阶段及 E12 集成验证。
+
 ### B1 版本裁定与复核（2026-09-22）
 
 B1 按 `versioning.md` 完成 Issue #1 指定的版本裁定，修订 `endpoints.md` 硬规则 2，
@@ -40,7 +48,7 @@ B1 按 `versioning.md` 完成 Issue #1 指定的版本裁定，修订 `endpoints
 | --- | --- |
 | `interfaces/endpoints.md` | 硬规则 2 收窄为「`SUCCEEDED` 与 `TIMED_OUT` 不可跳过 `RUNNING`」，并留修订记录；第四节去掉「待 B1 复核」标注 |
 | `adr/ADR-010-…md` | 状态 `Proposed` → `Accepted`，四条待评审项逐条给出结论 |
-| `adr/ADR-011-…md` | 「待复核」改为复核状态表；B1 的版本影响项已定，其余三项待本人确认 |
+| `adr/ADR-011-…md` | 「待复核」改为复核状态表；B1 的版本影响项已定，A3/B3/B2 本人确认仍待回复，三方确认后由 B1 更新状态 |
 | `adr/README.md` | 索引中 010 状态更新；011 注明 B1 项已完成 |
 | `interfaces/errors.md` | 第五节「待 B1 复核」四条全部关闭，注册表定稿为八个码 |
 | `interfaces/samples/job.failed-before-start.json` | 新增正例：`QUEUED→FAILED`，`started_at` 与 `duration_ms` 为 `null` |
@@ -178,9 +186,9 @@ A3 的四项偏差已在 PR #8 中完成迁移，并由提交 `a45c3b7` 从
 |---|---|---|---|
 | 1 | `artifact://pair09/{job_id}/{name}` 用完整 `job_id` 是对第 24 页样例的有意偏离 | 教师（知情项，不阻塞） | 组内已定案：A1 与 B1 于 2026-09-22 认可为组内协议（Issue #1）。若教师在课上驳回，`artifact_uri` 模式、样例与校验器三处同步改，见 `interfaces/endpoints.md` 第五节 |
 | 2 | 错误码注册表 `VALIDATION_2xxx` 命名空间为 A09/B09 自行扩展，非第 9 页给定 | 教师或助教（知情项） | B1 已把适用边界限死为创建期拒绝，不写入 `job.error`；见 `interfaces/errors.md` 第二节与第五节 |
-| 3 | ADR-011 的消费侧复核 | A2、B3、B2 | 三方的复核项内容均已由各自 PR 落实（#6 / #20 / #5），本人在 Issue #1 确认后 ADR-011 由 `Proposed` 改 `Accepted` |
+| 3 | ADR-011 的消费侧复核 | A3、B3、B2 | 三项内容均已由各自 PR 落实（#6 / #20 / #5），仍待三人在 Issue #1 本人明确确认；三方确认后由 B1 将 ADR-011 改为 `Accepted` |
 | 4 | `full-check.clean-project.json` 的 `image_uri`（iter4 tag）与 `configuration_id`（规范值）是否自洽 | A2 裁定 | `KNOWN_ENV_DEVIATIONS` 中唯一未消除的偏差，二者必居其一 |
-| 5 | 产物读取接口 `GET /v1/artifacts/{artifact_id}` 是否在 E3 落地实现 | 全组（E3 决定） | E2 不部署（第 7 页）；契约已冻结，见 `interfaces/endpoints.md` 第四节 |
+| 5 | 产物读取接口 `GET /v1/artifacts/{artifact_id}` 的服务实现与真实跨组读取 | 各服务负责人 / 全组 | 当前 E3 只交付 A1 参考基线，不含 API；服务实现按 E5/E8 推进，E12 验证跨组读取。契约已冻结，见 `interfaces/endpoints.md` 第四节 |
 
 原表的第 3 项（`execution` 定义）、第 4 项（`input` / `output` 内部字段）由四组在各自样例与
 PR 中落实；第 6 项（`schema_version`）、第 7 项（硬规则 2）已由 B1 于 2026-09-22 裁定；

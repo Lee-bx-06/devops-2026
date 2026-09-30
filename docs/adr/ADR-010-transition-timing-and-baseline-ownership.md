@@ -199,9 +199,10 @@ A1 将同步修改 `schema_version` 的 `const`、全部 38 个样例与相关�
 - 修改了 B1 定稿文档所依赖的一条硬规则表述，需要 B1 认可；
   若 B1 坚持原表述，则 `QUEUED → FAILED` 路径必须从迁移表删除，
   并另行定义环境准备失败的表示方式。
-- `job.failed.json` 等现有样例都带 `started_at`，未覆盖「`FAILED` 且 `started_at` 为 null」
-  这一新合法形态。已用测试覆盖（`test_failed_without_started_at_is_allowed`），
-  但是否补一个独立正例样例，留待 B1 决定。
+- **当时的待办记录（2026-09-22 前）**：`job.failed.json` 等样例都带 `started_at`，
+  未覆盖「`FAILED` 且 `started_at` 为 null」这一新合法形态。该项随后由 B1 裁定为补充独立正例，
+  现已新增 `samples/job.failed-before-start.json`，并同步更新 `VALIDATION.md` 的样例清单；
+  详见下方 B1 评审结论。
 
 **验证：**
 

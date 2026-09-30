@@ -244,7 +244,26 @@ A2 的三种 artifact 本体和零发现路径、A3、B3 更新后的实际图�
 下划线开头的键（`_note`、`expected_error`）是给人看的注解，校验前会被剥离，
 不属于线上载荷。
 
-> 除 canonical DRAFT 成功样例的仓库内 fixture 外，URI、SHA、commit、镜像名、
-> 时间戳均为**说明性值**。DRAFT fixture 的 `sha256` 与 `size_bytes` 是文件真实值；
-> 镜像 URI 仍是契约示例，不表示已推送或部署。
+> E2 契约样例里的 URI、SHA、commit、镜像名和时间戳通常是**说明性值**。
+> 例外为 canonical DRAFT 与两份 A3 仓库内 artifact fixture 的真实字节哈希，以及
+> E3 文档明确标记的实验 fixture SHA、运行命令/输出/日志和时间戳。E3 的人工 oracle
+> 是课程材料派生的预期答案，不是工具检测输出；保存的真实实验值也不代表服务结果或同学验收。
+> 镜像 URI 仍是契约示例，不表示镜像已推送或服务已部署。
 
+## 六、E3 A1 基线范围与复现入口
+
+E3 基线是 A1 提供的参考样例和运行证据，不是 BuildChecker、EChecker、DRAFT 或 MDFixer 的实现、
+服务输出或验收。环境要求为 Python 3、Git、GNU Make、C 编译器。项目根目录运行：
+
+```sh
+python3 e3/scripts/run_baseline.py
+```
+
+运行器每次创建新目录并保存 manifest、命令与日志；发布时的主证据位于
+[保存的实测证据](../e3/evidence/run-20260930T023602Z-c2ff9588/README.md)。其中 `commands.json`、`logs/` 与
+`manifest.json` 记录实测观察；`oracle.json` 是独立人工预期；`bundles/` 可恢复表中 fixture 的
+真实 Git 提交 SHA。当前检查边界与待办见 [E3 当前状态](../e3/STATUS.md)、[E3 协作事项](../e3/COORDINATION.md)。
+
+已有证据验证了 macOS 下的 Make 行为、真实源提交和 bundle 还原，以及 E2 检查；没有 Linux
+系统调用跟踪，没有检测器图输出，也没有四服务实现或跨组 artifact 下载证据。保存的 E3 SHA、
+命令、日志和时间戳只证明被标识的实验内容，不构成服务负责人确认。

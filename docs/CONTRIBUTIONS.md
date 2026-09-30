@@ -128,7 +128,7 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 | 三条 `schema_version` 裁定（维持 1.0.0）与判据 | `versioning.md` 第七节、`CHANGELOG.md` | `08dd1ee` | Issue #1 | 未改动 `schema_version`，样例与校验器无需变更；`make check` 全绿 |
 | `endpoints.md` 硬规则 2 修订 | `interfaces/endpoints.md` | `08dd1ee` | Issue #1 | 与迁移表第三行一致；`TestTransitionTiming` 七条通过 |
 | ADR-010 评审与状态 | `adr/ADR-010-transition-timing-and-baseline-ownership.md`、`adr/README.md` | `08dd1ee` | Issue #1 | 四条待评审项逐条给出结论；状态 `Proposed → Accepted` |
-| ADR-011 的 B1 复核项 | `adr/ADR-011-buildchecker-output-contract.md`、`adr/README.md` | `08dd1ee` | Issue #1 | 版本影响项已定；其余三项待 A2/B3/B2 在 Issue #1 确认 |
+| ADR-011 的 B1 复核项 | `adr/ADR-011-buildchecker-output-contract.md`、`adr/README.md` | `08dd1ee` | Issue #1 | 版本影响项已定；其余三项待 A3/B3/B2 本人在 Issue #1 确认；三方确认后由 B1 更新状态 |
 | 错误码注册表复核关闭 | `interfaces/errors.md` 第五节 | `08dd1ee` | Issue #1 | 四条待复核全部关闭，注册表定稿为八个码 |
 | 新增正例与计数同步 | `interfaces/samples/job.failed-before-start.json`、`VALIDATION.md`、`README.md` | `08dd1ee` | Issue #1 | `test_counts_in_validation_md_match_the_files` 通过（正例 25） |
 | 设计过程记录 | `AI_USAGE.md` 条目 28–30 | `08dd1ee` | Issue #1 | 第 14 页格式，三处人工判断均写明 |
@@ -220,11 +220,14 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 
 | 远端分支 | 提交 | 作者 | 内容 | 状态 |
 | --- | --- | --- | --- | --- |
-| `origin/e2b2` | `e04364fe606376c9b9d7e790a9ed2301188795f7` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例、ADR-007 | 已与 `main` 同步；ADR-007 仍为 Proposed，待 A2 最终验收 |
+| `origin/e2b2` | `e04364fe606376c9b9d7e790a9ed2301188795f7` | zrh `<3407953470@qq.com>` | B2 的 DRAFT 请求与响应样例、ADR-007 | 历史分支已与 `main` 同步；ADR-007 后由 A2 复核并接受，见 ADR 索引 |
 
-## 协作方式：fork + PR
+## E2 协作方式：fork + PR（历史权限记录）
 
-A1 对上游仓库没有直接推送权限，因此按第 15 页「Issue 或 PR」的要求走 fork 流程：
+以下 fork 流程记录的是早期 E2 交付时的权限状态。A1 后续已具备对共享仓库的普通推送权限，
+并于 2026-09-30 将 E3 内容和文档同步分别直接推送到 `main`；旧记录不代表当前无推送权限。
+
+A1 在早期 E2 交付时对上游仓库没有直接推送权限，因此按第 15 页「Issue 或 PR」的要求走 fork 流程：
 
 | 远端 | 地址 | 用途 |
 | --- | --- | --- |
@@ -243,8 +246,7 @@ git push -u fork a1-public-contract
 gh pr create --repo Lee-bx-06/devops-2026 --base main --head mcjiansheng:a1-public-contract
 ```
 
-其他成员请照此模式：各自的分支推到各自的 fork，向上游开 PR，
-**不要**直接推 `main`——公共契约的变更必须经 PR 复核（ADR-004）。
+该 fork 流程记录当时 A1 的权限。公共契约变更仍须经 PR 复核（ADR-004）；本次样例与文档发布未修改公共契约。
 
 ## 验证记录
 
@@ -283,6 +285,19 @@ OK
 | MDFixer 决策记录 | `adr/ADR-009-patch-acceptance-criteria.md` | `<SHA>` | `<PR 号>` | 接受判据与拒绝原因码覆盖第 23 页要求 |
 | 文档同步 | `BACKLOG.md`、`VALIDATION.md`、`adr/README.md`、`CHANGELOG.md`、`AI_USAGE.md` | `<SHA>` | `<PR 号>` | `test_counts_in_validation_md_match_the_files` 通过 |
 
+## A1 E3 基线与文档发布追溯（2026-09-30）
+
+E3 个人贡献及证据边界详见 [E3 发布记录](../e3/PUBLICATION.md)。
+该页区分了 E3 内容提交与随后补充发布说明的提交；实验 fixture 的 SHA 不作为主项目内容提交的替代。
+
+| 工作项 | 文件/说明 | Commit SHA | 发布依据 |
+|---|---|---|---|
+| E3 参考基线与实测证据 | `e3/` | [`de31c63b96d969d5c71da1d172b0786d9b8a351a`](https://github.com/Lee-bx-06/devops-2026/commit/de31c63b96d969d5c71da1d172b0786d9b8a351a) | [E3 发布记录](../e3/PUBLICATION.md)；内容提交 |
+| E3 发布说明与入口导航 | [E3 发布记录](../e3/PUBLICATION.md)、[E3 运行说明](../e3/README.md)、[E3 当前状态](../e3/STATUS.md) | [`03d7d757d8acb689334eb8f1ebfd950d96b16524`](https://github.com/Lee-bx-06/devops-2026/commit/03d7d757d8acb689334eb8f1ebfd950d96b16524) | [E3 发布记录](../e3/PUBLICATION.md)；文档发布提交 |
+| 本轮 E2/E3 文档对齐 | 根 `README.md`、`docs/` 进度/ADR/验证/贡献记录 | [本文件提交记录](https://github.com/Lee-bx-06/devops-2026/commits/main/docs/CONTRIBUTIONS.md) | 仅同步状态、范围、导航与证据边界；通过本文件所在的文档修复提交追溯 |
+
+当前 E3 交付范围是 A1 样例、基线运行和保存的证据。它不宣称 Linux 系统调用跟踪、BuildChecker/EChecker 检测输出或任何同学的服务验收；相关边界和剩余责任见 [E3 当前状态](../e3/STATUS.md)、[E3 协作事项](../e3/COORDINATION.md)。
+
 ## 贡献约定
 
 - 公共字段、状态、版本或错误码命名空间的变更，必须在**同一个 PR** 内同步更新：
@@ -299,7 +314,9 @@ OK
 - [ ] B1 与 B2 的学号，以及 B2 的正式姓名（B3 = 赵心泉 / `241250068` 已齐；由本人在 Issue #1 补充）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
-- [ ] 三轮课堂交换的结论（第 16 页）落到 ADR 与 BACKLOG
 - [x] PR #2 合并后，把 B1 复核结论回写到各 ADR 的「待 B1 复核」清单
   —— 2026-09-22 完成：ADR-010 与 ADR-011 的复核清单、`errors.md` 第五节
   （见上方「B1 提交追溯」第三段）
+
+第 16 页的三轮课堂交换作为历史课程流程参考保留。当前协作采用线上 Issue/PR，
+结论按 Issue #1、已合并 PR 与 ADR 追溯；没有三轮课堂交换完成记录，不将其列为本轮线上收尾的待补项。

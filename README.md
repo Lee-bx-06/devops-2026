@@ -1,17 +1,23 @@
-# devops-2026 · E2 接口契约（A09 ↔ B09）
+# devops-2026 · E2 接口契约与 E3 测试基线（A09 ↔ B09）
 
 小组 **A09** ｜ 配对组 第 9 组（pair09） ｜ 契约版本 **1.0.0**
 A1 负责人：**谢浩天（241250033）** ｜ B1 负责人：**李秉轩**
 
-本仓库交付 E2 的**接口契约与设计文件**。
-按第 7 页：**E2 只定义契约，不要求部署 API**——这里没有任何可运行的服务，
-只有 schema、样例、校验器与设计记录。
+仓库保留 E2 的**接口契约与设计文件**，并增加 E3 的 A1 参考基线与实测证据。
+按第 7 页，E2 只定义契约、不要求部署 API；因此 E2 部分只有 schema、样例、校验器与设计记录，
+不包含可运行服务。E3 部分是 A1 准备的参考样例，不等同于四个服务的实现或验收。
 
 E3 的 A1 共享测试基线见 [e3/README.md](e3/README.md)：包含 MD/RD 小项目、
-C0/C1/C2 真实实验提交和构建行为对照。人工预期与实际运行证据分别保存；
-这些样本不代表四个服务已经实现或得到服务负责人的确认。
+C0/C1/C2 真实实验提交、构建行为对照和可复跑证据。这是样例阶段的输入与实测，
+不代表 BuildChecker、EChecker、DRAFT 或 MDFixer 服务已实现；服务实现与联调属于后续阶段。
+E2 的公共契约版本仍为 1.0.0，E2 本身不部署 API。
 
-## 一、这次要完成什么（第 2 页）
+## 一、E2 契约范围与 E3 基线范围
+
+E2 的交付范围是 A09 ↔ B09 公共接口契约和设计文档。E3 当前记录 A1 参考基线、
+样例运行观察与可复核证据；服务实现和联调属于后续阶段。
+
+### E2 课堂任务（第 2 页）
 
 1. 找到同号配对组 → A09 ↔ B09
 2. 约定微服务之间怎样传数据 → `docs/interfaces/`
@@ -29,6 +35,10 @@ C0/C1/C2 真实实验提交和构建行为对照。人工预期与实际运行�
 | 改过什么、谁受影响 | `docs/CHANGELOG.md` |
 | 还没做完的 | `docs/BACKLOG.md` |
 | 谁做了什么 | `docs/CONTRIBUTIONS.md` |
+| E3 基线怎么运行、输出如何复现 | [e3/README.md](e3/README.md) |
+| E3 已验证范围与责任边界 | [e3/STATUS.md](e3/STATUS.md) |
+| E3 主项目提交与发布验证 | [e3/PUBLICATION.md](e3/PUBLICATION.md) |
+| E3 仍需协作确认的配置事项 | [e3/COORDINATION.md](e3/COORDINATION.md) |
 
 ## 二、四个服务与归属（第 3、4 页）
 
@@ -58,6 +68,15 @@ python3 tools/validate.py path/to/their-file.json
 
 环境：Python 3 标准库即可，实测于 Python 3.14.6。**不需要 `pip install`**
 （这是刻意的取舍，见 `docs/adr/ADR-006`）。
+
+E3 基线运行需要 Python 3、Git、GNU Make 和 C 编译器：
+
+```bash
+python3 e3/scripts/run_baseline.py
+```
+
+默认新建 `e3/work/run-*` 目录。实测平台与版本、输出证据和恢复命令见
+[E3 运行说明](e3/README.md) 与 [E3 状态](e3/STATUS.md)。
 
 ## 四、第 25 页四条最小检查
 
@@ -93,7 +112,15 @@ docs/adr/
   ADR-008  EChecker 基线与 finding 差集         A3   Accepted，PR #8 已合并
   ADR-009  MDFixer 候选补丁接受与拒绝判据       B3   Accepted，PR #20 已合并
   ADR-010  状态迁移形式化 + 基线一致性归属      A1   Accepted，B1 于 2026-09-22 评审通过
-  ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，B1 复核项已完成，待 A2/B3/B2 确认
+  ADR-011  BuildChecker 输出与 artifact 本体  A2   Proposed，待 A3/B3/B2 本人在 Issue #1 确认，再由 B1 更新状态
+e3/
+  README.md                 A1   基线运行、环境要求、证据恢复方法
+  STATUS.md                 A1   已验证范围、真实提交 SHA、未验证范围
+  PUBLICATION.md            A1   E3 内容提交、发布前验证与个人贡献
+  COORDINATION.md           A1   A3/B2/A2 对 configuration_id 的待对齐事项
+  scripts/run_baseline.py   A1   可重复运行的 MD/RD 与提交版本基线
+  fixtures/md-rd/           A1   MD/RD 行为样例
+  evidence/                 A1   实测命令、日志、manifest、oracle 与 Git bundles
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
 docs/AI_USAGE.md            A1/B1/B2/A2/A3/B3  第 14 页格式，真实判断记录
 docs/CONTRIBUTIONS.md       A1/B1/B2/A2/A3/B3  作者、提交 SHA、Issue/PR
@@ -140,11 +167,13 @@ MD 写进 `output.findings`，状态是 `SUCCEEDED`，`error` 为 `null`；
 
 ## 七、边界声明
 
-- 所有 URI、sha256、commit、镜像名、时间戳均为**说明性值**，
-  不对应真实仓库或真实检测结果。它们的作用是让 A09 与 B09 用同一份具体例子
-  确认理解一致（第 11 页）。
-- 本仓库**不宣称**任何服务已实现或已部署，也**不宣称** B1 或其他服务负责人
-  已确认任何内容。待确认项集中在 `docs/BACKLOG.md` 第三节。
+- E2 契约样例中的 URI、sha256、commit、镜像名、时间戳通常是**说明性值**，
+  不代表服务产物。例外是 canonical DRAFT 与两份 A3 仓库内 artifact fixture 的真实字节哈希，
+  以及 E3 文档明确标出的真实实验提交 SHA、命令、日志和时间戳。E3 的人工 oracle
+  仍是课程材料派生的预期答案，不是检测器输出；细节见 `e3/STATUS.md` 和 `docs/VALIDATION.md`。
+- 本仓库**不宣称**任何服务已实现或已部署，也**不宣称**完成服务验收。B1 已完成其公共契约复核；
+  ADR-011 消费侧内容虽由相关 PR 落实，仍待 A3/B3/B2 本人在 Issue #1 明确确认，随后由 B1 更新状态。
+  其余待办集中在 `docs/BACKLOG.md`。
 - `input` / `output` 内部字段依第 20–23 页拟定，属服务负责人
   （A2/A3/B2/B3）的确认范围；顶层信封由 A1 冻结。
   这条分界线的理由见 `docs/adr/ADR-004`。

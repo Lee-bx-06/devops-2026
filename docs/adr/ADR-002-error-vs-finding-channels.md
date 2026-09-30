@@ -1,6 +1,6 @@
 # ADR-002：错误与检测发现走两条独立通道
 
-- 状态：**已接受**（A1 谢浩天，A09）；待 B1 复核
+- 状态：**已接受**（A1 谢浩天，A09；截至 2026-09-22，B1 公共契约复核已完成）
 - 日期：2026-09-21
 - 契约版本：1.0.0
 - 相关：第 8、9、10、25 页；`docs/interfaces/errors.md`；ADR-005
@@ -132,5 +132,7 @@ id, type, target, dependency, commit, detector, location, evidence[], message
 - `samples/invalid/finding-missing-evidence.json` —— finding 缺位置与证据 → 被拒
 - `samples/job.failed.json` / `job.analysis-failed.json` —— `ENV_3002` 与 `ANALYSIS_5001` 的区分
 
-**待 B1 复核：** `VALIDATION_2xxx` 命名空间是否接受；`retryable` 建议值是否与
-B 侧重试策略一致；错误码注册表维护权归 A1 还是 B1。
+**历史待复核记录（截至 2026-09-22 已关闭的 B1 项）：** `VALIDATION_2xxx` 的适用边界与
+注册表维护权已由 B1 定稿，见 `interfaces/errors.md` 第二、五节及 `CHANGELOG.md`。
+`retryable` 建议值已由 B1 接受为契约默认值，同一错误码的语义必须稳定；服务负责人可决定是否实际重试，
+但不能随意改动该码的 `retryable` 语义。
