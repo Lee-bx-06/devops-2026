@@ -33,6 +33,66 @@ def errors_of(doc, name="mutated.json"):
     return V.validate(doc, name)
 
 
+class TestNullableNumericFields(unittest.TestCase):
+    """公共数值字段遵循 schema 的下界、optional/null 与 JSON 整数语义。"""
+
+    def numeric_fields(self):
+        for name, path, field, minimum in (
+            ("artifact.error-report.json", (), "size_bytes", 0),
+            ("full-check.job-succeeded.json", ("output", "artifacts", 0), "size_bytes", 0),
+            ("repair.request.json", ("input", "md_report"), "size_bytes", 0),
+            ("full-check.job-succeeded.json", ("execution",), "duration_ms", 0),
+            ("full-check.job-succeeded.json", ("output", "findings", 0, "location"), "line", 1),
+            ("full-check.job-succeeded.json", ("output", "findings", 0, "location"), "column", 1),
+            ("artifact.error-report-body.json", ("findings", 0, "location"), "line", 1),
+            ("artifact.error-report-body.json", ("findings", 0, "location"), "column", 1),
+        ):
+            doc = load(name)
+            node = doc
+            for key in path:
+                node = node[key]
+            yield name, doc, node, field, minimum
+
+    def test_values_below_schema_minimum_are_rejected(self):
+        for name, doc, node, field, minimum in self.numeric_fields():
+            for value in (-1, minimum - 1):
+                with self.subTest(sample=name, field=field, value=value):
+                    node[field] = value
+                    found = errors_of(doc)
+                    self.assertTrue(any(f".{field}" in e for e in found), found)
+
+    def test_non_integer_types_are_rejected(self):
+        for name, doc, node, field, minimum in self.numeric_fields():
+            for value in (True, False, "1", 1.5, [], {}):
+                with self.subTest(sample=name, field=field, value=value):
+                    node[field] = value
+                    found = errors_of(doc)
+                    self.assertTrue(any(f".{field}" in e for e in found), found)
+
+    def test_minimum_and_larger_integers_are_valid(self):
+        for name, doc, node, field, minimum in self.numeric_fields():
+            for value in (minimum, minimum + 1, 10**30):
+                with self.subTest(sample=name, field=field, value=value):
+                    node[field] = value
+                    self.assertEqual(errors_of(doc), [])
+
+    def test_json_numbers_with_zero_fraction_are_integers(self):
+        for name, doc, node, field, minimum in self.numeric_fields():
+            for value in (float(minimum), float(minimum + 1)):
+                with self.subTest(sample=name, field=field, value=value):
+                    node[field] = value
+                    # 经 JSON 解码后仍是 float；JSON Schema integer 按数值判断。
+                    self.assertEqual(errors_of(json.loads(json.dumps(doc))), [])
+
+    def test_optional_fields_can_be_omitted_or_null(self):
+        for name, doc, node, field, minimum in self.numeric_fields():
+            with self.subTest(sample=name, field=field):
+                node[field] = None
+                self.assertEqual(errors_of(doc), [])
+                del node[field]
+                self.assertEqual(errors_of(doc), [])
+
+
 class TestRepoFixtures(unittest.TestCase):
     def test_run_reports_no_problem(self):
         self.assertEqual(validate.run(), [])

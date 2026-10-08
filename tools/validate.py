@@ -60,6 +60,15 @@ class Schema:
         self.error_fields = set(d["error"]["properties"])
         self.execution_required = set(d["execution"]["required"])
         self.execution_fields = set(d["execution"]["properties"])
+        self.nullable_integer_minimum = {
+            (definition, field): next(
+                branch["minimum"]
+                for branch in d[definition]["properties"][field]["oneOf"]
+                if branch.get("type") == "integer")
+            for definition, field in (
+                ("artifact", "size_bytes"), ("execution", "duration_ms"),
+                ("finding_location", "line"), ("finding_location", "column"))
+        }
         self.evidence_kinds = set(d["finding_evidence"]["properties"]["kind"]["enum"])
         self.actual_observations = set(
             d["actual_graph_dependency"]["properties"]["observation"]["enum"])
@@ -114,6 +123,14 @@ class Validator:
         elif not pattern.match(value):
             errors.append(f"{label} 格式不符：{value!r} 不满足 {name}")
 
+    def check_nullable_integer(self, value, label, errors, minimum):
+        if value is None:
+            return
+        # JSON Schema integer 按数值判断：1 与 1.0 均合法，布尔值不属于数值。
+        is_integer = _is_int(value) or (isinstance(value, float) and value.is_integer())
+        if not is_integer or value < minimum:
+            errors.append(f"{label} 必须是 >={minimum} 的整数或 null")
+
     # ---------- finding / error / artifact ----------
 
     def check_finding(self, value, label, errors):
@@ -135,6 +152,11 @@ class Validator:
         loc = value.get("location")
         if not isinstance(loc, dict) or not _s(loc.get("path")):
             errors.append(f"{label}.location.path 缺失（第 10 页要求「完整报告还要有位置」）")
+        if isinstance(loc, dict):
+            for field in ("line", "column"):
+                self.check_nullable_integer(
+                    loc.get(field), f"{label}.location.{field}", errors,
+                    self.s.nullable_integer_minimum[("finding_location", field)])
 
         ev = value.get("evidence")
         if not isinstance(ev, list) or not ev:
@@ -209,8 +231,9 @@ class Validator:
         self.check_str(value.get("configuration_id"), f"{label}.configuration_id", errors)
         self.check_pattern(value.get("sha256"), f"{label}.sha256", errors,
                            self.s.sha256_re, "sha256")
-        if value.get("size_bytes") is not None and not _is_int(value.get("size_bytes")):
-            errors.append(f"{label}.size_bytes 必须是整数或 null")
+        self.check_nullable_integer(
+            value.get("size_bytes"), f"{label}.size_bytes", errors,
+            self.s.nullable_integer_minimum[("artifact", "size_bytes")])
 
     def check_counts(self, value, label, errors):
         if not isinstance(value, dict):
@@ -357,8 +380,9 @@ class Validator:
                 continue
             if not _s(v) or not self.s.iso_re.match(v):
                 errors.append(f"{label}.{f} 必须是 ISO8601 或 null")
-        if value.get("duration_ms") is not None and not _is_int(value.get("duration_ms")):
-            errors.append(f"{label}.duration_ms 必须是整数或 null")
+        self.check_nullable_integer(
+            value.get("duration_ms"), f"{label}.duration_ms", errors,
+            self.s.nullable_integer_minimum[("execution", "duration_ms")])
 
     # ---------- input ----------
 

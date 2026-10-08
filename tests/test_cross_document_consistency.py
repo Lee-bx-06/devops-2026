@@ -8,10 +8,12 @@ A2 把 DRAFT → FULL_CHECK 那半条链迁到了新值，FULL_CHECK → MDFixer
 本文件把「交接链两端必须逐字一致」变成断言。第 5 页整页讲的就是这件事
 （发送方提供什么、接收方检查什么），只是课件没有要求它可执行。
 """
+import copy
 import importlib.util
 import json
 import pathlib
 import unittest
+from unittest import mock
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SAMPLES = ROOT / "docs" / "interfaces" / "samples"
@@ -84,7 +86,7 @@ class TestArtifactRecordsAgreeAcrossDocuments(unittest.TestCase):
                 first_name, first = occurrences[0]
                 for name, record in occurrences[1:]:
                     for field in ("uri", "type", "media_type", "producer_job_id",
-                                  "commit", "configuration_id", "sha256"):
+                                  "commit", "configuration_id", "sha256", "size_bytes"):
                         self.assertEqual(
                             first.get(field), record.get(field),
                             f"{artifact_id} 的 {field} 在 {first_name} 与 {name} 中不一致："
@@ -121,7 +123,7 @@ class TestRepairConsumesWhatFullCheckActuallyProduced(unittest.TestCase):
                 consumed = load(consumer_name)["input"]["md_report"]
                 self.assertEqual(consumed["artifact_id"], produced["artifact_id"])
                 for field in ("uri", "media_type", "producer_job_id", "commit",
-                              "configuration_id", "sha256"):
+                              "configuration_id", "sha256", "size_bytes"):
                     self.assertEqual(
                         consumed.get(field), produced.get(field),
                         f"{consumer_name} 的 md_report.{field} 与生产方 "
@@ -142,6 +144,78 @@ class TestRepairConsumesWhatFullCheckActuallyProduced(unittest.TestCase):
                 doc = load(name)
                 self.assertEqual(doc["input"]["md_report"]["configuration_id"],
                                  doc["input"]["environment"]["configuration_id"])
+
+
+class TestArtifactSizeConsistencyRegression(unittest.TestCase):
+    """仅改变大小也必须触发既有守卫；省略与 null 仍可用于一致的记录。"""
+
+    def run_record_guard(self, first, second):
+        result = unittest.TestResult()
+        case = TestArtifactRecordsAgreeAcrossDocuments(
+            "test_same_artifact_id_is_described_identically_everywhere")
+        with mock.patch(__name__ + ".all_positive_samples",
+                        return_value=[("producer.json", first), ("consumer.json", second)]):
+            case.run(result)
+        self.assertEqual(result.errors, [])
+        return result
+
+    def run_repair_guard(self, size, changed_size):
+        names = ("full-check.job-succeeded.json", "repair.request.json",
+                 "repair.job-succeeded.json", "job.cancelled.json")
+        docs = {name: load(name) for name in names}
+        produced = next(a for a in docs[names[0]]["output"]["artifacts"]
+                        if a["type"] == "ERROR_REPORT")
+        produced.pop("size_bytes", None)
+        if size != "omitted":
+            produced["size_bytes"] = size
+        for name in names[1:]:
+            consumed = docs[name]["input"]["md_report"]
+            consumed.pop("size_bytes", None)
+            if changed_size != "omitted":
+                consumed["size_bytes"] = changed_size
+        result = unittest.TestResult()
+        case = TestRepairConsumesWhatFullCheckActuallyProduced(
+            "test_md_report_matches_the_producer_record_field_by_field")
+        with mock.patch(__name__ + ".load", side_effect=docs.__getitem__):
+            case.run(result)
+        self.assertEqual(result.errors, [])
+        return result
+
+    def test_same_artifact_sizes_agree_when_provided(self):
+        first = load("artifact.error-report.json")
+        first["size_bytes"] = 0
+        self.assertTrue(self.run_record_guard(first, copy.deepcopy(first)).wasSuccessful())
+
+    def test_same_artifact_size_only_mutation_is_detected(self):
+        first = load("artifact.error-report.json")
+        second = copy.deepcopy(first)
+        second["size_bytes"] += 1
+        result = self.run_record_guard(first, second)
+        self.assertEqual(len(result.failures), 1)
+        self.assertIn("size_bytes", result.failures[0][1])
+
+    def test_same_artifact_sizes_can_be_omitted_or_null(self):
+        for size in ("omitted", None):
+            with self.subTest(size=size):
+                first = load("artifact.error-report.json")
+                first.pop("size_bytes")
+                second = copy.deepcopy(first)
+                if size is None:
+                    second["size_bytes"] = None
+                self.assertTrue(self.run_record_guard(first, second).wasSuccessful())
+
+    def test_repair_sizes_agree_when_provided(self):
+        self.assertTrue(self.run_repair_guard(0, 0).wasSuccessful())
+
+    def test_repair_size_only_mutation_is_detected(self):
+        result = self.run_repair_guard(6712, 6713)
+        self.assertEqual(len(result.failures), 3)
+        self.assertTrue(all("size_bytes" in failure for _, failure in result.failures))
+
+    def test_repair_sizes_can_be_omitted_or_null(self):
+        for size, changed_size in (("omitted", "omitted"), (None, None), ("omitted", None)):
+            with self.subTest(size=size, changed_size=changed_size):
+                self.assertTrue(self.run_repair_guard(size, changed_size).wasSuccessful())
 
 
 class TestEnvironmentChainIsConsistent(unittest.TestCase):
