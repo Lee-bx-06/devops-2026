@@ -7,6 +7,22 @@
 
 ## [Unreleased]
 
+### B1 E3 复核与版本影响（2026-10-10）
+
+B1 作为 A1 的复核方，在 Linux（WSL2）上独立重跑 E3 A1 基线并给出复核结论，
+随后按 `versioning.md` 判定 E3 的版本影响。完整复核见 [`e3/review/B1-review.md`](../e3/review/B1-review.md)。
+
+**裁定：E3 基线不改变公共契约，`schema_version` 维持 `1.0.0`，不递增。**
+
+| # | 事项 | 归类 | 裁定与理由 |
+| --- | --- | --- | --- |
+| 1 | E3 只新增样例、fixture 与文档 | 不改契约形状 | 不递增。公共 `task.schema.json` 字段、端点与错误通道均未变，第 7 页「E2 不部署 API」的前提不变 |
+| 2 | C1→C2 只改 `CFLAGS`，如何映射到 `configuration_id` | 构建参数属配置变化因子 | 归类口径：构建参数变化 ⇒ `configuration_id` 必须不同，且不得绑定 commit/Job ID；**具体取值仍由 A3/B2 给出**，B1 只给口径，不代替断言 |
+
+复核结论：基线在 Linux 上可复现且与 A1 的 macOS 保存证据一致；人工 oracle 与实际观测分开；
+原始 `openat("config.h")` 与 `make -pn` 的 `main.o: main.c unused.h` 印证了 MD/RD 两条发现。
+机读证据见 [`e3/review/evidence/linux-verification.json`](../e3/review/evidence/linux-verification.json)。
+
 ### 文档导航补记：E3 A1 基线（2026-09-30）
 
 - 增加 E3 A1 可重复参考基线、实测命令/日志和可还原 fixture 提交；人工 oracle 与运行器观察分开记录。

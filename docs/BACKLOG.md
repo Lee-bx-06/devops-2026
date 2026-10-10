@@ -87,8 +87,9 @@
 |---|---|---|---|
 | ✅ | 可重复的 MD/RD 与 C0/C1/C2 参考基线、运行器及可还原实测证据 | A1 | [E3 运行说明](../e3/README.md)、[E3 当前状态](../e3/STATUS.md)、[保存的实测证据](../e3/evidence/run-20260930T023602Z-c2ff9588/README.md)；内容提交 `de31c63b96d969d5c71da1d172b0786d9b8a351a` |
 | 🟡 | `full-check.clean-project.json` 的 `image_uri` 与 `configuration_id` 选择 | A2 | 唯一剩余 `KNOWN_ENV_DEVIATIONS`；由 A2 选择一致镜像/配置组合，A1 不代替其裁定 |
-| 🟡 | CFLAGS 变化与 `configuration_id` 的归类和映射 | A3、B2；必要时 A2 | 见 [E3 协作事项](../e3/COORDINATION.md)；样例保存 Makefile 与 `make -n -B main.o` 快照，不自行推断 ID |
-| ⬜ | Linux 系统调用跟踪、BuildChecker/EChecker 服务输出及服务实现 | A2/A3 与各服务负责人 | 当前证据仅为 macOS Make 行为与人工 oracle；各服务实现按 E5/E8 推进，集成和真实跨组读取按 E12 验证 |
+| 🟡 | CFLAGS 变化与 `configuration_id` 的归类和映射 | A3、B2；必要时 A2 | 见 [E3 协作事项](../e3/COORDINATION.md)；归类口径已由 B1 给出（[`versioning.md` 第八节](versioning.md)，构建参数 ⇒ ID 必须不同），具体取值仍由 A3/B2 给；样例保存 Makefile 与 `make -n -B main.o` 快照，不自行推断 ID |
+| 🟡 | B1 独立复核 E3 A1 基线（Linux 复跑 + 版本影响裁定） | B1 | 复核已完成，见 [B1 复核记录](../e3/review/B1-review.md) 与 [机读证据](../e3/review/evidence/linux-verification.json)；`schema_version` 维持 `1.0.0`；待推送与 PR 后转 ✅ |
+| ⬜ | Linux 系统调用跟踪、BuildChecker/EChecker 服务输出及服务实现 | A2/A3 与各服务负责人 | 当前证据仅为 macOS Make 行为与人工 oracle；B1 复核已在 Linux 上复现基线并取到原始文件访问，但 BuildChecker 级构图仍归 A2；各服务实现按 E5/E8 推进，集成和真实跨组读取按 E12 验证 |
 
 E3 交付是参考样例和基线，不是四服务验收或部署。[E3 当前状态](../e3/STATUS.md) 中所列真实 fixture SHA、运行日志和时间戳仅描述被保存的实验；它们不构成任何同学的服务验收或接受声明。
 
