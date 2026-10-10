@@ -826,8 +826,9 @@ A2 补上 DRAFT → FULL_CHECK 的断言后，把「跨文档一致性未覆盖�
 - **建议与处理**：不新增服务实现，只做独立复核与版本裁定——`make check`、重跑
   `e3/scripts/run_baseline.py`、用 `strace` 取 `md-rd` 的原始文件访问，并把观测与
   A1 保存的 macOS 证据逐项对照；版本侧在 `versioning.md` 第八节给出 `CFLAGS` 归类口径。
-- **人工判断：复核通过与否、以及「E3 不递增版本」都需本人确认。** B1 只给 `CFLAGS` 的归类口径
-  （构建参数 ⇒ `configuration_id` 必须不同），不代替 A3/B2 给具体 ID；该边界按职责保留为待确认。
+- **人工判断：B1 本人已于 2026-10-10 确认三条** —— ① 复核结论通过；② E3 不递增
+  `schema_version`（维持 `1.0.0`）；③ `CFLAGS` 归类口径（构建参数 ⇒ `configuration_id` 必须不同）。
+  确认记录同时留在 Issue #25。B1 只给 `CFLAGS` 的归类口径，不代替 A3/B2 给具体 ID。
 - **证据与边界**：复核环境、命令与观测见 [`e3/review/B1-review.md`](../e3/review/B1-review.md)、
   [`e3/review/evidence/linux-verification.json`](../e3/review/evidence/linux-verification.json)。
   未覆盖 BuildChecker/EChecker 实际图、服务实现与跨组 artifact 下载；本轮结论不构成服务验收。
