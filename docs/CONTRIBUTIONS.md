@@ -137,6 +137,22 @@ B1 的工作分两段。第一段是独立起草公共契约，第二段是审�
 依据是第 7 页「E2 先定义，不要求部署 API」与第 26 页「改字段之前先考虑消费者」。
 它只适用于尚无消费者的窗口，边界已在该节写明。
 
+## B1 E3 复核追溯（2026-10-10）
+
+B1 在 E3 里的落点是「公共契约与版本」的复核侧，不产出服务基线：
+BuildChecker/EChecker 归 A2/A3，DRAFT/MDFixer 归 B2/B3（见根 `README.md` 第二节）。
+
+- **作者**：李秉轩（Git 作者 `Lee-bx-06 <1928172695@qq.com>`）
+- **复核对象**：`main` = `47c273c595706c58ca7090a4296e3391f662e685`（A1 E3 基线）
+- **关联 Issue**：`<待填：B1 E3 复核 Issue>`
+- **内容提交**：`<待填：推送后由 git rev-parse 回填>`
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| Linux 独立复核 A1 基线 | `e3/review/B1-review.md`、`e3/review/evidence/*` | `<SHA>` | `<Issue/PR>` | `make check` 77 项通过；`run_baseline.py` `status=succeeded`，观测与 A1 的 macOS 证据一致 |
+| E3 版本影响裁定 | `docs/CHANGELOG.md`、`docs/versioning.md` 第八节 | `<SHA>` | `<Issue/PR>` | 维持 `schema_version` `1.0.0`；`CFLAGS` 归类口径与 `$defs.configuration_id` 一致 |
+| 设计过程记录 | `docs/AI_USAGE.md` 条目 33 | `<SHA>` | `<Issue/PR>` | 第 14 页格式，人工判断写明 |
+
 ## B2 提交追溯
 
 - **Commit SHA**：`a587263bd82b88526769732004540c7766bd75b1`

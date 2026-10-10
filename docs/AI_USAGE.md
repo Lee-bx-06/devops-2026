@@ -815,3 +815,19 @@ A2 补上 DRAFT → FULL_CHECK 的断言后，把「跨文档一致性未覆盖�
   BuildChecker/EChecker 输出或服务验收。此次文档修改执行 `git diff --check` 与 `make check` 均通过；
   `make check` 通过全部 77 项测试。此前 E3 发布副本的 `make check` 记录见 [E3 发布记录](../e3/PUBLICATION.md)
   和本次证据目录 `validation.json`，二者是不同检查时点。
+
+## B1 E3 复核与版本裁定记录（2026-10-10）
+
+### 条目 33：在 Linux 上独立复核 E3 A1 基线并裁定版本影响
+
+- **工具/模型**：Codex（ChatGPT 系列编码代理）
+- **提示摘要与授权**：用户（B1）要求先读 PPT 与项目，再完成实验 3 并说明哪些步骤必须本人执行。
+  Codex 判断 B1 的 E3 落点是「公共契约与版本」的复核侧，据此在 WSL2/Linux 上重跑 A1 基线。
+- **建议与处理**：不新增服务实现，只做独立复核与版本裁定——`make check`、重跑
+  `e3/scripts/run_baseline.py`、用 `strace` 取 `md-rd` 的原始文件访问，并把观测与
+  A1 保存的 macOS 证据逐项对照；版本侧在 `versioning.md` 第八节给出 `CFLAGS` 归类口径。
+- **人工判断：复核通过与否、以及「E3 不递增版本」都需本人确认。** B1 只给 `CFLAGS` 的归类口径
+  （构建参数 ⇒ `configuration_id` 必须不同），不代替 A3/B2 给具体 ID；该边界按职责保留为待确认。
+- **证据与边界**：复核环境、命令与观测见 [`e3/review/B1-review.md`](../e3/review/B1-review.md)、
+  [`e3/review/evidence/linux-verification.json`](../e3/review/evidence/linux-verification.json)。
+  未覆盖 BuildChecker/EChecker 实际图、服务实现与跨组 artifact 下载；本轮结论不构成服务验收。

@@ -1,0 +1,71 @@
+{
+  "schema": "e3-b1-review-verification-v1",
+  "reviewer": "B1（李秉轩）",
+  "reviewer_role": "公共契约与版本",
+  "date_local": "2026-10-10",
+  "timezone": "Asia/Shanghai",
+  "reviewed_deliverable": "e3/（A1 E3 参考基线）",
+  "reviewed_head": "47c273c595706c58ca7090a4296e3391f662e685",
+  "contract_version": "1.0.0",
+  "provenance": "B1 independent re-run on Linux; not a detector output",
+  "environment": {
+    "system": "Linux",
+    "release": "6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "tools": {
+      "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+      "make": "GNU Make 4.4.1",
+      "python": "Python 3.14.4",
+      "git": "git version 2.53.0"
+    }
+  },
+  "checks": [
+    {
+      "name": "contract-and-unit-tests",
+      "command": "make check",
+      "result": "pass",
+      "detail": "Ran 77 tests ... OK"
+    },
+    {
+      "name": "baseline-runner",
+      "command": "python3 e3/scripts/run_baseline.py --output-root <tmp>",
+      "result": "pass",
+      "detail": "manifest status=succeeded; runner internally verified bundles and replayed tags"
+    },
+    {
+      "name": "linux-raw-trace",
+      "command": "strace -ff -o trace.log -e trace=%file,%process make all",
+      "result": "ok",
+      "detail": "see linux-strace.txt"
+    }
+  ],
+  "observations": {
+    "md-rd": {
+      "initial": "1",
+      "after_config_incremental": "1",
+      "after_config_clean": "2",
+      "after_unused_incremental": "2",
+      "unused_header_change_recompiled_main_o": true
+    },
+    "commits": {
+      "C0_clean": "10",
+      "C1_clean": "12",
+      "C2_incremental": "12",
+      "C2_clean": "19"
+    },
+    "c1_make_n_B_main_o": "cc -O0 -c main.c -o main.o",
+    "c2_make_n_B_main_o": "cc -O0 -DMODE=7 -c main.c -o main.o"
+  },
+  "raw_trace_findings": {
+    "config_h": "read by compiler (openat), never stat'd by make -> not a declared prerequisite (MD)",
+    "unused_h": "stat'd by make (declared prerequisite), never opened by compiler (RD)",
+    "declared_rule": "main.o: main.c unused.h"
+  },
+  "matches_saved_macos_evidence": true,
+  "contract_impact": "none; no change to public schema, endpoints or fields; schema_version stays 1.0.0",
+  "not_verified": [
+    "BuildChecker / EChecker actual graphs and service implementations",
+    "real cross-team artifact download",
+    "configuration_id value mapping (owned by A3/B2; B1 only fixes the classification rule)"
+  ]
+}

@@ -39,6 +39,7 @@ E2 的交付范围是 A09 ↔ B09 公共接口契约和设计文档。E3 当前�
 | E3 已验证范围与责任边界 | [e3/STATUS.md](e3/STATUS.md) |
 | E3 主项目提交与发布验证 | [e3/PUBLICATION.md](e3/PUBLICATION.md) |
 | E3 仍需协作确认的配置事项 | [e3/COORDINATION.md](e3/COORDINATION.md) |
+| E3 A1 基线的独立复核与版本裁定 | [e3/review/B1-review.md](e3/review/B1-review.md) |
 
 ## 二、四个服务与归属（第 3、4 页）
 

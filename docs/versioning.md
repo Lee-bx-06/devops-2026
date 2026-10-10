@@ -117,3 +117,20 @@
 **一条边界**：本判据只适用于「还没有消费者」的窗口。E3 的参考样例与基线记录本身
 不改变这个条件；当服务实际开始按契约消费后，后续变更必须回到第一节的归类。
 E12 的跨组实际产物交接是消费证据之一，不是唯一版本门槛。
+
+## 八、E3 基线的版本影响与 CFLAGS 归类（2026-10-10 B1）
+
+E3 只在 `e3/` 下新增参考样例、fixture、运行器与文档，没有改动 `interfaces/` 下的
+公共 schema、端点或字段，因此**不触发任何版本动作**：`schema_version` 维持 `1.0.0`。
+第七节「还没有消费者」的窗口在 E3 阶段仍然成立。复核过程与证据见
+[`e3/review/B1-review.md`](../e3/review/B1-review.md)。
+
+**CFLAGS 归类口径**（B1 给口径，A3/B2 据此给具体取值）：
+
+- `configuration_id` 的既有定义（`interfaces/task.schema.json` 的 `$defs.configuration_id`）是
+  「只随基础镜像、工具链、依赖集或**构建参数**变化，不得绑定 commit、Job ID 或随机 UUID」。
+- E3 的 `C1 → C2` 只改 Makefile 里的 `CFLAGS`（`-O0` → `-O0 -DMODE=7`），其余不变。
+  这落在「构建参数变化」这一因子内，因此 **C1 与 C2 的 `configuration_id` 必须不同**。
+  若两组坚持同一 ID，则应先改 `$defs.configuration_id` 的定义，属契约变更，须走第四节流程。
+- 具体 ID 字符串如何生成仍由 A3/B2 决定。E3 样例保存原始 Makefile 与
+  `make -n -B main.o` 快照，不自行推断 ID。
