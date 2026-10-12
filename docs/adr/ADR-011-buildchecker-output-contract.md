@@ -1,7 +1,8 @@
 # ADR-011：BuildChecker 输出与 artifact 本体契约
 
-- 状态：**Proposed**（A2 起草；B1 的复核项已于 2026-09-22 完成；A3 已于 2026-10-12 在 Issue #1
-  确认；待 B3、B2 本人明确确认各自消费侧问题，两人确认后由 B1 更新本 ADR 与索引为 `Accepted`；
+- 状态：**Proposed**（A2 起草；B1 的复核项已于 2026-09-22 完成；A3 于 2026-10-12 在 Issue #1 确认、
+  B2 于 2026-10-12 在 Issue #30 / [PR #32](https://github.com/Lee-bx-06/devops-2026/pull/32) 确认；
+  待 B3 本人明确确认，B3 确认后由 B1 更新本 ADR 与索引为 `Accepted`；
   见 [B1 请求确认](https://github.com/Lee-bx-06/devops-2026/issues/1#issuecomment-5778076992)）
 - 日期：2026-09-21
 - 契约版本：1.0.0
@@ -122,9 +123,9 @@ findings 数。Job 内联 findings 和 ERROR_REPORT 本体应表达同一批结�
 | B1 | 新增三种 artifact 本体是否按 MINOR 还是保持 1.0.0 冻结前补齐 | **已定：维持 `1.0.0`** | 三处变更一并裁定，理由与落地清单见 `../versioning.md` 第七节 |
 | A3 | 历史实际图还需要哪些字段才能作为 baseline | **本人已于 2026-10-12 确认** | Issue #1 的 A3 评论：baseline 需要 C0 的 ACTUAL_GRAPH 与 ERROR_REPORT，分别用 `actual_graph_uri`、`error_report_uri` 引用；`interfaces/echecker-contract.md` 与 ADR-008 早已把这两项定为必需引用（PR #8 已合并） |
 | B3 | MDFixer 消费 ERROR_REPORT 时是否需要额外字段 | 内容已落实；待本人在 Issue #1 明确确认 | B3 经 Issue #14 追加 `finding_id` / `evidence_uri` / `status` 三个字段并写入 schema 与校验器（PR #20 已合并） |
-| B2 | DRAFT 输出的 `environment` / `build` 必须与 FULL_CHECK 输入使用同一语义 | 内容已落实；待本人在 Issue #1 明确确认 | ADR-007 已由 A2 复核接受，`environment` / `build` 逐字段可直接映射（PR #5、#6 已合并） |
+| B2 | DRAFT 输出的 `environment` / `build` 必须与 FULL_CHECK 输入使用同一语义 | **本人已于 2026-10-12 确认** | Issue #30 的 B2 回复与 [`e3/b2-draft/TRACEABILITY.md`](../../e3/b2-draft/TRACEABILITY.md)（PR #32 已合并）：按 ADR-007，`environment` / `build` 逐字段无损映射，不需要追加字段；命令依次执行 clean / build / verify；验证见 `tests/test_validate.py` 的 `TestA2B2DraftHandoff` |
 
-**下一步**：B3、B2 在 Issue #1 回复确认（或提出需要追加的字段）后，
-由 B1 把本篇与 `adr/README.md` 索引的状态改为 `Accepted`。A3 已于 2026-10-12 确认（见上表）。
+**下一步**：B3 在 Issue #1 或 Issue #30 回复确认（或提出需要追加的字段）后，
+由 B1 把本篇与 `adr/README.md` 索引的状态改为 `Accepted`。A3 与 B2 已于 2026-10-12 确认（见上表）。
 「内容已落实」不等于「本人已确认」——本仓库不替任何一方宣称确认，
 这也是第 5 页「接收方检查」一栏的用法。
