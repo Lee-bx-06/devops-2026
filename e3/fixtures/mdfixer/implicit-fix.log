@@ -1,0 +1,9 @@
+patching file Makefile
+rm -f app main.o main.d
+cc -O0 -MMD -MP -c main.c -o main.o
+cc -O0 -MMD -MP -o app main.o
+修复前输出: 1
+cc -O0 -MMD -MP -c main.c -o main.o
+cc -O0 -MMD -MP -o app main.o
+修改头文件后输出: 3
+补丁验证通过
