@@ -1,0 +1,173 @@
+[
+  {
+    "index": 1,
+    "name": "docker-version",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "version",
+      "--format",
+      "{{json .}}"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\001-docker-version.stdout.log",
+    "stderr_log": "logs\\001-docker-version.stderr.log"
+  },
+  {
+    "index": 2,
+    "name": "broken-build",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "build",
+      "--progress=plain",
+      "-f",
+      "Dockerfile.broken",
+      "-t",
+      "nju-e3-draft-broken:draft-run-20261012t075533z-e00a6be2",
+      "."
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026\\e3\\fixtures\\draft",
+    "exit_code": 1,
+    "expected_exit_code": "nonzero",
+    "stdout_log": "logs\\002-broken-build.stdout.log",
+    "stderr_log": "logs\\002-broken-build.stderr.log"
+  },
+  {
+    "index": 3,
+    "name": "reference-build",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "build",
+      "--progress=plain",
+      "-f",
+      "Dockerfile.reference",
+      "-t",
+      "nju-e3-draft-reference:draft-run-20261012t075533z-e00a6be2",
+      "."
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026\\e3\\fixtures\\draft",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\003-reference-build.stdout.log",
+    "stderr_log": "logs\\003-reference-build.stderr.log"
+  },
+  {
+    "index": 4,
+    "name": "reference-inspect",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "image",
+      "inspect",
+      "nju-e3-draft-reference:draft-run-20261012t075533z-e00a6be2",
+      "--format",
+      "{{json .}}"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\004-reference-inspect.stdout.log",
+    "stderr_log": "logs\\004-reference-inspect.stderr.log"
+  },
+  {
+    "index": 5,
+    "name": "container-start",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "run",
+      "-d",
+      "--name",
+      "e3-b2-11dfdd2710",
+      "--network",
+      "none",
+      "--entrypoint",
+      "sh",
+      "nju-e3-draft-reference:draft-run-20261012t075533z-e00a6be2",
+      "-c",
+      "sleep 600"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\005-container-start.stdout.log",
+    "stderr_log": "logs\\005-container-start.stderr.log"
+  },
+  {
+    "index": 6,
+    "name": "clean",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "exec",
+      "e3-b2-11dfdd2710",
+      "make",
+      "clean"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\006-clean.stdout.log",
+    "stderr_log": "logs\\006-clean.stderr.log"
+  },
+  {
+    "index": 7,
+    "name": "build",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "exec",
+      "e3-b2-11dfdd2710",
+      "make",
+      "all"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\007-build.stdout.log",
+    "stderr_log": "logs\\007-build.stderr.log"
+  },
+  {
+    "index": 8,
+    "name": "verify",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "exec",
+      "e3-b2-11dfdd2710",
+      "make",
+      "test"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\008-verify.stdout.log",
+    "stderr_log": "logs\\008-verify.stderr.log"
+  },
+  {
+    "index": 9,
+    "name": "functional-output",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "exec",
+      "e3-b2-11dfdd2710",
+      "./hello"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\009-functional-output.stdout.log",
+    "stderr_log": "logs\\009-functional-output.stderr.log"
+  },
+  {
+    "index": 10,
+    "name": "container-remove",
+    "argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "rm",
+      "-f",
+      "e3-b2-11dfdd2710"
+    ],
+    "cwd": "D:\\新建文件夹 (3)\\OneDrive\\Desktop\\devops\\devops-2026",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout_log": "logs\\010-container-remove.stdout.log",
+    "stderr_log": "logs\\010-container-remove.stderr.log"
+  }
+]

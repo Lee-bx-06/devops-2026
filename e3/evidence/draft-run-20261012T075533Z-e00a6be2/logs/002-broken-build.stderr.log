@@ -1,0 +1,90 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.broken
+#1 transferring dockerfile: 300B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
+#2 DONE 7.5s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 72B done
+#3 DONE 0.1s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
+#5 resolve docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f 0.0s done
+#5 ...
+
+#4 [internal] load build context
+#4 transferring context: 412B 0.0s done
+#4 DONE 0.1s
+
+#5 [1/4] FROM docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
+#5 sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f 10.37kB / 10.37kB done
+#5 sha256:8fb4cfa1a2616d7b8e0c2175cc6ad68f5729c34ea8488c0b360d2934b7be9024 1.75kB / 1.75kB done
+#5 sha256:ce3ff9524414289fc922d9d5dc1de87abc77a39ff2ff5007435839f2af1d7569 5.51kB / 5.51kB done
+#5 sha256:65a67aec859c5fafe6ca38c2ed07825c97acf3febdcf62b79441a1bfca4f3a4a 0B / 1.29MB 0.1s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 0B / 11.92MB 0.1s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 0.3s
+#5 sha256:65a67aec859c5fafe6ca38c2ed07825c97acf3febdcf62b79441a1bfca4f3a4a 1.29MB / 1.29MB 1.4s done
+#5 sha256:2f5b06adfd9138ef928aaf8b34f3fecf122b137a537133dfe421509dd57b4a47 0B / 250B 1.5s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 2.10MB / 11.92MB 2.1s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 3.15MB / 11.92MB 2.8s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 4.19MB / 11.92MB 3.0s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 6.29MB / 11.92MB 4.0s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 7.34MB / 11.92MB 5.0s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 8.39MB / 11.92MB 5.2s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 9.44MB / 11.92MB 5.4s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 5.4s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 11.53MB / 11.92MB 6.0s
+#5 sha256:2f5b06adfd9138ef928aaf8b34f3fecf122b137a537133dfe421509dd57b4a47 0B / 250B 6.6s
+#5 sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 11.92MB / 11.92MB 6.9s done
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 2.10MB / 29.84MB 7.0s
+#5 sha256:2f5b06adfd9138ef928aaf8b34f3fecf122b137a537133dfe421509dd57b4a47 250B / 250B 6.8s done
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 4.19MB / 29.84MB 8.1s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 6.29MB / 29.84MB 9.1s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 8.39MB / 29.84MB 10.3s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 10.49MB / 29.84MB 11.4s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 12.58MB / 29.84MB 12.2s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 15.73MB / 29.84MB 13.2s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 17.83MB / 29.84MB 14.3s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 19.92MB / 29.84MB 15.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 22.02MB / 29.84MB 16.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 24.12MB / 29.84MB 17.3s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 27.26MB / 29.84MB 18.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 29.84MB / 29.84MB 18.2s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 29.84MB / 29.84MB 18.2s done
+#5 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e
+#5 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 1.9s done
+#5 extracting sha256:65a67aec859c5fafe6ca38c2ed07825c97acf3febdcf62b79441a1bfca4f3a4a
+#5 extracting sha256:65a67aec859c5fafe6ca38c2ed07825c97acf3febdcf62b79441a1bfca4f3a4a 0.2s done
+#5 extracting sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 0.1s
+#5 extracting sha256:3a5db7051419a594a866378c5d2c422e3d282d69e6792b3213772cb1349da446 1.0s done
+#5 extracting sha256:2f5b06adfd9138ef928aaf8b34f3fecf122b137a537133dfe421509dd57b4a47 done
+#5 DONE 22.1s
+
+#6 [2/4] WORKDIR /workspace/project
+#6 DONE 0.3s
+
+#7 [3/4] COPY main.c Makefile ./
+#7 DONE 0.1s
+
+#8 [4/4] RUN make all
+#8 0.501 /bin/sh: 1: make: not found
+#8 ERROR: process "/bin/sh -c make all" did not complete successfully: exit code: 127
+------
+ > [4/4] RUN make all:
+0.501 /bin/sh: 1: make: not found
+------
+Dockerfile.broken:7
+--------------------
+   5 |
+   6 |     # Deliberately fails: the base image has neither GNU Make nor a C toolchain.
+   7 | >>> RUN make all
+   8 |
+   9 |     CMD ["./hello"]
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c make all" did not complete successfully: exit code: 127
