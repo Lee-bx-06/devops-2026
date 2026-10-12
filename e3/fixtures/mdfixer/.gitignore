@@ -1,3 +1,9 @@
 app
+app.exe
 main.o
+!before-fix.log
+!target-fix.log
+!macro-fix.log
+!hybrid-fix.log
+!implicit-fix.log
 !broken-failure.log
