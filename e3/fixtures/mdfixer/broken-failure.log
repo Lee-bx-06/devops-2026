@@ -1,0 +1,5 @@
+cc -O0 -c main.c -o main.o
+invalid_command
+process_begin: CreateProcess(NULL, invalid_command, ...) failed.
+make (e=2): 系统找不到指定的文件。
+make: *** [Makefile:7: app] Error 2

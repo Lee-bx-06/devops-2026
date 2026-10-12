@@ -1,0 +1,18 @@
+CC ?= cc
+CFLAGS ?= -O0 -MMD -MP
+DEPS = main.d
+
+all: app
+
+app: main.o
+	$(CC) $(CFLAGS) -o $@ main.o
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+-include $(DEPS)
+
+clean:
+	rm -f app main.o main.d
+
+.PHONY: all clean

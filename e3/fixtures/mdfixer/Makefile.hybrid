@@ -1,0 +1,16 @@
+CC ?= cc
+CFLAGS ?= -O0
+HEADERS = config.h unused.h
+
+all: app
+
+app: main.o
+	$(CC) $(CFLAGS) -o $@ main.o
+
+main.o: main.c $(HEADERS)
+	$(CC) $(CFLAGS) -c main.c -o main.o
+
+clean:
+	rm -f app main.o
+
+.PHONY: all clean
