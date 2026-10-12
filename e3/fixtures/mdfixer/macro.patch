@@ -1,0 +1,36 @@
+--- Makefile.before	2026-10-12 16:43:33.953931900 +0800
++++ Makefile.macro	2026-10-12 17:23:53.051000000 +0800
+@@ -1,16 +1,16 @@
+-CC ?= cc
+-CFLAGS ?= -O0
+-
+-all: app
+-
+-app: main.o
+-	$(CC) $(CFLAGS) -o $@ main.o
+-
+-# Deliberate oracle defects: config.h is used but omitted; unused.h is declared but unused.
+-main.o: main.c unused.h
+-	$(CC) $(CFLAGS) -c main.c -o main.o
+-
+-clean:
+-	rm -f app main.o
+-
+-.PHONY: all clean
++CC ?= cc
++CFLAGS ?= -O0
++DEPS = main.c config.h unused.h
++
++all: app
++
++app: main.o
++	$(CC) $(CFLAGS) -o $@ main.o
++
++main.o: $(DEPS)
++	$(CC) $(CFLAGS) -c main.c -o main.o
++
++clean:
++	rm -f app main.o
++
++.PHONY: all clean
+\ No newline at end of file

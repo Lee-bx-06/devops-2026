@@ -1,0 +1,1 @@
+/* Deliberately declared by Makefile but not included. */

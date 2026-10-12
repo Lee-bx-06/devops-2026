@@ -1,0 +1,16 @@
+CC ?= cc
+CFLAGS ?= -O0
+DEPS = main.c config.h unused.h
+
+all: app
+
+app: main.o
+	$(CC) $(CFLAGS) -o $@ main.o
+
+main.o: $(DEPS)
+	$(CC) $(CFLAGS) -c main.c -o main.o
+
+clean:
+	rm -f app main.o
+
+.PHONY: all clean

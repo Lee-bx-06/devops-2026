@@ -1,0 +1,27 @@
+{
+  "provenance": "COURSE_DERIVED_ORACLE",
+  "findings": [
+    {
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "evidence": "Makefile 中 main.o 规则未声明 config.h，但 main.c 包含 config.h"
+    },
+    {
+      "type": "REDUNDANT",
+      "target": "main.o",
+      "dependency": "unused.h",
+      "evidence": "Makefile 声明 unused.h，但 main.c 未包含且未使用"
+    }
+  ],
+  "fix_expectations": {
+    "Target": "在 main.o 规则中直接添加 config.h",
+    "Macro": "在 DEPS 变量中包含 config.h",
+    "Hybrid": "在 HEADERS 变量中包含 config.h",
+    "Implicit": "使用 -MMD -MP 自动生成 main.d 并包含"
+  },
+  "verification": {
+    "before_fix": "只改 config.h 后 make，输出仍为 1",
+    "after_fix": "改 config.h 为 3 后不 clean，make 输出应为 3"
+  }
+}
