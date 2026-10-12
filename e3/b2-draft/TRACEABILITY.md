@@ -3,7 +3,8 @@
 负责人：B2（zrh / GitHub `ZRH1213`）。日期：2026-10-12。
 
 关联 Issue：[E3 收尾 #30](https://github.com/Lee-bx-06/devops-2026/issues/30)。
-关联 PR：本文件的收尾 PR 在说明中引用 Issue #30；其链接由 B2 在该 Issue 的确认评论中回填。
+关联 PR：[B2 收尾 PR #32](https://github.com/Lee-bx-06/devops-2026/pull/32)。
+B2 确认评论：[Issue #30 中的本人回复](https://github.com/Lee-bx-06/devops-2026/issues/30#issuecomment-6125655483)。
 
 ## ADR-011 的 B2 消费侧确认
 
