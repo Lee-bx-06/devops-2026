@@ -45,6 +45,7 @@ E2 的交付范围是 A09 ↔ B09 公共接口契约和设计文档。E3 当前�
 | E3 B2 的 DRAFT 基线交付范围 | [e3/b2-draft/README.md](e3/b2-draft/README.md) |
 | E3 MDFixer 固定输入与补丁验证 | [e3/fixtures/mdfixer/README.md](e3/fixtures/mdfixer/README.md) |
 | E3 B3 的 MDFixer 工作记录 | [e3/review/B3-review.md](e3/review/B3-review.md) |
+| E3 交付索引（第 9 页四栏逐条对应仓库文件） | [e3/DELIVERABLES.md](e3/DELIVERABLES.md) |
 
 ## 二、四个服务与归属（第 3、4 页）
 
