@@ -134,3 +134,17 @@ E3 只在 `e3/` 下新增参考样例、fixture、运行器与文档，没有改
   若两组坚持同一 ID，则应先改 `$defs.configuration_id` 的定义，属契约变更，须走第四节流程。
 - 具体 ID 字符串如何生成仍由 A3/B2 决定。E3 样例保存原始 Makefile 与
   `make -n -B main.o` 快照，不自行推断 ID。
+
+**B2 已给出生成规则（2026-10-12 补记）**：
+
+- `e3/fixtures/draft/README.md` 把 `configuration_id` 定义为
+  `cc-<build-profile>-<first12(sha256(规范化配置))>`，输入为基础镜像、工具包集合、`CFLAGS`、
+  构建 profile 与四个 build 字段；commit、Job ID 与随机 UUID 不参与该值。E3 的实测记录取值为
+  `cc-gcc-release-4f1ea3ae4d71`。
+- 该规则与本节口径一致：`CFLAGS` 属构建参数，因此 C1 与 C2 必须得到不同的 `configuration_id`。
+  具体取值由 B2 在其 E3 交付中给出，本节的口径不再悬空。
+- **仍待裁定（B1 与 A2/B2）**：E2 契约样例使用的规范值 `cc-gcc13-release-6f12a4c8` 是 8 位十六进制
+  后缀、profile 写作 `gcc13-release`，而 B2 的规则产出 12 位后缀与 `gcc-release`。
+  `$defs.configuration_id` 只要求「非空 opaque 字符串」，两种写法都不违规，所以这不是校验失败，
+  而是「两个命名空间各自有效」还是「同一规则必须对齐格式」的口径问题。结论落地前，E2 样例保持现值，
+  E3 fixture 只记录它自己环境的取值，两边都不擅自改写。

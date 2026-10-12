@@ -7,8 +7,10 @@ A1 负责人：**谢浩天（241250033）** ｜ B1 负责人：**李秉轩**
 按第 7 页，E2 只定义契约、不要求部署 API；因此 E2 部分只有 schema、样例、校验器与设计记录，
 不包含可运行服务。E3 部分是 A1 准备的参考样例，不等同于四个服务的实现或验收。
 
-E3 的 A1 共享测试基线见 [e3/README.md](e3/README.md)：包含 MD/RD 小项目、
-C0/C1/C2 真实实验提交、构建行为对照和可复跑证据。这是样例阶段的输入与实测，
+E3 的 A 侧基线（MD/RD 小项目、C0/C1/C2 真实实验提交、构建行为对照与可复跑证据）见
+[e3/README.md](e3/README.md)；B 侧基线为 [B2 的 DRAFT 交付](e3/b2-draft/README.md)与
+[B3 的 MDFixer 固定输入](e3/fixtures/mdfixer/README.md)，前者含失败与参考 Dockerfile 及真实
+Docker 运行日志，后者含四种声明风格补丁与无效候选恢复记录。这些是样例阶段的输入与实测，
 不代表 BuildChecker、EChecker、DRAFT 或 MDFixer 服务已实现；服务实现与联调属于后续阶段。
 E2 的公共契约版本仍为 1.0.0，E2 本身不部署 API。
 
@@ -40,6 +42,9 @@ E2 的交付范围是 A09 ↔ B09 公共接口契约和设计文档。E3 当前�
 | E3 主项目提交与发布验证 | [e3/PUBLICATION.md](e3/PUBLICATION.md) |
 | E3 仍需协作确认的配置事项 | [e3/COORDINATION.md](e3/COORDINATION.md) |
 | E3 A1 基线的独立复核与版本裁定 | [e3/review/B1-review.md](e3/review/B1-review.md) |
+| E3 B2 的 DRAFT 基线交付范围 | [e3/b2-draft/README.md](e3/b2-draft/README.md) |
+| E3 MDFixer 固定输入与补丁验证 | [e3/fixtures/mdfixer/README.md](e3/fixtures/mdfixer/README.md) |
+| E3 B3 的 MDFixer 工作记录 | [e3/review/B3-review.md](e3/review/B3-review.md) |
 
 ## 二、四个服务与归属（第 3、4 页）
 
@@ -73,11 +78,13 @@ python3 tools/validate.py path/to/their-file.json
 E3 基线运行需要 Python 3、Git、GNU Make 和 C 编译器：
 
 ```bash
-python3 e3/scripts/run_baseline.py
+python3 e3/scripts/run_baseline.py          # A 侧：MD/RD 与 C0/C1/C2
+python3 e3/scripts/run_draft_baseline.py    # B 侧：DRAFT（需要 Docker）
 ```
 
 默认新建 `e3/work/run-*` 目录。实测平台与版本、输出证据和恢复命令见
-[E3 运行说明](e3/README.md) 与 [E3 状态](e3/STATUS.md)。
+[E3 运行说明](e3/README.md) 与 [E3 状态](e3/STATUS.md)；DRAFT 的 Docker 证据见
+[B2 交付说明](e3/b2-draft/README.md)。
 
 ## 四、第 25 页四条最小检查
 
@@ -120,7 +127,15 @@ e3/
   PUBLICATION.md            A1   E3 内容提交、发布前验证与个人贡献
   COORDINATION.md           A1   A3/B2/A2 对 configuration_id 的待对齐事项
   scripts/run_baseline.py   A1   可重复运行的 MD/RD 与提交版本基线
+  scripts/run_draft_baseline.py  B2   可重复运行的 DRAFT 基线（需要 Docker）
   fixtures/md-rd/           A1   MD/RD 行为样例
+  fixtures/commits/         A1   C0/C1/C2 三份源版本
+  fixtures/draft/           B2   Tiny Greeting 源码、失败与参考 Dockerfile、固定预期
+  fixtures/mdfixer/         B3   MDFixer 固定 MD 输入、四种声明风格补丁与验证日志
+  b2-draft/README.md        B2   DRAFT 交付范围与 E2 契约映射
+  tests/test_draft_baseline.py   B2   DRAFT fixture 与契约映射测试（由 make check 一并运行）
+  review/B1-review.md       B1   A1 基线的 Linux 独立复核与版本影响裁定
+  review/B3-review.md       B3   MDFixer 补丁验证与无效候选恢复记录
   evidence/                 A1   实测命令、日志、manifest、oracle 与 Git bundles
 docs/BACKLOG.md             A1   第 12 页四项 + 待对方确认清单 + 未完成项
 docs/AI_USAGE.md            A1/B1/B2/A2/A3/B3  第 14 页格式，真实判断记录
