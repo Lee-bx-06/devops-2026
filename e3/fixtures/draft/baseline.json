@@ -1,0 +1,33 @@
+{
+  "schema": "e3-draft-baseline-v1",
+  "owner": "B2",
+  "provenance": "COURSE_DERIVED_BASELINE",
+  "repository": {
+    "source": "this repository",
+    "version_rule": "record the full Git commit and fixture tree hashes in each run"
+  },
+  "build": {
+    "clean_command": "make clean",
+    "command": "make all",
+    "verify_command": "make test",
+    "project_root": "/workspace/project"
+  },
+  "expected": {
+    "executable": "hello",
+    "stdout": "hello E3",
+    "exit_code": 0,
+    "broken_build": "nonzero exit with a missing make/toolchain diagnostic"
+  },
+  "environment": {
+    "base_image": "python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f",
+    "build_profile": "gcc-release",
+    "packages": [
+      "gcc",
+      "libc6-dev",
+      "make"
+    ],
+    "cflags": "-O2 -Wall -Wextra -Werror",
+    "configuration_id": "cc-gcc-release-4f1ea3ae4d71",
+    "configuration_id_rule": "cc-<build-profile>-<first12(sha256(canonical normalized configuration))>"
+  }
+}
