@@ -155,6 +155,27 @@ BuildChecker/EChecker 归 A2/A3，DRAFT/MDFixer 归 B2/B3（见根 `README.md` �
 | E3 版本影响裁定 | `docs/CHANGELOG.md`、`docs/versioning.md` 第八节 | `e293671` | Issue #25 / PR #26 | 维持 `schema_version` `1.0.0`；`CFLAGS` 归类口径与 `$defs.configuration_id` 一致 |
 | 设计过程记录 | `docs/AI_USAGE.md` 条目 33 | `e293671` | Issue #25 / PR #26 | 第 14 页格式，人工判断写明 |
 
+## B2 / B3 的 E3 交付追溯（B1 代记，2026-10-12）
+
+E3 的 A 侧（MD/RD、C0/C1/C2）由 A1 交付、B1 复核；B 侧由 B2（DRAFT）与 B3（MDFixer）交付。
+本节的 SHA 与 PR 号取自远端 `main` 的实际提交，由 B1 在收尾时登记，用以补齐第 9 页
+「仓库、SHA 与个人贡献」一项。
+
+### B2：DRAFT 基线
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| DRAFT 基线、运行器与测试 | `e3/fixtures/draft/`、`e3/scripts/run_draft_baseline.py`、`e3/tests/test_draft_baseline.py` | `43f6b65` | 待补（直接推送 `main`，无 Issue/PR） | 真实 Docker 运行 `status=succeeded`；失败候选退出码 127 并保留 `make: not found` 日志；参考环境输出 `hello E3` |
+| DRAFT 实测证据与交付说明 | `e3/evidence/draft-run-20261012T075533Z-e00a6be2/`、`e3/b2-draft/README.md` | `cf272b6` | 待补（直接推送 `main`，无 Issue/PR） | manifest 记录镜像 ID、fixture 哈希、`configuration_id` 与逐条命令日志 |
+
+### B3：MDFixer 固定输入与补丁验证
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| MDFixer 固定输入、四种声明风格补丁、无效候选与恢复 | `e3/fixtures/mdfixer/` | `e2ed3f5` | PR #27（无关联 Issue） | 四种补丁的验证日志均为「修改头文件后输出: 3 / 补丁验证通过」；`broken.patch` 非零退出后可从 `Makefile.before` 恢复 |
+| 样本来源、README 与验证输出日志 | `e3/fixtures/mdfixer/SOURCE.md`、`README.md`、`*-fix.log` | `898fd85` | PR #28（无关联 Issue） | 样本来源 commit `47c273c` 已写明 |
+| 接口工作记录 | `e3/review/B3-review.md` | `e2ed3f5` | PR #27 | 属自证记录；B 侧 E3 目前没有独立复核 |
+
 ## B2 提交追溯
 
 - **Commit SHA**：`a587263bd82b88526769732004540c7766bd75b1`
@@ -330,6 +351,8 @@ E3 个人贡献及证据边界详见 [E3 发布记录](../e3/PUBLICATION.md)。
 
 - [x] A3 的正式姓名与学号（朱鸣涛 / `241250048`）
 - [ ] B2 的学号与正式姓名（B3 = 赵心泉 / `241250068`、B1 = 李秉轩 / `241250052` 已齐；由本人在 Issue #1 补充）
+- [ ] B2 的 E3 交付的 Issue 与 PR 号（`43f6b65`、`cf272b6` 为直接推送 `main`，仓库约定要求 Issue + PR，需本人补）
+- [ ] B3 的 E3 交付的关联 Issue 号（PR #27、#28 未关联 Issue，需本人补）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
 - [x] PR #2 合并后，把 B1 复核结论回写到各 ADR 的「待 B1 复核」清单

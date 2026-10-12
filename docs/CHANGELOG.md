@@ -23,6 +23,22 @@ B1 作为 A1 的复核方，在 Linux（WSL2）上独立重跑 E3 A1 基线并�
 原始 `openat("config.h")` 与 `make -pn` 的 `main.o: main.c unused.h` 印证了 MD/RD 两条发现。
 机读证据见 [`e3/review/evidence/linux-verification.json`](../e3/review/evidence/linux-verification.json)。
 
+### B2/B3 E3 交付登记与版本影响（2026-10-12）
+
+2026-10-12 合入 B 组的 E3 基线，B1 按 `versioning.md` 判定版本影响并补齐测试门禁。
+
+**裁定：仍不触发任何版本动作，`schema_version` 维持 `1.0.0`，不递增。**
+
+| # | 事项 | 归类 | 裁定与理由 |
+| --- | --- | --- | --- |
+| 1 | B2 的 DRAFT 基线（`e3/fixtures/draft/`、`e3/scripts/run_draft_baseline.py`、`e3/evidence/draft-run-*/`） | 只在 `e3/` 下新增 | 不递增。未改 `task.schema.json`、端点或错误通道；`environment` / `build` 沿用 1.0.0 已定字段 |
+| 2 | B3 的 MDFixer 固定输入与四种声明风格补丁（`e3/fixtures/mdfixer/`） | 只在 `e3/` 下新增 | 不递增。补丁接受与拒绝仍走 ADR-009 与 1.0.0 的 `reason_code` 封闭 enum，未新增字段 |
+| 3 | B2 给出的 `configuration_id` 生成规则与取值格式 | 取值口径，非契约变更 | E2 样例为 `cc-gcc13-release-6f12a4c8`（8 位后缀），B2 的 E3 规则产出 12 位后缀与 `gcc-release`；`$defs.configuration_id` 只要求非空 opaque 字符串，两者均不违规。是否统一口径待 B1 与 A2/B2 裁定，见 `versioning.md` 第八节补记 |
+| 4 | B2 的 E3 测试纳入 `make check` | 测试门禁补齐 | 原先只 discover `tests/`，`e3/tests/test_draft_baseline.py` 不在自检内；现由 `make test` 一并运行 |
+
+已合并的 E3 提交：A1 `de31c63`；B1 `e293671`（Issue #25 / PR #26）；B2 `43f6b65`、`cf272b6`；
+B3 `e2ed3f5`（PR #27）、`898fd85`（PR #28）。个人贡献登记见 [`CONTRIBUTIONS.md`](CONTRIBUTIONS.md)。
+
 ### 文档导航补记：E3 A1 基线（2026-09-30）
 
 - 增加 E3 A1 可重复参考基线、实测命令/日志和可还原 fixture 提交；人工 oracle 与运行器观察分开记录。
@@ -202,7 +218,7 @@ A3 的四项偏差已在 PR #8 中完成迁移，并由提交 `a45c3b7` 从
 |---|---|---|---|
 | 1 | `artifact://pair09/{job_id}/{name}` 用完整 `job_id` 是对第 24 页样例的有意偏离 | 教师（知情项，不阻塞） | 组内已定案：A1 与 B1 于 2026-09-22 认可为组内协议（Issue #1）。若教师在课上驳回，`artifact_uri` 模式、样例与校验器三处同步改，见 `interfaces/endpoints.md` 第五节 |
 | 2 | 错误码注册表 `VALIDATION_2xxx` 命名空间为 A09/B09 自行扩展，非第 9 页给定 | 教师或助教（知情项） | B1 已把适用边界限死为创建期拒绝，不写入 `job.error`；见 `interfaces/errors.md` 第二节与第五节 |
-| 3 | ADR-011 的消费侧复核 | A3、B3、B2 | 三项内容均已由各自 PR 落实（#6 / #20 / #5），仍待三人在 Issue #1 本人明确确认；三方确认后由 B1 将 ADR-011 改为 `Accepted` |
+| 3 | ADR-011 的消费侧复核 | B3、B2（A3 已于 2026-10-12 确认） | 三项内容均已由各自 PR 落实（#6 / #20 / #5）；A3 已在 Issue #1 明确确认，仍待 B3、B2 本人明确确认，两人确认后由 B1 将 ADR-011 改为 `Accepted` |
 | 4 | `full-check.clean-project.json` 的 `image_uri`（iter4 tag）与 `configuration_id`（规范值）是否自洽 | A2 裁定 | `KNOWN_ENV_DEVIATIONS` 中唯一未消除的偏差，二者必居其一 |
 | 5 | 产物读取接口 `GET /v1/artifacts/{artifact_id}` 的服务实现与真实跨组读取 | 各服务负责人 / 全组 | 当前 E3 只交付 A1 参考基线，不含 API；服务实现按 E5/E8 推进，E12 验证跨组读取。契约已冻结，见 `interfaces/endpoints.md` 第四节 |
 

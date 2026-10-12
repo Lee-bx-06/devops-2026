@@ -113,3 +113,15 @@ make -pn
 
 - `evidence/linux-verification.json` — 复核环境、命令、观测与结论的机读摘要。
 - `evidence/linux-strace.txt` — Linux 原始跟踪的项目文件相关摘录。
+
+## 七、复核范围的时间边界（2026-10-12 补记，B1）
+
+本复核的对象锁定在 `main = 47c273c` 的 A1 基线。2026-10-12 合入的 B2 DRAFT 基线
+（`43f6b65`、`cf272b6`）与 B3 MDFixer 固定输入（PR #27、#28）在本复核之后新增，
+**不在本文件的复核范围内**，也没有经过 B1 独立复核；B 侧 E3 目前只有 B3 的自证工作记录
+（[`B3-review.md`](B3-review.md)）。引用本文件时请勿把它当作 B 侧交付的复核结论。
+
+同一时间点，A3 已在 Issue #1 确认 EChecker 对基线的字段消费（C0 的 ACTUAL_GRAPH 与
+ERROR_REPORT，分别用 `actual_graph_uri`、`error_report_uri` 引用）。ADR-011 仍待 B2、B3
+本人确认后由 B1 改为 `Accepted`，见
+[`ADR-011`](../../docs/adr/ADR-011-buildchecker-output-contract.md)。

@@ -12,7 +12,7 @@ validate:
 	python3 tools/validate.py
 
 test:
-	python3 -m unittest discover -s tests -v
+	python3 -m unittest discover -s tests -v && python3 -m unittest discover -s e3/tests -v
 
 clean:
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +
