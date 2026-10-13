@@ -218,7 +218,7 @@ A3 的四项偏差已在 PR #8 中完成迁移，并由提交 `a45c3b7` 从
 |---|---|---|---|
 | 1 | `artifact://pair09/{job_id}/{name}` 用完整 `job_id` 是对第 24 页样例的有意偏离 | 教师（知情项，不阻塞） | 组内已定案：A1 与 B1 于 2026-09-22 认可为组内协议（Issue #1）。若教师在课上驳回，`artifact_uri` 模式、样例与校验器三处同步改，见 `interfaces/endpoints.md` 第五节 |
 | 2 | 错误码注册表 `VALIDATION_2xxx` 命名空间为 A09/B09 自行扩展，非第 9 页给定 | 教师或助教（知情项） | B1 已把适用边界限死为创建期拒绝，不写入 `job.error`；见 `interfaces/errors.md` 第二节与第五节 |
-| 3 | ADR-011 的消费侧复核 | B3、B2（A3 已于 2026-10-12 确认） | 三项内容均已由各自 PR 落实（#6 / #20 / #5）；A3 已在 Issue #1 明确确认，仍待 B3、B2 本人明确确认，两人确认后由 B1 将 ADR-011 改为 `Accepted` |
+| 3 | ADR-011 的消费侧复核 | B3（A3、B2 已于 2026-10-12 确认） | 三项内容均已由各自 PR 落实（#6 / #20 / #5）；A3 在 Issue #1、B2 在 Issue #30 / PR #32 已明确确认，仍待 B3 本人明确确认，B3 确认后由 B1 将 ADR-011 改为 `Accepted` |
 | 4 | `full-check.clean-project.json` 的 `image_uri`（iter4 tag）与 `configuration_id`（规范值）是否自洽 | A2 裁定 | `KNOWN_ENV_DEVIATIONS` 中唯一未消除的偏差，二者必居其一 |
 | 5 | 产物读取接口 `GET /v1/artifacts/{artifact_id}` 的服务实现与真实跨组读取 | 各服务负责人 / 全组 | 当前 E3 只交付 A1 参考基线，不含 API；服务实现按 E5/E8 推进，E12 验证跨组读取。契约已冻结，见 `interfaces/endpoints.md` 第四节 |
 

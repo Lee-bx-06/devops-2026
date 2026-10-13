@@ -155,6 +155,21 @@ BuildChecker/EChecker 归 A2/A3，DRAFT/MDFixer 归 B2/B3（见根 `README.md` �
 | E3 版本影响裁定 | `docs/CHANGELOG.md`、`docs/versioning.md` 第八节 | `e293671` | Issue #25 / PR #26 | 维持 `schema_version` `1.0.0`；`CFLAGS` 归类口径与 `$defs.configuration_id` 一致 |
 | 设计过程记录 | `docs/AI_USAGE.md` 条目 33 | `e293671` | Issue #25 / PR #26 | 第 14 页格式，人工判断写明 |
 
+### 第四段：E3 收尾与交付索引（2026-10-12）
+
+- **作者**：李秉轩（Git 作者 `Lee-bx-06 <1928172695@qq.com>`）
+- **内容提交**：`ab27738`（分支 `b1-e3-closeout`）
+- **关联 Issue**：[#30](https://github.com/Lee-bx-06/devops-2026/issues/30)
+- **PR**：[#29](https://github.com/Lee-bx-06/devops-2026/pull/29)（已合并）、[#33](https://github.com/Lee-bx-06/devops-2026/pull/33)（交付索引，已合并）
+
+| 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
+| --- | --- | --- | --- | --- |
+| 登记 B2/B3 的 E3 交付与待补项 | `docs/CONTRIBUTIONS.md` | `ab27738` | PR #29 | 两人 E3 的真实 SHA/PR 入表；B2 直接推送与 B3 未关联 Issue 如实记录 |
+| B2/B3 E3 交付的版本影响与待办同步 | `docs/CHANGELOG.md`、`docs/versioning.md` 第八节 | `ab27738` | PR #29 | 裁定仍维持 `1.0.0`；补记 B2 的 `configuration_id` 生成规则与待裁定格式口径 |
+| 把 B2 的 E3 测试纳入自检门禁 | `Makefile` | `ab27738` | PR #29 | `make test` 同时运行 `tests/` 与 `e3/tests/`（7 项） |
+| E3 交付索引与文档导航 | `e3/DELIVERABLES.md`、根 `README.md` | —（见 PR #33） | PR #33 | 课件第 9 页四栏逐条对应仓库路径、负责人与复跑方式 |
+| 催办与确认登记 | Issue #30；`docs/adr/ADR-011-…md` | — | Issue #30 | B2 经 PR #32 确认 ADR-011 消费侧语义；A3、B2 已登记，待 B3 |
+
 ## B2 / B3 的 E3 交付追溯（B1 代记，2026-10-12）
 
 E3 的 A 侧（MD/RD、C0/C1/C2）由 A1 交付、B1 复核；B 侧由 B2（DRAFT）与 B3（MDFixer）交付。
@@ -165,8 +180,9 @@ E3 的 A 侧（MD/RD、C0/C1/C2）由 A1 交付、B1 复核；B 侧由 B2（DRAF
 
 | 工作项 | 文件 | Commit SHA | Issue / PR | 验证结果 |
 | --- | --- | --- | --- | --- |
-| DRAFT 基线、运行器与测试 | `e3/fixtures/draft/`、`e3/scripts/run_draft_baseline.py`、`e3/tests/test_draft_baseline.py` | `43f6b65` | 待补（直接推送 `main`，无 Issue/PR） | 真实 Docker 运行 `status=succeeded`；失败候选退出码 127 并保留 `make: not found` 日志；参考环境输出 `hello E3` |
-| DRAFT 实测证据与交付说明 | `e3/evidence/draft-run-20261012T075533Z-e00a6be2/`、`e3/b2-draft/README.md` | `cf272b6` | 待补（直接推送 `main`，无 Issue/PR） | manifest 记录镜像 ID、fixture 哈希、`configuration_id` 与逐条命令日志 |
+| DRAFT 基线、运行器与测试 | `e3/fixtures/draft/`、`e3/scripts/run_draft_baseline.py`、`e3/tests/test_draft_baseline.py` | `43f6b65` | Issue #30 / PR #32（原始提交为直接推送 `main`） | 真实 Docker 运行 `status=succeeded`；失败候选退出码 127 并保留 `make: not found` 日志；参考环境输出 `hello E3` |
+| DRAFT 实测证据与交付说明 | `e3/evidence/draft-run-20261012T075533Z-e00a6be2/`、`e3/b2-draft/README.md` | `cf272b6` | Issue #30 / PR #32（原始提交为直接推送 `main`） | manifest 记录镜像 ID、fixture 哈希、`configuration_id` 与逐条命令日志 |
+| 收尾确认与交付追溯 | `e3/b2-draft/TRACEABILITY.md` | 见 PR #32 | Issue #30 / PR #32 | 确认 DRAFT→FULL_CHECK 逐字段无损映射，不需要追加字段；引用 `TestA2B2DraftHandoff` 断言 |
 
 ### B3：MDFixer 固定输入与补丁验证
 
@@ -351,7 +367,7 @@ E3 个人贡献及证据边界详见 [E3 发布记录](../e3/PUBLICATION.md)。
 
 - [x] A3 的正式姓名与学号（朱鸣涛 / `241250048`）
 - [ ] B2 的学号与正式姓名（B3 = 赵心泉 / `241250068`、B1 = 李秉轩 / `241250052` 已齐；由本人在 Issue #1 补充）
-- [ ] B2 的 E3 交付的 Issue 与 PR 号（`43f6b65`、`cf272b6` 为直接推送 `main`，仓库约定要求 Issue + PR，需本人补）
+- [x] B2 的 E3 交付追溯 —— 2026-10-12 由 PR #32 补齐（`e3/b2-draft/TRACEABILITY.md`，关联 Issue #30）；原始提交 `43f6b65`、`cf272b6` 仍为直接推送 `main`
 - [ ] B3 的 E3 交付的关联 Issue 号（PR #27、#28 未关联 Issue，需本人补）
 - [x] 各工作项的 Commit SHA —— `2a9bd2c`
 - [x] Issue 编号与 PR 链接 —— Issue #1 / PR #2
