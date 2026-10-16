@@ -24,9 +24,9 @@ make all
 
 教师分配服务器为 **2 核 / 2 GiB**，实测可见内存约 **1.7 GiB**。原通用模板的最低可见内存为 3.5 GiB；按组长确认的教师配置，本组将 `scripts/doctor.py` 的最低可见内存改为 **1.5 GiB**，保留真实资源记录与原建议值（4 核 / 8 GiB / 100 GiB 可用盘）。这项适配不代表服务器达到原通用模板的资源门槛。Compose 中容器仍限制为 2 CPU / 1 GiB / 256 进程。全组顺序构建，共享 Docker 缓存；若资源不足导致失败，保留原始日志后排查。
 
-宿主机需要 Ubuntu、Docker 引擎、Compose v2、buildx、Git、Make、Python 3。组长统一安装一次，组员不用重复安装。A 组不需要 API Key。`make build` 自动生成权限 600 的 `.env`，不要填入真实密钥。
+宿主机需要 Ubuntu、Docker 引擎、Compose v2、Git、Make、Python 3；buildx 用于镜像索引核验，doctor 将其列为建议项，本组已安装。组长统一安装一次，组员不用重复安装。新服务器缺少依赖时，由有管理员权限的组长执行一次 `sudo bash setup/bootstrap_ubuntu.sh`（安装 Ubuntu 仓库 Docker 组件，不执行整机升级）。A 组不需要 API Key。`make build` 自动生成权限 600 的 `.env`，不要填入真实密钥。
 
-基础镜像固定为 `m.daocloud.io/docker.io/library/python@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74`，已核验含 `linux/amd64`。Python 依赖使用 `requirements-dev.lock` 及哈希安装；系统包实际版本记录在 `toolchain.lock`。
+基础镜像固定为 `m.daocloud.io/docker.io/library/python@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74`，已核验含 `linux/amd64`。容器内 Debian 软件源使用 `https://repo.huaweicloud.com/debian` 与 `debian-security`，保留 Debian 签名校验。Python 依赖使用 `requirements-dev.lock` 及哈希安装；系统包实际版本记录在 `toolchain.lock`。
 
 ## 命令与验收
 
