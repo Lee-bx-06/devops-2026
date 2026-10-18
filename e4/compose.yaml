@@ -2,6 +2,7 @@
 # 也可以直接：STUDENT_ID=<学号> docker compose run --rm buildchecker pytest
 services:
   buildchecker:
+    platform: linux/amd64                    # A09 统一验收平台
     build:
       context: .                              # 仓库根目录，Dockerfile 需要 fixtures/
       dockerfile: services/buildchecker/Dockerfile

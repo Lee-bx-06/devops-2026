@@ -59,3 +59,27 @@ git status --short           # 无假 Key 遗留
 假 Key 验证的两次扫描各自生成目录，不能替代成功的完整 make all 证据。组内用相同源码 SHA 对照 toolchain.lock、单测和冒烟结论；镜像 ID、耗时、进程号、trace_lines 可以不同。组长个人记录和成员待办见 [GROUP_STATUS.md](GROUP_STATUS.md)。相邻组 README 互查由指定成员实际完成后再记录。
 
 E4 的 smoke.json 只有 strace 摘要，不能代替 E5 的完整 strace -ff / make -p 原始证据。
+
+## 镜像与依赖离线复核
+
+`make verify` 只使用宿主 Python 标准库和本地 Make，检查本目录的 digest、平台、依赖锁格式、直接依赖一致性和资源配置，并运行回归测试；不调用真实 Docker、SSH 或网络。它检查配置约束，下载内容的哈希仍由 pip 实际验证。
+
+本分支将服务及 `make lock` 统一到 `linux/amd64`；digest 保持原值。构建时记录全部 dpkg 包（包括传递依赖），Python 清单包含 pip 自身，并执行 `pip check`。仅接受锁定哈希的 wheel，避免退回 sdist 后引入额外构建依赖。`toolchain.lock` 是**实际版本清单**：当前 apt 源随时间更新，尚未通过 snapshot / 精确包版本锁定系统包；同一源码、digest 和平台仍可能得到不同系统工具链。共享缓存命中也无法证明冷构建一致。
+
+运行容器的 2 CPU / 1 GiB / 256 PID 限制不约束 BuildKit 构建。`make all` 即使带 `-j` 也在本次 Make 调用内串行执行；不同成员的独立调用仍需遵守组内首构建顺序。不要为此改共享 Docker daemon 或同时启动多份无缓存构建。复跑时保留资源 warnings、失败日志和实际 OOM 情况；修复版仍需在教师服务器验证构建峰值和运行限制是否实际生效。
+
+修复版 `make build` 额外写出 `source.json`，记录完整源码 SHA、工作区是否有修改、基础镜像引用、平台及 Python 锁文件哈希。应从干净检出运行；该文件补充原七份证据，不取代个人完整 `make all` 和假 Key 检出/清理记录。
+
+取得组长**七份原始文件**后，可以在任意机器离线对照（路径自行替换）：
+
+```sh
+python3 scripts/verify_environment.py compare \
+  /path/to/leader-run /path/to/my-run \
+  --leader-summary reports/leader-241250014.json
+```
+
+工具先校验组长原始文件的七个 SHA-256，再检查双方平台、源码、单测和冒烟条件，并逐项比较工具链。退出码 0 表示所查项目一致，1 表示发现差异，2 表示证据缺失/损坏或验收条件不满足。build/scan 原始日志、学号、假 Key 两次扫描和来源真实性仍需本人检查；本工具的结果不自动登记个人验收。
+
+原组长基线 `1e0b9232fdc70f249ef29598986b0df436b016ec` 没有 `source.json`，工具只在提供并验证组长清单时采用清单里的源码 SHA。新旧基线的源码、清单范围、缺失的 provenance 字段会明确报差异，不将其判为一致。按照 GROUP_STATUS 的原 SHA 做课程个人复跑时，仍检出原 SHA；可从本修复分支的绝对路径调用比较脚本，再由本人补录真实 provenance。若组内采用修复版，先统一新的完整 SHA，再由相关成员重新生成同版本证据，不能沿用组长旧证据宣称新版已验收。
+
+公开的 `leader-241250014.json` 只有工具链文件哈希和部分版本摘要，无法据此还原完整工具链；仅凭该 JSON 无法完成版本逐项对照。镜像 ID、时间、耗时、PID、trace_lines 允许不同；源码、平台、基础镜像、Python 锁和实际工具链差异需要解释。完整复核结论见 [reports/image-dependency-review.md](reports/image-dependency-review.md)。

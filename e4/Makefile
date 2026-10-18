@@ -11,6 +11,9 @@
 # 镜像名带学号（取自本仓库的 git config user.name），同一台服务器上组员互不覆盖。
 
 SHELL      := /bin/bash
+.SHELLFLAGS := -eu -o pipefail -c
+# 即使调用 make -j，也按顺序完成自检、构建和验收，避免 2G 主机并发首构建。
+.NOTPARALLEL:
 SERVICE    := buildchecker
 STUDENT_ID := $(or $(shell git config user.name 2>/dev/null),local)
 IMAGE      := e4-$(SERVICE):$(STUDENT_ID)
@@ -21,7 +24,7 @@ BASE_IMAGE := $(shell sed -n 's/^ARG BASE_IMAGE=//p' services/$(SERVICE)/Dockerf
 export STUDENT_ID
 COMPOSE    := docker compose -p e4-$(SERVICE)-$(shell echo $(STUDENT_ID) | tr A-Z a-z)
 
-.PHONY: all doctor build test smoke scan shell lock clean
+.PHONY: all doctor build test smoke scan shell lock clean verify
 
 all: doctor build test smoke scan
 	@echo "证据目录：$(RUN)"
@@ -37,6 +40,7 @@ doctor: | $(RUN)
 	python3 scripts/doctor.py --out $(RUN)/env.json
 
 build: .env | $(RUN)
+	python3 scripts/verify_environment.py record --out $(RUN)/source.json
 	$(COMPOSE) build --progress=plain 2>&1 | tee $(RUN)/build.log; test $${PIPESTATUS[0]} -eq 0
 	docker image inspect $(IMAGE) --format '{"image":"$(IMAGE)","id":"{{.Id}}","arch":"{{.Architecture}}","created":"{{.Created}}"}' | tee $(RUN)/image.json
 	$(COMPOSE) run --rm --no-deps $(SERVICE) cat /opt/toolchain.lock | tee $(RUN)/toolchain.lock
@@ -58,9 +62,14 @@ shell: .env
 
 # 在固定版本的基础镜像里生成锁文件，不依赖本机是否安装 uv
 lock:
-	docker run --rm --user $$(id -u):$$(id -g) -e HOME=/tmp -v "$$PWD":/src -w /src $(BASE_IMAGE) sh -c '\
+	docker run --rm --platform linux/amd64 --user $$(id -u):$$(id -g) -e HOME=/tmp -v "$$PWD":/src -w /src $(BASE_IMAGE) sh -c '\
 	  python3 -m venv /tmp/v && /tmp/v/bin/pip install -q uv==0.12.19 && \
 	  /tmp/v/bin/uv pip compile requirements-dev.in --generate-hashes --python-version 3.13 --python-platform linux -o requirements-dev.lock'
 
 clean:
 	-docker image rm $(IMAGE)
+
+# 无 Docker、无网络的配置检查与回归测试
+verify:
+	python3 scripts/verify_environment.py static
+	python3 -m unittest discover -s tests -v
