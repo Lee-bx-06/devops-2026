@@ -1,0 +1,134 @@
+{
+  "verified_at_utc": "2026-10-16T10:17:51.612350+00:00",
+  "student": {
+    "name": "谢浩天",
+    "id": "241250033",
+    "role": "E4 A2"
+  },
+  "execution": "Codex 按谢浩天请求在本人学号目录执行",
+  "repository": "https://github.com/Lee-bx-06/devops-2026.git",
+  "source_commit": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+  "e4_branch_head_at_start": "dd4c9128f474b9747427b88d75c73944681aedcd",
+  "clone": "/root/241250033/buildchecker",
+  "run_directory": "/root/241250033/buildchecker/e4/work/20261016-181736",
+  "make_all_exit": 0,
+  "all_personal_checks_passed": true,
+  "environment": {
+    "time": "2026-10-16T10:17:36.791165+00:00",
+    "hostname": "devops",
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "6.8.0-136-generic",
+    "arch": "x86_64",
+    "spec": {
+      "cpus": 2,
+      "mem_gib": 1.7,
+      "disk_gib": 70.5
+    },
+    "tools": {
+      "docker": "29.1.3",
+      "compose": "2.40.3+ds1-0ubuntu1~24.04.1",
+      "buildx": "github.com/docker/buildx 0.30.1 0.30.1-0ubuntu1~24.04.1",
+      "git": "git version 2.43.0",
+      "make": "GNU Make 4.3",
+      "python3": "Python 3.12.3"
+    },
+    "problems": [],
+    "warnings": [
+      "cpus=2 低于建议值 4",
+      "mem_gib=1.7 低于建议值 8",
+      "disk_gib=70.5 低于建议值 100",
+      "Docker 未配置镜像加速，拉取基础镜像可能很慢（见 setup/bootstrap_ubuntu.sh）"
+    ],
+    "docker_sock_gid": 112,
+    "registry_mirrors": [],
+    "git": {
+      "user.name": "241250033",
+      "user.email": "241250033@localhost"
+    }
+  },
+  "image": {
+    "image": "e4-buildchecker:241250033",
+    "id": "sha256:d62766b5c3b27ed8a9f13884368d61f41f3259bcc43f30cae57c3a662129ee26",
+    "arch": "amd64",
+    "created": "2026-10-16T13:09:57.968049954+08:00"
+  },
+  "base_image_digest": "sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74",
+  "base_amd64_manifest": "sha256:3a2c25932e66f706172de831a1b283d491c53ef876cd7fc55a62bcf9a6dd2c61",
+  "build_cache_used": true,
+  "python_locked_packages_match": true,
+  "python_packages": {
+    "iniconfig": "2.3.0",
+    "packaging": "26.3",
+    "pluggy": "1.6.0",
+    "pygments": "2.21.0",
+    "pytest": "8.4.2"
+  },
+  "unit_tests": "3 passed",
+  "smoke": {
+    "fixture": "fixtures/md-rd",
+    "tools": {
+      "make": "GNU Make 4.4.1",
+      "gcc": "gcc (Debian 14.2.0-19) 14.2.0",
+      "strace": "strace -- version 6.13"
+    },
+    "make_exit_code": 0,
+    "make_output": [
+      "cc -c main.c -o main.o",
+      "cc main.o -o app"
+    ],
+    "app_output": "1",
+    "trace_lines": 1206,
+    "config_h_opened": [
+      "15    openat(AT_FDCWD, \"config.h\", O_RDONLY|O_NOCTTY) = 4"
+    ],
+    "unused_h_opened": [],
+    "passed": true,
+    "note": "只说明环境可用；config.h / unused.h 的结论留到 E5 由各组自己推导"
+  },
+  "env_tracked": false,
+  "env_mode": "0600",
+  "git_status_porcelain": "",
+  "synthetic_key_scan": {
+    "detected_make_exit": 2,
+    "cleanup_make_exit": 0,
+    "detected_evidence": "/root/241250033/buildchecker/e4/work/20261016-181518-leak-detected/secret-scan.txt",
+    "cleanup_evidence": "/root/241250033/buildchecker/e4/work/20261016-181518-after-cleanup/secret-scan.txt"
+  },
+  "leader_comparison": {
+    "student_id": "241250014",
+    "source_commit": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+    "run_directory": "/root/241250014/buildchecker/e4/work/20261016-130638",
+    "all_7_original_hashes_match_committed_record": true,
+    "toolchain_identical": true,
+    "toolchain_sha256": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+    "unit_tests_both": "3 passed",
+    "smoke_expected_results_match": true,
+    "rootfs_layers_identical": true,
+    "image_ids_identical": false,
+    "shared_host_and_docker_cache": true
+  },
+  "a3_observed": {
+    "clone": "/root/241250048/buildchecker",
+    "head": "dd4c9128f474b9747427b88d75c73944681aedcd",
+    "smoke_evidence_found": [],
+    "comparison_status": "pending"
+  },
+  "evidence_sha256": {
+    "env.json": "7c5dfa8c0e07b7c3698eaaf8228cae267a46a34158e5f002677f9cb7720721ab",
+    "build.log": "ea888707443d1b69bf95e2c24097cb95742a1e2860fbb65d5ddc5427ac4acc62",
+    "image.json": "21feef1b99b4f52f54a32e64682bcdbb2f95b6252c1d1859e3507ad0dad681c1",
+    "toolchain.lock": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+    "test.log": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+    "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+    "secret-scan.txt": "e5a3b3c45b244b0ecc3b274fb6930ac0b4cf5117e013e1bdf4b87be89ebb5e2e"
+  },
+  "source_files_sha256": {
+    "services/buildchecker/Dockerfile": "80caa2c38943e4315dc5f4ecd6006b8651ccc74007ebc4331db7ae2a2dd3ce5f",
+    "requirements-dev.in": "40457296154aab4b3db2e2b9c25d2c6440ae9d9a0752b24f838450f64b1826ae",
+    "requirements-dev.lock": "24f54d917487599d98e13c5733a75ca4a86652fa11cdccaf863c08e1cc66f5df",
+    "compose.yaml": "cc9a1abf6135756e07d657232cbdb7255ae534003afccec62a5a84cafe671f80",
+    "Makefile": "a6b8622e53a496c76e8390a7251a36650ea11f462c0192533ebd71d8327c51d5",
+    "scripts/doctor.py": "f1d7d023b7c09900f899b8f6f46c6579389de55b71c25dcc12831004d2542821",
+    "scripts/secret_scan.py": "e3aefad5e87201d684841b931b8586a3d81d2930968bfa02867eff41cfcfbc65"
+  }
+}

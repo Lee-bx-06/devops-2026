@@ -56,6 +56,6 @@ git ls-files .env            # 无输出
 git status --short           # 无假 Key 遗留
 ```
 
-假 Key 验证的两次扫描各自生成目录，不能替代成功的完整 make all 证据。组内用相同源码 SHA 对照 toolchain.lock、单测和冒烟结论；镜像 ID、耗时、进程号、trace_lines 可以不同。组长个人记录和成员待办见 [GROUP_STATUS.md](GROUP_STATUS.md)。相邻组 README 互查由指定成员实际完成后再记录。
+假 Key 验证的两次扫描各自生成目录，不能替代成功的完整 make all 证据。组内用相同源码 SHA 对照 toolchain.lock、单测和冒烟结论；镜像 ID、耗时、进程号、trace_lines 可以不同。三名成员（241250014、241250033、241250048）的完成情况、组内对照结论和证据索引见 [GROUP_STATUS.md](GROUP_STATUS.md)；成员记录在 [records/](records/)，七份原始证据副本与逐文件 SHA-256 见 [evidence/README.md](evidence/README.md)，机器可读验收 JSON 在 [reports/](reports/)。相邻组 README 互查由指定成员实际完成后再记录。
 
 E4 的 smoke.json 只有 strace 摘要，不能代替 E5 的完整 strace -ff / make -p 原始证据。
