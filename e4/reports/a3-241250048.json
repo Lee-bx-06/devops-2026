@@ -4,7 +4,7 @@
     "id": "241250048",
     "role": "A3（测试、扫描与互查）"
   },
-  "compiled_by": "A1 殷晓瑞（241250014）依据服务器原始证据整理；朱鸣涛本人未提交个人记录",
+  "compiled_by": "A1 殷晓瑞（241250014）依据服务器原始证据整理；朱鸣涛本人已于 2026-10-19 确认运行归属与记录内容",
   "compiled_at_utc": "2026-10-19T06:19:07.341771+00:00",
   "repository": "https://github.com/Lee-bx-06/devops-2026.git",
   "e4_branch": "e4-a09-environment",
@@ -98,5 +98,8 @@
     "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
     "secret-scan.txt": "f5dedb8c3cf67a931754f2834f1f7a920d50cedf7b0de20a76916fe791142517"
   },
-  "evidence_sha256_toolchain_matches_group": true
+  "evidence_sha256_toolchain_matches_group": true,
+  "record_confirmed_by_member": true,
+  "record_confirmed_at": "2026-10-19",
+  "record_confirmation_note": "本记录由组长依据服务器原始证据整理，朱鸣涛本人确认 20261016-192209 由本人执行并确认记录内容"
 }
