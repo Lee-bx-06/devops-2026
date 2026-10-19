@@ -1,0 +1,87 @@
+{
+  "verified_at_utc": "2026-10-16T05:11:39.630802+00:00",
+  "repository": "https://github.com/Lee-bx-06/devops-2026.git",
+  "source_commit": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+  "clone": "/root/241250014/buildchecker",
+  "run_directory": "/root/241250014/buildchecker/e4/work/20261016-130638",
+  "all_checks_passed": true,
+  "unit_tests": "3 passed",
+  "smoke": {
+    "fixture": "fixtures/md-rd",
+    "tools": {
+      "make": "GNU Make 4.4.1",
+      "gcc": "gcc (Debian 14.2.0-19) 14.2.0",
+      "strace": "strace -- version 6.13"
+    },
+    "make_exit_code": 0,
+    "make_output": [
+      "cc -c main.c -o main.o",
+      "cc main.o -o app"
+    ],
+    "app_output": "1",
+    "trace_lines": 1206,
+    "config_h_opened": [
+      "15    openat(AT_FDCWD, \"config.h\", O_RDONLY|O_NOCTTY) = 4"
+    ],
+    "unused_h_opened": [],
+    "passed": true,
+    "note": "只说明环境可用；config.h / unused.h 的结论留到 E5 由各组自己推导"
+  },
+  "environment": {
+    "time": "2026-10-16T05:06:38.941086+00:00",
+    "hostname": "devops",
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "6.8.0-136-generic",
+    "arch": "x86_64",
+    "spec": {
+      "cpus": 2,
+      "mem_gib": 1.7,
+      "disk_gib": 71.3
+    },
+    "tools": {
+      "docker": "29.1.3",
+      "compose": "2.40.3+ds1-0ubuntu1~24.04.1",
+      "buildx": "github.com/docker/buildx 0.30.1 0.30.1-0ubuntu1~24.04.1",
+      "git": "git version 2.43.0",
+      "make": "GNU Make 4.3",
+      "python3": "Python 3.12.3"
+    },
+    "problems": [],
+    "warnings": [
+      "cpus=2 低于建议值 4",
+      "mem_gib=1.7 低于建议值 8",
+      "disk_gib=71.3 低于建议值 100",
+      "Docker 未配置镜像加速，拉取基础镜像可能很慢（见 setup/bootstrap_ubuntu.sh）"
+    ],
+    "docker_sock_gid": 112,
+    "registry_mirrors": [],
+    "git": {
+      "user.name": "241250014",
+      "user.email": "241250014@localhost"
+    }
+  },
+  "image": {
+    "image": "e4-buildchecker:241250014",
+    "id": "sha256:24bf285fbd2299531056f4877f7d60feae49e6ed59b9aa815e1979f9ff88887c",
+    "arch": "amd64",
+    "created": "2026-10-16T13:09:57.968049954+08:00"
+  },
+  "env_tracked": false,
+  "env_mode": "0600",
+  "git_status_porcelain": "",
+  "synthetic_key_scan": {
+    "detected_exit_code": 2,
+    "detected_evidence": "/root/241250014/buildchecker/e4/work/20261016-131139-leak-detected/secret-scan.txt",
+    "cleanup_exit_code": 0,
+    "cleanup_evidence": "/root/241250014/buildchecker/e4/work/20261016-131139-after-cleanup/secret-scan.txt"
+  },
+  "evidence_sha256": {
+    "env.json": "9628c7261de1a2afe78c38069f4db0a71ac757cbf3ec576928d74f9d8b5e0f56",
+    "build.log": "9d5f0afcad99fd9abcf7b9d69c17a48af537da233366562380dabafd29c8921f",
+    "image.json": "374b3dfd15cbcb7d4ebc103904a8be15d61b685395b2b050a3958915a04ad47f",
+    "toolchain.lock": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+    "test.log": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+    "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+    "secret-scan.txt": "453d6d058739c4fa4056e83ea4353d04cdaa7b8eb5f9644d93a125516a16258d"
+  }
+}

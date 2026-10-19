@@ -1,0 +1,102 @@
+{
+  "student": {
+    "name": "朱鸣涛",
+    "id": "241250048",
+    "role": "A3（测试、扫描与互查）"
+  },
+  "compiled_by": "A1 殷晓瑞（241250014）依据服务器原始证据整理；朱鸣涛本人未提交个人记录",
+  "compiled_at_utc": "2026-10-19T06:19:07.341771+00:00",
+  "repository": "https://github.com/Lee-bx-06/devops-2026.git",
+  "e4_branch": "e4-a09-environment",
+  "e4_branch_head_at_run": "dd4c9128f474b9747427b88d75c73944681aedcd",
+  "source_commit": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+  "clone": "/root/241250048/buildchecker",
+  "run_directory": "/root/241250048/buildchecker/e4/work/20261016-192209",
+  "run_window_local": "2026-10-16 19:21-19:28 (Asia/Shanghai)",
+  "make_all_total_log_preserved": false,
+  "make_all_note": "成员目录未保留 make all 总日志，因此没有独立记录的退出码；五步证据（含最后一步 secret-scan.txt）齐全，判定完整运行完成",
+  "all_personal_checks_passed": true,
+  "environment": {
+    "time": "2026-10-16T11:22:09.327818+00:00",
+    "hostname": "devops",
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "6.8.0-136-generic",
+    "arch": "x86_64",
+    "spec": {
+      "cpus": 2,
+      "mem_gib": 1.7,
+      "disk_gib": 70.5
+    },
+    "tools": {
+      "docker": "29.1.3",
+      "compose": "2.40.3+ds1-0ubuntu1~24.04.1",
+      "buildx": "github.com/docker/buildx 0.30.1 0.30.1-0ubuntu1~24.04.1",
+      "git": "git version 2.43.0",
+      "make": "GNU Make 4.3",
+      "python3": "Python 3.12.3"
+    },
+    "problems": [],
+    "warnings": [
+      "cpus=2 低于建议值 4",
+      "mem_gib=1.7 低于建议值 8",
+      "disk_gib=70.5 低于建议值 100",
+      "Docker 未配置镜像加速，拉取基础镜像可能很慢（见 setup/bootstrap_ubuntu.sh）"
+    ],
+    "docker_sock_gid": 112,
+    "registry_mirrors": [],
+    "git": {
+      "user.name": "241250048",
+      "user.email": "241250048@localhost"
+    }
+  },
+  "image": {
+    "image": "e4-buildchecker:241250048",
+    "id": "sha256:95d1cf4e6479f891cd108f71e64df9420ddbb06d6682342274331df6e7844dde",
+    "arch": "amd64",
+    "created": "2026-10-16T13:09:57.968049954+08:00"
+  },
+  "unit_tests": "...                                                                      [100%]\n3 passed in 0.01s",
+  "smoke": {
+    "fixture": "fixtures/md-rd",
+    "tools": {
+      "make": "GNU Make 4.4.1",
+      "gcc": "gcc (Debian 14.2.0-19) 14.2.0",
+      "strace": "strace -- version 6.13"
+    },
+    "make_exit_code": 0,
+    "make_output": [
+      "cc -c main.c -o main.o",
+      "cc main.o -o app"
+    ],
+    "app_output": "1",
+    "trace_lines": 1206,
+    "config_h_opened": [
+      "15    openat(AT_FDCWD, \"config.h\", O_RDONLY|O_NOCTTY) = 4"
+    ],
+    "unused_h_opened": [],
+    "passed": true,
+    "note": "只说明环境可用；config.h / unused.h 的结论留到 E5 由各组自己推导"
+  },
+  "env_tracked": false,
+  "env_mode": "0600",
+  "git_status_porcelain": "",
+  "git_head": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+  "synthetic_key_scan": {
+    "detected_evidence": "/root/241250048/buildchecker/e4/work/20261016-192618/secret-scan.txt",
+    "detected_result": "FOUND leak-demo.txt:1 sk-d***（2 处命中）",
+    "cleanup_evidence": "/root/241250048/buildchecker/e4/work/20261016-192628/secret-scan.txt",
+    "cleanup_result": "密钥检查：未发现问题",
+    "exit_codes_recorded": false,
+    "note": "两次扫描的输出已保留，扫描命令退出码未单独落盘"
+  },
+  "evidence_sha256": {
+    "env.json": "f8d9e72b1366f961c8e0a53a1f18afd8af987d7b90ebfbf856a95b2745ff0190",
+    "build.log": "a974ffd87c5eddc60da4db9341efd62132475931994841d92bd452206d29c861",
+    "image.json": "2b07400124b0733f89b18688689bce4d46aa80cd51d119b80103c80edafbd558",
+    "toolchain.lock": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+    "test.log": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+    "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+    "secret-scan.txt": "f5dedb8c3cf67a931754f2834f1f7a920d50cedf7b0de20a76916fe791142517"
+  },
+  "evidence_sha256_toolchain_matches_group": true
+}

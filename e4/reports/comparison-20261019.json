@@ -1,0 +1,95 @@
+{
+  "compiled_at_utc": "2026-10-19T06:19:07.341771+00:00",
+  "compiled_by": "A1 殷晓瑞（241250014）",
+  "method": "对三人成功运行目录的七份原始证据逐一计算 SHA-256，并对三份镜像的 RootFS 层摘要、toolchain.lock 与单测/冒烟结论做逐项比较",
+  "source_commit": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+  "e4_branch": "e4-a09-environment",
+  "members": {
+    "241250014": {
+      "name": "殷晓瑞",
+      "run_directory": "/root/241250014/buildchecker/e4/work/20261016-130638",
+      "image_id": "sha256:24bf285fbd2299531056f4877f7d60feae49e6ed59b9aa815e1979f9ff88887c",
+      "evidence_sha256": {
+        "env.json": "9628c7261de1a2afe78c38069f4db0a71ac757cbf3ec576928d74f9d8b5e0f56",
+        "build.log": "9d5f0afcad99fd9abcf7b9d69c17a48af537da233366562380dabafd29c8921f",
+        "image.json": "374b3dfd15cbcb7d4ebc103904a8be15d61b685395b2b050a3958915a04ad47f",
+        "toolchain.lock": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+        "test.log": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+        "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+        "secret-scan.txt": "453d6d058739c4fa4056e83ea4353d04cdaa7b8eb5f9644d93a125516a16258d"
+      }
+    },
+    "241250033": {
+      "name": "谢浩天",
+      "run_directory": "/root/241250033/buildchecker/e4/work/20261016-181736",
+      "image_id": "sha256:d62766b5c3b27ed8a9f13884368d61f41f3259bcc43f30cae57c3a662129ee26",
+      "evidence_sha256": {
+        "env.json": "7c5dfa8c0e07b7c3698eaaf8228cae267a46a34158e5f002677f9cb7720721ab",
+        "build.log": "ea888707443d1b69bf95e2c24097cb95742a1e2860fbb65d5ddc5427ac4acc62",
+        "image.json": "21feef1b99b4f52f54a32e64682bcdbb2f95b6252c1d1859e3507ad0dad681c1",
+        "toolchain.lock": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+        "test.log": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+        "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+        "secret-scan.txt": "e5a3b3c45b244b0ecc3b274fb6930ac0b4cf5117e013e1bdf4b87be89ebb5e2e"
+      }
+    },
+    "241250048": {
+      "name": "朱鸣涛",
+      "run_directory": "/root/241250048/buildchecker/e4/work/20261016-192209",
+      "image_id": "sha256:95d1cf4e6479f891cd108f71e64df9420ddbb06d6682342274331df6e7844dde",
+      "evidence_sha256": {
+        "env.json": "f8d9e72b1366f961c8e0a53a1f18afd8af987d7b90ebfbf856a95b2745ff0190",
+        "build.log": "a974ffd87c5eddc60da4db9341efd62132475931994841d92bd452206d29c861",
+        "image.json": "2b07400124b0733f89b18688689bce4d46aa80cd51d119b80103c80edafbd558",
+        "toolchain.lock": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+        "test.log": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+        "smoke.json": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+        "secret-scan.txt": "f5dedb8c3cf67a931754f2834f1f7a920d50cedf7b0de20a76916fe791142517"
+      }
+    }
+  },
+  "identical": {
+    "source_commit": "1e0b9232fdc70f249ef29598986b0df436b016ec",
+    "toolchain.lock_sha256": "bc70f4e9e436d2567c88588171d7fd4575a614c442874baa089407106bbf9358",
+    "test.log_sha256": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+    "smoke.json_sha256": "3f33c782ff95e31fa488b120729f9f9a1dc68278c1ec9e61d0fa15a58d46609a",
+    "unit_tests": "3 passed in 0.01s",
+    "smoke_results": "make_exit_code=0、app_output=\"1\"、config_h_opened 非空、passed=true",
+    "container_tool_versions": "Python 3.13.14、Make 4.4.1、GCC 14.2.0、strace 6.13",
+    "image_rootfs_layers": [
+      "sha256:f4f8b983b714f130e2cff99176baa26352db6a55d3622e10ada40f2b4720a4eb",
+      "sha256:7ef9ddba6965cfcb2dcd5bf24e61737a0031c2d9be2b3377339111ab1ad3f0f2",
+      "sha256:ef9f8c7c1d6b6b918d5e93cba9a7de4c837e3047ca733296bd396d9a413ae64f",
+      "sha256:fde42b5dd2510411f5cd411982dd5fa72f546553ccba3e5260f33a3da21bbf8f",
+      "sha256:6c57bd1dc216293f4f1a027c72078a5556961ca611a430f6084936a0beab3bbc",
+      "sha256:72ec08bc7e49709bda0b97c4f618393824d4d8a5fdd571cbba59e584c0456843",
+      "sha256:3a7b7ba72250dc1a294e093147b808b6271f85925487c21aeb03d0a10f0abc68",
+      "sha256:b5c61a4cc56050536f4343f21e6697329fe6c6d461804a614cf37af99bf7080d",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:07f2ff1a5eb73044123b81994fc85b675b58967cf6d04a52a67dae865d8b06a4",
+      "sha256:e27f062a85e37ef298d96038bca1f8e0e86b6008173e505fee303972e7118bc6"
+    ],
+    "env_problems_empty": true,
+    "git_identity_is_student_id": true,
+    "dotenv_untracked_mode_0600": true,
+    "git_status_clean": true,
+    "secret_scan_clean": true
+  },
+  "differing": {
+    "image_id": "三人镜像名与成品 ID 不同（镜像名带学号），文件系统层摘要相同",
+    "env_json": "运行时间与磁盘可见量等实测字段不同",
+    "build_log": "时间戳与构建缓存提示行不同",
+    "secret_scan_txt": "扫描输出中的镜像名不同"
+  },
+  "conclusions": [
+    "三人在同一源码 SHA 上各自独立完成 make all，单测与冒烟结论一致。",
+    "toolchain.lock、test.log、smoke.json 三份证据逐字节相同，说明容器内工具链与测试结论可重复。",
+    "三份镜像的 11 层 RootFS 摘要一致，成品镜像 ID 因镜像名与构建时间不同而不同，属预期差异。",
+    "三人都完成假 Key 检出与清理验证，清理后扫描通过，.env 未跟踪且权限 0600。",
+    "三人在同一台服务器、共享 Docker 引擎和构建缓存下运行，属于组内流程允许的对照，不宣称为独立新机器验证。"
+  ],
+  "caveats": [
+    "服务器为组内共用的 root 账号，原始证据只能证明运行身份（env.json 的 Git 身份为各自学号）与结果，不能证明键盘前的操作者。",
+    "A3 未提交个人记录，其运行记录由组长依据服务器原始证据整理，待本人确认。"
+  ]
+}
