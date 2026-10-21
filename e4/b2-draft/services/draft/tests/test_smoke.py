@@ -9,6 +9,9 @@ def test_expected_failure_is_a_successful_smoke_check():
     result = assess(Path("fixture"), ["docker", "build"], 1, f"shell: {EXPECTED_MARKER}", 1.25)
     assert result.passed is True
     assert result.marker_found is True
+    assert result.make_not_found is True
+    assert result.make_error_line == f"shell: {EXPECTED_MARKER}"
+    assert result.log_tail == [f"shell: {EXPECTED_MARKER}"]
 
 
 def test_unexpected_build_success_is_rejected():

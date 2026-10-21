@@ -26,7 +26,7 @@ shell:
 	$(PYTHON) scripts/e4.py shell --work-dir "$(WORK_DIR)"
 
 lock:
-	docker run --rm --user "$$(id -u):$$(id -g)" -e HOME=/tmp -v "$$(pwd):/src" -w /src python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f sh -c 'python3 -m venv /tmp/uv-venv && /tmp/uv-venv/bin/pip install -q uv==0.12.19 && /tmp/uv-venv/bin/uv pip compile requirements-dev.in --generate-hashes --python-version 3.13 --python-platform linux -o requirements-dev.lock'
+	docker run --rm --user "$$(id -u):$$(id -g)" -e HOME=/tmp -v "$$(pwd):/src" -w /src m.daocloud.io/docker.io/library/python@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74 sh -c 'python3 -m venv /tmp/uv-venv && /tmp/uv-venv/bin/pip install -q uv==0.12.19 && /tmp/uv-venv/bin/uv pip compile requirements-dev.in --generate-hashes --python-version 3.13 --python-platform linux -o requirements-dev.lock'
 
 clean:
 	$(PYTHON) scripts/e4.py clean --work-dir "$(WORK_DIR)"

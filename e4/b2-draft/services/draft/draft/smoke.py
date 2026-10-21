@@ -17,9 +17,13 @@ class SmokeResult:
     schema_version: str
     fixture: str
     command: list[str]
+    docker_server: str | None
     build_exit_code: int | None
     expected_marker: str
     marker_found: bool
+    make_error_line: str | None
+    make_not_found: bool
+    log_tail: list[str]
     timed_out: bool
     duration_seconds: float
     passed: bool
@@ -34,16 +38,23 @@ def assess(
     duration_seconds: float,
     *,
     timed_out: bool = False,
+    docker_server: str | None = None,
 ) -> SmokeResult:
-    marker_found = EXPECTED_MARKER in output
+    lines = output.strip().splitlines()
+    make_error_line = next((line.strip() for line in lines if EXPECTED_MARKER in line), None)
+    marker_found = make_error_line is not None
     passed = not timed_out and returncode not in (None, 0) and marker_found
     return SmokeResult(
         schema_version="1.0",
         fixture=str(fixture),
         command=command,
+        docker_server=docker_server,
         build_exit_code=returncode,
         expected_marker=EXPECTED_MARKER,
         marker_found=marker_found,
+        make_error_line=make_error_line,
+        make_not_found=marker_found,
+        log_tail=lines[-8:],
         timed_out=timed_out,
         duration_seconds=round(duration_seconds, 3),
         passed=passed,
@@ -57,6 +68,20 @@ def execute(fixture: Path, timeout: int) -> SmokeResult:
     missing = [str(path) for path in required if not path.is_file()]
     if missing:
         raise FileNotFoundError("missing fixture files: " + ", ".join(missing))
+
+    try:
+        server_result = subprocess.run(
+            ["docker", "version", "--format", "{{.Server.Version}}"],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=30,
+        )
+        docker_server = server_result.stdout.strip() if server_result.returncode == 0 else None
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        docker_server = None
 
     command = [
         "docker",
@@ -85,6 +110,7 @@ def execute(fixture: Path, timeout: int) -> SmokeResult:
             completed.returncode,
             output,
             time.monotonic() - started,
+            docker_server=docker_server,
         )
     except subprocess.TimeoutExpired as exc:
         stdout = exc.stdout.decode(errors="replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
@@ -96,6 +122,7 @@ def execute(fixture: Path, timeout: int) -> SmokeResult:
             stdout + stderr,
             time.monotonic() - started,
             timed_out=True,
+            docker_server=docker_server,
         )
 
 

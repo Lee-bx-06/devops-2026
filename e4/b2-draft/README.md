@@ -38,10 +38,11 @@ git config user.name "<学号>"
 git config user.email "<学号邮箱>"
 ```
 
-基础镜像与 Docker CLI 镜像均已按多架构 OCI index digest 固定：
+基础镜像与 Docker CLI 镜像均按正式 E4 实验包指定的镜像站和多架构 OCI index digest 固定；
+镜像站只是拉取地址，内容仍由 digest 校验：
 
-- `python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f`
-- `docker:28.5.1-cli@sha256:9190b0613792e658a7783cf14b2d5ace5941bb68ede7276922ea36ee457d76ad`
+- `m.daocloud.io/docker.io/library/python@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74`
+- `m.daocloud.io/docker.io/library/docker@sha256:9190b0613792e658a7783cf14b2d5ace5941bb68ede7276922ea36ee457d76ad`
 
 升级时只修改 `services/draft/Dockerfile` 顶部的 digest，并在提交说明中记录原因。
 
@@ -90,7 +91,8 @@ make scan   RUN_ID=manual-01
 - `image.json` 记录仓库完整 commit、镜像 ID、镜像名和两个基础镜像 digest；
 - `toolchain.lock` 记录实际 Python、pip 和 Docker CLI 版本；
 - 单元测试退出码为 0；
-- 冒烟构建退出码非 0，日志含 `make: not found`，而冒烟检查自身退出码为 0；
+- `smoke.json` 包含 `docker_server`、非零 `build_exit_code`、含 `make: not found` 的
+  `make_error_line`、`log_tail` 与 `passed: true`；完整原始日志也保留在 `build_log` 中；
 - `secret-scan.txt` 显示三个范围均未发现密钥；
 - 另一名组员只读本 README，在新克隆中运行 `make all`，对比 commit、工具版本和冒烟结论。
 
