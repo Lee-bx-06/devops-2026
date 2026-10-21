@@ -60,6 +60,10 @@ make all
 4. `smoke`：容器内通过宿主机 Docker 构建 `Dockerfile.broken`，保存 `smoke.json` 和日志；
 5. `scan`：检查工作区、全仓 Git 历史，以及镜像历史和环境变量，保存 `secret-scan.txt`。
 
+正式 B 组手册要求服务器至少可见 2 CPU、3.5 GiB 内存和 40 GiB 可用磁盘；
+`doctor` 会把实测值写入 `env.json`，低于门槛时 `ready` 为 `false`，
+`make all` 停在自检阶段。小样例偶然跑通不等于达成正式资源验收。
+
 单独运行某一步也可以：
 
 ```sh
