@@ -1,0 +1,10 @@
+编号,轨道,阶段,项目,状态,证据路径或URL,说明
+C01,共同,环境,云主机与Docker,PASS,docs/实验报告.md,"Ubuntu 22.04.5; Docker 29.1.3; 3.6 GiB visible memory warning documented"
+C02,共同,E5,真实复现与差异,PASS,evidence/241250053/e5/,"RUN make reaches make not found; mirror adaptation documented"
+C03,共同,E6,输入哈希报告日志,PASS,evidence/241250053/e6/verification.json,"passed=true"
+C04,共同,E7,自主扩展测试,PASS,services/draft/tests/test_student_boundary.py,"25 passed"
+C05,共同,CI,个人分支工作流,PASS,https://github.com/Lee-bx-06/devops-2026/actions/runs/40649505986,"PR run passed; push run attempt 2 also passed"
+C06,共同,CI,必需检查与实际拒绝合并,PENDING,docs/实验报告.md,"Group-leader shared operation; do not change main protection unilaterally"
+B01,B,E5,缺失make及候选来源,PASS,evidence/241250053/e5/,"Recorded DeepSeek fixture replay; provenance retained"
+B02,B,E6,构建和同镜像运行验证,PASS,evidence/241250053/e6/verification.json,"MISSING_MAKE; fixed build 0; hello E3"
+B03,B,E7,五场景与超时清理,PASS,evidence/241250053/e7/,"All six gate rows passed; cleanup check []"
