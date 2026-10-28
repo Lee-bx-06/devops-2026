@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "trace_id": "e6-b-a2c23edafd4542789c70d198303b1bda",
+  "baseline_failure": "MISSING_MAKE",
+  "fixed_build_exit_code": 0,
+  "verify_exit_code": 0,
+  "verified_output": "hello E3",
+  "candidate_sha256": "34cea12b2065cf6a2cb13f29ee0816ff207854954b4408d7ff8408975dfdc004",
+  "image_id": "sha256:2018d96dacd68c937af7f0f89b929d4e23a2de4ec941b9bc534659ff62019271",
+  "scope": "Saved evidence consistency; does not independently rerun builds"
+}
