@@ -1,0 +1,8 @@
+STUDENT_ID=241250014
+SERVICE_IMAGE=course1027-buildchecker:241250014
+EVIDENCE_DIR=/root/241250014/buildchecker/e5/reference-a/work/e5-20261029-01
+rm -f app main.o
+trace/t.16:580:openat(AT_FDCWD, "config.h", O_RDONLY|O_NOCTTY) = 4
+1061:main.o: main.c unused.h
+1
+

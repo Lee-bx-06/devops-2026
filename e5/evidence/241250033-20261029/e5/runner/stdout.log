@@ -1,0 +1,4 @@
+rm -f app main.o
+trace/t.16:580:openat(AT_FDCWD, "config.h", O_RDONLY|O_NOCTTY) = 4
+1061:main.o: main.c unused.h
+1
