@@ -13,7 +13,7 @@ python3 scripts/course.py e5 --out work/e5-01
 
 入口按当前仓库的 Git 学号使用 `course1027-buildchecker:学号` 镜像标签。每次重跑使用新的输出目录。修改服务或测试后，先重新构建镜像。全部命令的原始输出保存在 `work/`。
 
-导入时还复制了随包的 `tools/course.py`、`ci/` 和 `templates/`，布局与课程升级工具一致。因为本组仓库同时保存 E2/E3/E4，参考服务放在独立子目录；Docker 构建上下文和脚本工作目录均为本目录。
+按课程升级工具的布局，将随包 `tools/course.py` 复制为 `scripts/course.py`，将 `ci/`、`templates/` 分别放入 `course-support/ci/`、`course-support/templates/`。因为本组仓库同时保存 E2/E3/E4，参考服务放在独立子目录；Docker 构建上下文和脚本工作目录均为本目录。
 
 本组服务器为 2 CPU、2 GiB，实际可见内存约 1.7 GiB。`scripts/doctor.py` 沿用 E4 的 1.5 GiB 最低可见内存；通用模板原值为 4 GiB。其余资源检查和实际输出保留。
 
