@@ -1,0 +1,9 @@
+[
+  "docker",
+  "run",
+  "--rm",
+  "--network",
+  "none",
+  "course1027-buildchecker:241250014",
+  "pytest"
+]
