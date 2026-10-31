@@ -4,7 +4,7 @@
 > 服务器：Ubuntu 24.04.4 LTS，2 CPU / 1.7 GiB 可见内存 / 69.4 GiB 可用磁盘
 > 实验包：`DevOps_E6_Student_Cloud.zip`，SHA-256 `C25E34BD4EB8A836EE7EC9052636B1491BCFEA4E316BCFF47AF63BBCE37A40A0`
 > 工作副本：`/root/241250014/e6-a`；代码提交 `b2c4cb8`，初始提交 `45130a1`
-> 原始证据归档：`E6-A-241250014-20261031-work.tar.gz`，SHA-256 `825C2E6A636E21C7526264FB75F3E37912ABA301777AAA66A1E75138E2B31B22`
+> 原始证据归档：`E6-A-241250014-20261031-work.tar.gz`，SHA-256 `790EE0DE19B859CA6264337F584A535ED76000A7CC77165A3A428F1C508EAE09`
 
 ## 1. 运行命令与实际退出码
 
@@ -159,6 +159,7 @@ def test_consistent_declaration_produces_no_findings(self):
 | `work/e6-before/evidence/trace/t.*` | 原始 strace，含 `config.h`/`main.c`/`main.o` 行号 |
 | `work/e6-before/evidence/make-db.txt` | `make -p` 输出，`app:601`、`main.o:1053` |
 | `work/e6-after/evidence/findings.json` | 修复后 `findings=[]`、仅 Makefile 哈希变化 |
+| `work/verify-result.json` | `verify_e6_evidence.py` 的 `passed=true` 输出 |
 | `work/e6-rerun/evidence/findings.json` | 修改后复跑，仍为同样两条 findings |
 | `work/git-provenance.txt` | 两次提交的完整 SHA、作者、时间、工作区状态 |
 | `E6-A-241250014-20261031-work.tar.gz` | 以上 `work/` 的完整归档（SHA-256 见文首） |
