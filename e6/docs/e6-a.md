@@ -3,7 +3,7 @@
 > 轨道：A（BuildChecker）｜学号：241250014｜日期：2026-10-31
 > 服务器：Ubuntu 24.04.4 LTS，2 CPU / 1.7 GiB 可见内存 / 69.4 GiB 可用磁盘
 > 实验包：`DevOps_E6_Student_Cloud.zip`，SHA-256 `C25E34BD4EB8A836EE7EC9052636B1491BCFEA4E316BCFF47AF63BBCE37A40A0`
-> 工作副本：`/root/241250014/e6-a`；代码提交 `b2c4cb8`，初始提交 `45130a1`
+> 工作副本：`/root/241250014/e6-a`；服务器工作副本提交 `b2c4cb8`（初始 `45130a1`），组仓库 `e6/` 代码提交 `606fdcb`
 > 原始证据归档：`E6-A-241250014-20261031-work.tar.gz`，SHA-256 `790EE0DE19B859CA6264337F584A535ED76000A7CC77165A3A428F1C508EAE09`
 
 ## 1. 运行命令与实际退出码
