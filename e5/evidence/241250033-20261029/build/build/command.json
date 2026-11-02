@@ -1,0 +1,10 @@
+[
+  "docker",
+  "build",
+  "--progress=plain",
+  "-f",
+  "services/buildchecker/Dockerfile",
+  "-t",
+  "course1027-buildchecker:241250033",
+  "."
+]

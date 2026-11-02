@@ -1,0 +1,78 @@
+STUDENT_ID=241250033
+SERVICE_IMAGE=course1027-buildchecker:241250033
+EVIDENCE_DIR=/root/241250033/buildchecker/e5/reference-a/work/build-20261029-01
+
+#8 3.910      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 4.4 MB/s  0:00:00
+#8 4.056 Collecting pytest==8.4.2 (from -r /tmp/requirements-dev.lock (line 19))
+#8 4.178   Downloading pytest-8.4.2-py3-none-any.whl (365 kB)
+#8 4.225 Installing collected packages: pygments, pluggy, packaging, iniconfig, pytest
+#8 5.143 
+#8 5.145 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 5.145 Successfully installed iniconfig-2.3.0 packaging-26.3 pluggy-1.6.0 pygments-2.21.0 pytest-8.4.2
+#8 5.146 
+#8 5.146 [notice] A new release of pip is available: 26.1.2 -> 26.2.2
+#8 5.146 [notice] To update, run: pip install --upgrade pip
+#8 DONE 6.1s
+
+#9 [5/8] RUN useradd --create-home --uid 10001 app  && install -d -o app -g app /app
+#9 DONE 0.2s
+
+#10 [6/8] WORKDIR /app
+#10 DONE 0.0s
+
+#11 [7/8] COPY --chown=app:app services/buildchecker/ /app/
+#11 DONE 0.1s
+
+#12 [8/8] COPY --chown=app:app fixtures/ /app/fixtures/
+#12 DONE 0.0s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 13.1s done
+#13 exporting manifest sha256:da88589be280c5035ceb4f4d794393c1570ac44b9ec4c4e0d84ef26dae6a585d done
+#13 exporting config sha256:f52b40d02dfd107baf95fc96fc6353ccf68b135f5f69c97fe4a7e81f29ba77cc 0.0s done
+#13 exporting attestation manifest sha256:0866b1dd9282a3f674934915604e06c754ef3077ce536211f0c2f37b311abe6b 0.0s done
+#13 exporting manifest list sha256:132c2690d5eeb1a29b9f82929b5a8d2d31593e2e604c2496ec35acd3357ae338 0.0s done
+#13 naming to docker.io/library/course1027-buildchecker:241250033 done
+#13 unpacking to docker.io/library/course1027-buildchecker:241250033
+#13 unpacking to docker.io/library/course1027-buildchecker:241250033 2.3s done
+#13 DONE 15.5s
+                "buildchecker",
+                "--help"
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 164855423,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:f4f8b983b714f130e2cff99176baa26352db6a55d3622e10ada40f2b4720a4eb",
+                "sha256:7ef9ddba6965cfcb2dcd5bf24e61737a0031c2d9be2b3377339111ab1ad3f0f2",
+                "sha256:ef9f8c7c1d6b6b918d5e93cba9a7de4c837e3047ca733296bd396d9a413ae64f",
+                "sha256:fde42b5dd2510411f5cd411982dd5fa72f546553ccba3e5260f33a3da21bbf8f",
+                "sha256:e1dba5b9d61a40539f14628d063179a283811f218434e22f5b32a11f4721035c",
+                "sha256:83920467e55bb90a1fe71dd9eb1d53141db27c1fad5c265db27ccfa25604b767",
+                "sha256:4ebfedfdd1d5fbb8f90eaee82c9209a2ef419a2bcd491d1d55115673a5ac0fb6",
+                "sha256:1df81b6afa36b2ec63a91137c19f6ceb192ec42ecb596f237595df9fe07a27e0",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:d9f33dd42128e656ba318176b1811b33d780ddd36ca2050d3f10b3ee7c1e9d34",
+                "sha256:4d315b9018f2f1983cd0804e50e7175ca90e30329ff0768277f46baf75bff30b"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-29T01:39:42.187597455Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:132c2690d5eeb1a29b9f82929b5a8d2d31593e2e604c2496ec35acd3357ae338",
+            "size": 856
+        }
+    }
+]
+
+...............                                                          [100%]
+15 passed in 0.06s
+

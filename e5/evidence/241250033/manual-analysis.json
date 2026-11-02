@@ -1,0 +1,70 @@
+{
+  "analysis_method": "Codex review of real E5 trace and Make database; no full-check program executed",
+  "target": "main.o",
+  "actual_project_dependencies": [
+    "main.c",
+    "config.h"
+  ],
+  "declared_dependencies": [
+    "main.c",
+    "unused.h"
+  ],
+  "findings": [
+    {
+      "type": "MISSING",
+      "dependency": "config.h",
+      "read_evidence": {
+        "file": "trace/t.18",
+        "line": 580,
+        "pid": 18
+      },
+      "declaration_evidence": {
+        "file": "make-db.txt",
+        "line": 1061
+      }
+    },
+    {
+      "type": "REDUNDANT",
+      "dependency": "unused.h",
+      "declaration_evidence": {
+        "file": "make-db.txt",
+        "line": 1061
+      },
+      "observed_metadata_access": {
+        "file": "trace/t.16",
+        "line": 46
+      },
+      "successful_read_opens": 0
+    }
+  ],
+  "compile_job": {
+    "make_pid": 16,
+    "driver_pid": 17,
+    "compiler_pid": 18,
+    "assembler_pid": 19,
+    "output_evidence": {
+      "file": "trace/t.19",
+      "line": 23
+    }
+  },
+  "link_job": {
+    "driver_pid": 20,
+    "collect2_pid": 21,
+    "ld_pid": 22,
+    "input_evidence": {
+      "file": "trace/t.22",
+      "lines": [
+        82,
+        83
+      ]
+    },
+    "output_evidence": {
+      "file": "trace/t.22",
+      "line": 71
+    }
+  },
+  "program_output": "1",
+  "capture_exit_code": 0,
+  "trace_files": 7,
+  "trace_lines": 1190
+}
