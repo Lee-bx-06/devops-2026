@@ -1,0 +1,78 @@
+STUDENT_ID=241250014
+SERVICE_IMAGE=course1027-buildchecker:241250014
+EVIDENCE_DIR=/root/241250014/buildchecker/e5/reference-a/work/build-20261029-01
+
+#5 [1/8] FROM m.daocloud.io/docker.io/library/python:3.13-slim@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74
+#5 resolve m.daocloud.io/docker.io/library/python:3.13-slim@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74 0.0s done
+#5 DONE 0.0s
+
+#6 [2/8] RUN sed -i       -e 's|https\?://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g'       -e 's|https\?://security.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g'       -e 's|https\?://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g'       /etc/apt/sources.list.d/debian.sources  && apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 update  && apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 install -y --no-install-recommends gcc make libc6-dev strace git  && rm -rf /var/lib/apt/lists/*  && dpkg-query -W -f='${Package}=${Version}\n' gcc make libc6-dev strace git > /opt/toolchain.lock  && echo "python3=$(python3 -c 'import platform; print(platform.python_version())')" >> /opt/toolchain.lock  && echo "arch=$(dpkg --print-architecture)" >> /opt/toolchain.lock
+#6 CACHED
+
+#7 [6/8] WORKDIR /app
+#7 CACHED
+
+#8 [3/8] COPY requirements-dev.lock /tmp/requirements-dev.lock
+#8 CACHED
+
+#9 [7/8] COPY --chown=app:app services/buildchecker/ /app/
+#9 CACHED
+
+#10 [4/8] RUN python3 -m pip install       --index-url https://pypi.tuna.tsinghua.edu.cn/simple       --timeout 60 --retries 3       --no-cache-dir --require-hashes -r /tmp/requirements-dev.lock  && python3 -m pip freeze | sed 's/^/pip:/' >> /opt/toolchain.lock
+#10 CACHED
+
+#11 [5/8] RUN useradd --create-home --uid 10001 app  && install -d -o app -g app /app
+#11 CACHED
+
+#12 [8/8] COPY --chown=app:app fixtures/ /app/fixtures/
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 exporting manifest sha256:da88589be280c5035ceb4f4d794393c1570ac44b9ec4c4e0d84ef26dae6a585d done
+#13 exporting config sha256:f52b40d02dfd107baf95fc96fc6353ccf68b135f5f69c97fe4a7e81f29ba77cc done
+#13 exporting attestation manifest sha256:10df3c4490e6d70f0eb5ed73e74c9e053ab592051ceec8e64fb344fb7c6465a5 0.0s done
+#13 exporting manifest list sha256:69671fe9cc7a43fabb87a874a29eaa40372e1f8f3c19603113d2af1db4c4fdb7 0.0s done
+#13 naming to docker.io/library/course1027-buildchecker:241250014
+#13 naming to docker.io/library/course1027-buildchecker:241250014 done
+#13 unpacking to docker.io/library/course1027-buildchecker:241250014 done
+#13 DONE 0.1s
+                "buildchecker",
+                "--help"
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 164855423,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:f4f8b983b714f130e2cff99176baa26352db6a55d3622e10ada40f2b4720a4eb",
+                "sha256:7ef9ddba6965cfcb2dcd5bf24e61737a0031c2d9be2b3377339111ab1ad3f0f2",
+                "sha256:ef9f8c7c1d6b6b918d5e93cba9a7de4c837e3047ca733296bd396d9a413ae64f",
+                "sha256:fde42b5dd2510411f5cd411982dd5fa72f546553ccba3e5260f33a3da21bbf8f",
+                "sha256:e1dba5b9d61a40539f14628d063179a283811f218434e22f5b32a11f4721035c",
+                "sha256:83920467e55bb90a1fe71dd9eb1d53141db27c1fad5c265db27ccfa25604b767",
+                "sha256:4ebfedfdd1d5fbb8f90eaee82c9209a2ef419a2bcd491d1d55115673a5ac0fb6",
+                "sha256:1df81b6afa36b2ec63a91137c19f6ceb192ec42ecb596f237595df9fe07a27e0",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:d9f33dd42128e656ba318176b1811b33d780ddd36ca2050d3f10b3ee7c1e9d34",
+                "sha256:4d315b9018f2f1983cd0804e50e7175ca90e30329ff0768277f46baf75bff30b"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-29T14:29:43.282170036Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:69671fe9cc7a43fabb87a874a29eaa40372e1f8f3c19603113d2af1db4c4fdb7",
+            "size": 856
+        }
+    }
+]
+
+...............                                                          [100%]
+15 passed in 0.04s
+

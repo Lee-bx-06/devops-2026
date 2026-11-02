@@ -1,0 +1,45 @@
+{
+  "purpose": "E5 repeatability: same entrypoint run twice on the same source and fixture",
+  "source_commit": "a0cc363c61a92d8d296e43e7faf24d6f4ffd4872",
+  "image": "course1027-buildchecker:241250014",
+  "runs": {
+    "run-01": {
+      "run_dir": "/root/241250014/buildchecker/e5/reference-a/work/e5-20261029-01",
+      "exit_code": 0,
+      "program_output": "1",
+      "trace_files": 7,
+      "trace_lines": 1190,
+      "config_h_reads": [
+        "t.16:580"
+      ],
+      "main_o_declaration": {
+        "line": 1061,
+        "text": "main.o: main.c unused.h"
+      }
+    },
+    "run-02": {
+      "run_dir": "/root/241250014/buildchecker/e5/reference-a/work/e5-20261029-02",
+      "exit_code": 0,
+      "program_output": "1",
+      "trace_files": 7,
+      "trace_lines": 1190,
+      "config_h_reads": [
+        "t.16:580"
+      ],
+      "main_o_declaration": {
+        "line": 1061,
+        "text": "main.o: main.c unused.h"
+      }
+    }
+  },
+  "identical_fields": {
+    "exit_code": true,
+    "program_output": true,
+    "trace_files": true,
+    "trace_lines": true,
+    "config_h_reads": true,
+    "main_o_declaration": true
+  },
+  "all_identical": true,
+  "note": "PID numbering and trace line counts may differ between runs; MD/RD evidence positions must match."
+}
