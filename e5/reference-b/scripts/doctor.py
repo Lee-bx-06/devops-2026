@@ -15,7 +15,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-MIN = {"cpus": 2, "mem_gib": 4, "disk_gib": 40}        # 最低
+MIN = {"cpus": 2, "mem_gib": 3.5, "disk_gib": 40}      # 最低；B09 E4 实测 3.6 GiB
 REC = {"cpus": 4, "mem_gib": 8, "disk_gib": 100}       # 建议（DRAFT 后续要构建真实项目）
 
 TOOLS = [  # (名称, 版本命令, 是否必需)
