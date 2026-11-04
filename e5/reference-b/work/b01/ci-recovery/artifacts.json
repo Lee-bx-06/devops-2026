@@ -1,0 +1,25 @@
+﻿{
+    "total_count":  1,
+    "artifacts":  [
+                      {
+                          "id":  13305095414,
+                          "node_id":  "MDg6QXJ0aWZhY3QxMzMwNTA5NTQxNA==",
+                          "name":  "e7-b-evidence-41793936302-1",
+                          "size_in_bytes":  65244,
+                          "url":  "https://api.github.com/repos/Lee-bx-06/devops-2026/actions/artifacts/13305095414",
+                          "archive_download_url":  "https://api.github.com/repos/Lee-bx-06/devops-2026/actions/artifacts/13305095414/zip",
+                          "expired":  false,
+                          "digest":  "sha256:eb7a9c19851318fb05d5ad89485d379038bb2ceebebdfb55fe9db681ca967a3a",
+                          "created_at":  "2026-11-04T07:41:26Z",
+                          "updated_at":  "2026-11-04T07:41:26Z",
+                          "expires_at":  "2026-11-18T07:41:25Z",
+                          "workflow_run":  {
+                                               "id":  41793936302,
+                                               "repository_id":  1378397193,
+                                               "head_repository_id":  1378397193,
+                                               "head_branch":  "e7-gate-reject-demo",
+                                               "head_sha":  "257ca8d60f13945d1c39fa05397b41345952bff8"
+                                           }
+                      }
+                  ]
+}

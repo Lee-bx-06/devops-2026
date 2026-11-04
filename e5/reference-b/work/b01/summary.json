@@ -58,10 +58,41 @@
     ],
     "runtime_timeout_container_cleaned": true
   },
+  "github": {
+    "normal": {
+      "pull_request": 48,
+      "pull_request_url": "https://github.com/Lee-bx-06/devops-2026/pull/48",
+      "push_run_id": 41793244984,
+      "pr_run_id": 41793369526,
+      "conclusion": "SUCCESS",
+      "merged_at": "2026-11-04T07:36:56Z",
+      "merge_commit": "62fae917a00506e2237e6d31a84b7efec47837d1"
+    },
+    "rejection": {
+      "pull_request": 49,
+      "pull_request_url": "https://github.com/Lee-bx-06/devops-2026/pull/49",
+      "run_id": 41793559427,
+      "conclusion": "FAILURE",
+      "failed_tests": 1,
+      "passed_tests": 24,
+      "merge_attempt_http_status": 405
+    },
+    "recovery": {
+      "run_id": 41793936302,
+      "conclusion": "SUCCESS",
+      "passed_tests": 25,
+      "merged_at": "2026-11-04T07:42:12Z",
+      "merge_commit": "f10c8de210af2c557539b3a6066f13c2f7b7861c"
+    },
+    "branch_protection": {
+      "required_check": "e7-b-quality-gate",
+      "app_id": 15368,
+      "strict": true,
+      "enforce_admins": true,
+      "required_approvals": 0
+    }
+  },
   "pending": [
-    "GitHub normal CI run and artifact",
-    "GitHub failing PR and merge rejection",
-    "GitHub recovery run and merged PR",
     "B2 and B3 independent review and contribution records"
   ]
 }
