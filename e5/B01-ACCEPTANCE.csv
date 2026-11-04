@@ -1,0 +1,12 @@
+编号,轨道,阶段,项目,状态,证据路径或URL,说明
+C01,共同,E4,可重复工程环境,PASS,e5/B09_E4_工作与贡献汇总.md,B09 E4 三名成员已完成独立运行和组内对照
+C02,B,E5,真实 make 缺失复现与候选来源,PASS,e5/reference-b/work/b01/e5-01/,初始构建 exit=1，日志含 make not found；候选 build=0、verify=0
+C03,B,E6,两轮构建与同镜像运行验证,PASS,e5/reference-b/work/b01/e6-01/,trace e6-b-a3ff8e26b8b74670959b024ae3b9be78；输出 hello E3
+C04,B,E7,六项本地门禁与五场景,PASS,e5/reference-b/work/b01/e7-01/,gate exit=0；六项 passed=true
+C05,B,E7,自主测试与代码修改,PENDING,待填,待 B1/B2/B3 提交 PR
+C06,共同,CI,正常失败恢复运行及 artifact,PENDING,待填 GitHub Actions URL,待推送后执行
+C07,共同,CI,必需检查与真实拒绝合并,PENDING,e5/reference-b/work/ci-rejection/,待分支保护后执行
+C08,共同,交付,实验报告密钥扫描与结果备份,PENDING,e5/REPORT-241250052-B01.md,实测结果已回填；待最终 CI 证据和密钥扫描后关闭
+B01,B,E5,缺失 make 及候选来源,PASS,e5/reference-b/work/b01/e5-01/,候选 SHA-256 5e28da373adeb6e649ddf00f122b08d0d5c39ab41b041d3e6e72370c910c0452
+B02,B,E6,构建和同镜像运行验证,PASS,e5/reference-b/work/b01/e6-01/,result.json 与 image ID 一致，输出 hello E3
+B03,B,E7,五场景与超时清理,PASS,e5/reference-b/work/b01/e7-01/,gate-result.json 和 results.csv 一致，超时容器已清理
