@@ -1,0 +1,2 @@
+﻿merge_attempt_http_status=405
+{"message":"Required status check \"e7-b-quality-gate\" is failing.","documentation_url":"https://docs.github.com/articles/about-protected-branches","status":"405"}
