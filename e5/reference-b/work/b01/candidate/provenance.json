@@ -1,0 +1,15 @@
+{
+  "provider": "OpenAI Codex",
+  "model_version": "Not exposed in this session",
+  "date": "2026-11-04",
+  "prompt_path": "work/b01/candidate/prompt-error-driven.txt",
+  "raw_response_path": "work/b01/candidate/model-response.txt",
+  "candidate_path": "work/b01/candidate/Dockerfile",
+  "candidate_sha256": "5e28da373adeb6e649ddf00f122b08d0d5c39ab41b041d3e6e72370c910c0452",
+  "manual_changes": [
+    "Forced APT to use IPv4 after the first build stalled while downloading the Debian package index.",
+    "Replaced the unreachable deb.debian.org package source with the reachable Huawei Cloud Debian mirror."
+  ],
+  "selection_reason": "The candidate keeps the pinned base digest and all required project, build, and runtime instructions while adding only the missing build-essential toolchain.",
+  "is_recorded_replay": false
+}

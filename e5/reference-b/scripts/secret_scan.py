@@ -41,7 +41,13 @@ def scan_text(text, where):
 
 
 def git(root, *args):
-    return subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True)
+    return subprocess.run(
+        ["git", "-C", str(root), *args],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
 
 
 def files(root):
@@ -88,7 +94,13 @@ def main():
     if args.image:
         for cmd, where in ((["docker", "history", "--no-trunc", "--format", "{{.CreatedBy}}", args.image], "image-history"),
                            (["docker", "image", "inspect", "--format", "{{range .Config.Env}}{{println .}}{{end}}", args.image], "image-env")):
-            p = subprocess.run(cmd, capture_output=True, text=True)
+            p = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
             if p.returncode != 0:
                 print(f"无法检查镜像 {args.image}：{p.stderr.strip()}", file=sys.stderr)
                 sys.exit(2)
