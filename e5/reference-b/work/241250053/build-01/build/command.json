@@ -1,0 +1,10 @@
+[
+  "docker",
+  "build",
+  "--progress=plain",
+  "-f",
+  "services/draft/Dockerfile",
+  "-t",
+  "course1020-draft:local",
+  "."
+]
