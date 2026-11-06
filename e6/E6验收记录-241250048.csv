@@ -1,0 +1,8 @@
+轨道,检查项,预期结果,实际结果,证据路径,通过
+"A","实验包完整性","SHA-256正确且138个文件通过","SHA-256=c25e34bd...a40a0；passed=true；checked_files=138","evidence/241250048-20261106/package-check.json","是"
+"A","修复前","精确MD(config.h)与RD(unused.h)","SUCCEEDED；clean/build=0；入口=1；精确两条","evidence/241250048-20261106/before/findings.json","是"
+"A","修复后","findings为空且仅Makefile变化","findings=[]；入口=0；changed_inputs=[Makefile]","evidence/241250048-20261106/verification.json","是"
+"共同","新增测试","测试通过且镜像已重建","新增order-only边界测试；15→16 passed","evidence/241250048-20261106/tests-final.txt","是"
+"A","修改后复跑","检测行为不变","入口=1；仍为MISSING(config.h)与REDUNDANT(unused.h)","evidence/241250048-20261106/rerun/findings.json","是"
+"A","原始证据","结论可由trace和make-db重新计算","before/after哈希、findings、两图和processes全部匹配","evidence/241250048-20261106/raw-evidence-audit.json","是"
+"共同","归档","包含完整work且无敏感文件","归档53 KiB；SHA-256=4203d509...355a；不进入Git","evidence/241250048-20261106/archive.sha256","是"
