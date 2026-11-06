@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "image": "course1027-draft:241250053",
+  "cases": [
+    {
+      "case": "unit-tests",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "case": "success",
+      "passed": true,
+      "exit_code": 0,
+      "workflow_status": "SUCCEEDED",
+      "trace_id": "e6-b-5c721b69deca48f397853bc5d7812036"
+    },
+    {
+      "case": "wrong-output",
+      "passed": true,
+      "exit_code": 1,
+      "workflow_status": "FAILED",
+      "trace_id": "e6-b-24da74871baf4a2b804c2f3fbcbb588d"
+    },
+    {
+      "case": "invalid-candidate",
+      "passed": true,
+      "exit_code": 1,
+      "workflow_status": "FAILED",
+      "trace_id": ""
+    },
+    {
+      "case": "build-failed",
+      "passed": true,
+      "exit_code": 1,
+      "workflow_status": "FAILED",
+      "trace_id": "e6-b-ecbc6fba4a3f4b4da767d047a5130cda"
+    },
+    {
+      "case": "runtime-timeout",
+      "passed": true,
+      "exit_code": 1,
+      "workflow_status": "TIMED_OUT",
+      "trace_id": "e6-b-13ab3dbe699540f5be0cbef4c5dcb9d8"
+    }
+  ],
+  "intentional_failure": false,
+  "selected_cases": [
+    "success",
+    "wrong-output",
+    "invalid-candidate",
+    "build-failed",
+    "runtime-timeout"
+  ],
+  "build_timeout_seconds": 1200,
+  "scope": "Recorded candidate replay for selected real workflow cases; not model generation or a three-project benchmark"
+}
