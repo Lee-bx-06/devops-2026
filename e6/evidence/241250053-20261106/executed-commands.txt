@@ -1,0 +1,14 @@
+git archive --format=tar.gz --output=B2_E6_source_2e7d575.tar.gz 2e7d575763a80925ea720313b94d4a5d251f2917
+scp B2_E6_source_2e7d575.tar.gz root@121.37.166.136:/root/241250053/B2_E6_source_2e7d575.tar.gz
+mkdir /root/241250053/devops-2026-e6-run
+tar -xzf /root/241250053/B2_E6_source_2e7d575.tar.gz -C /root/241250053/devops-2026-e6-run
+cd /root/241250053/devops-2026-e6-run/e5/reference-b
+git init -b e6-run
+git config user.name 241250053
+git config user.email 3407953470@qq.com
+python3 scripts/lab_cloud.py doctor
+python3 scripts/lab_cloud.py build --out work/241250053/e6-build-01 --build-timeout 1200
+sed -i 's/\r$//' work/241250053/candidate/Dockerfile
+sha256sum work/241250053/candidate/Dockerfile
+python3 scripts/lab_cloud.py e6 --candidate work/241250053/candidate/Dockerfile --out work/241250053/e6-own-02 --build-timeout 600
+python3 scripts/verify_e6_b_evidence.py --run-dir work/241250053/e6-own-02/evidence
