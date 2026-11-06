@@ -208,3 +208,7 @@ MD 写进 `output.findings`，状态是 `SUCCEEDED`，`error` 为 `null`；
 然后拿你们自己的文件跑 `python3 tools/validate.py 你们的文件.json`。
 需要加字段时先看 `docs/adr/ADR-004`：**加在 `input`/`output` 里你们自己决定，
 加在顶层信封里需要 ADR + 升版本。**
+
+## 谢浩天 241250033 的 E7 验证
+
+[E7 报告、代码、验收与个人贡献](e7/README.md)：同一 DevOps 服务器完成 8 项判定测试、17 项服务测试、8 项门禁及 CI 拒绝/恢复/合并验证。

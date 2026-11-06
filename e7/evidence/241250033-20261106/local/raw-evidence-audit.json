@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "gate_checks": 8,
+  "unique_trace_ids": 7,
+  "changed_inputs": [
+    "Makefile"
+  ],
+  "raw_evidence_lines": [
+    {
+      "case": "original-1",
+      "file": "work/e7-20261106-04/gate/original-1/evidence/trace/t.14",
+      "line": 579,
+      "text": "openat(AT_FDCWD, \"config.h\", O_RDONLY|O_NOCTTY) = 4"
+    },
+    {
+      "case": "original-1",
+      "file": "work/e7-20261106-04/gate/original-1/evidence/trace/t.15",
+      "line": 23,
+      "text": "openat(AT_FDCWD, \"main.o\", O_RDWR|O_CREAT|O_TRUNC, 0666) = 3"
+    },
+    {
+      "case": "original-1",
+      "file": "work/e7-20261106-04/gate/original-1/evidence/make-db.txt",
+      "line": 1053,
+      "text": "main.o: main.c unused.h"
+    },
+    {
+      "case": "original-2",
+      "file": "work/e7-20261106-04/gate/original-2/evidence/trace/t.14",
+      "line": 579,
+      "text": "openat(AT_FDCWD, \"config.h\", O_RDONLY|O_NOCTTY) = 4"
+    },
+    {
+      "case": "original-2",
+      "file": "work/e7-20261106-04/gate/original-2/evidence/trace/t.15",
+      "line": 23,
+      "text": "openat(AT_FDCWD, \"main.o\", O_RDWR|O_CREAT|O_TRUNC, 0666) = 3"
+    },
+    {
+      "case": "original-2",
+      "file": "work/e7-20261106-04/gate/original-2/evidence/make-db.txt",
+      "line": 1053,
+      "text": "main.o: main.c unused.h"
+    },
+    {
+      "case": "original-3",
+      "file": "work/e7-20261106-04/gate/original-3/evidence/trace/t.14",
+      "line": 579,
+      "text": "openat(AT_FDCWD, \"config.h\", O_RDONLY|O_NOCTTY) = 4"
+    },
+    {
+      "case": "original-3",
+      "file": "work/e7-20261106-04/gate/original-3/evidence/trace/t.15",
+      "line": 23,
+      "text": "openat(AT_FDCWD, \"main.o\", O_RDWR|O_CREAT|O_TRUNC, 0666) = 3"
+    },
+    {
+      "case": "original-3",
+      "file": "work/e7-20261106-04/gate/original-3/evidence/make-db.txt",
+      "line": 1053,
+      "text": "main.o: main.c unused.h"
+    }
+  ],
+  "source_commit": "d2cbe210b2a90c34ebd10c360846314321d17d04",
+  "host": "devops",
+  "server": "60.204.240.40"
+}
