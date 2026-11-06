@@ -1,0 +1,21 @@
+commit f7d169e02aa81a1eb848eed88de12969313047fc
+Author: 241250068 <241250068@smail.nju.edu.cn>
+Date:   Fri Nov 6 20:12:32 2026 +0800
+
+    finished e6
+
+diff --git a/services/draft/tests/test_autobuild.py b/services/draft/tests/test_autobuild.py
+index 7274ace..3163dcc 100644
+--- a/services/draft/tests/test_autobuild.py
++++ b/services/draft/tests/test_autobuild.py
+@@ -29,6 +29,10 @@ class CandidateTests(unittest.TestCase):
+         with self.assertRaises(ValueError):
+             prepare_candidate(BASE, CANDIDATE.replace('CMD ["./hello"]', 'CMD ["echo", "hello E3"]'))
+ 
++    def test_changed_workdir_rejected(self):
++        with self.assertRaises(ValueError):
++            prepare_candidate(BASE, CANDIDATE.replace("WORKDIR /work", "WORKDIR /app"))
++
+     def test_missing_make_is_expected(self):
+         self.assertEqual(classify_failure("/bin/sh: 1: make: not found"), "MISSING_MAKE")
+ 
