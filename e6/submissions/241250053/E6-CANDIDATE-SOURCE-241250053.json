@@ -1,0 +1,15 @@
+{
+  "provider": "OpenAI Codex",
+  "model_version": "Not exposed in the E5 session",
+  "date": "2026-11-04",
+  "prompt_path": "e5/reference-b/work/241250053/e5-01/iter-01/prompt-error-driven.txt",
+  "raw_response_path": "e5/reference-b/work/241250053/candidate/model-response.txt",
+  "candidate_path": "e5/reference-b/work/241250053/candidate/Dockerfile",
+  "candidate_sha256": "5e28da373adeb6e649ddf00f122b08d0d5c39ab41b041d3e6e72370c910c0452",
+  "manual_changes": [
+    "The E5 response originally used deb.debian.org; the final candidate changes only the Debian source URI to the reachable Huawei Cloud mirror.",
+    "Before the E6 server run, CRLF introduced by Windows archive transport was normalized back to LF so the original E5 candidate byte hash was restored; Dockerfile instructions were unchanged."
+  ],
+  "selection_reason": "The candidate keeps the digest-pinned base image and required WORKDIR, COPY, RUN make, and CMD instructions while adding only the missing build-essential toolchain. It passed an actual second-round build and same-image offline execution.",
+  "is_recorded_replay": false
+}

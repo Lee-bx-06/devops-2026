@@ -1,0 +1,5 @@
+轨道,检查项,预期结果,实际结果,证据路径,通过
+B,初始构建,MISSING_MAKE,"build_exit_code=1; MISSING_MAKE; make: not found 位于第29、33行",e6/evidence/241250053-20261106/result.json,是
+B,候选构建,build_exit_code=0,"build_exit_code=0; image_id=sha256:11738ba730ce644d0c89b891bfb37c9a6dfb98f41c73e15fed47c060d835d58d",e6/evidence/241250053-20261106/result.json,是
+B,运行验证,同一image_id且exit=0及hello E3,"exit_code=0; actual_output=hello E3; output_matches=true; 按同一image_id禁网运行",e6/evidence/241250053-20261106/verification.json,是
+共同,新增测试,测试通过且镜像已重建,"test_multistage_candidate_is_rejected_before_build 通过; 26 passed; 构建入口退出0",e6/evidence/241250053-20261106/service-tests.log,是
