@@ -1,0 +1,2 @@
+/root/241250048/buildchecker/e5/reference-a/work/e6-before/evidence/trace/t.12:46:newfstatat(AT_FDCWD, "unused.h", {st_mode=S_IFREG|0644, st_size=43, ...}, 0) = 0
+/root/241250048/buildchecker/e5/reference-a/work/e6-before/evidence/trace/t.14:579:openat(AT_FDCWD, "config.h", O_RDONLY|O_NOCTTY) = 4

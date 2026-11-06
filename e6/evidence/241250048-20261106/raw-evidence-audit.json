@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "stage": "before",
+      "input_hashes_match": true,
+      "raw_trace_reanalysis_matches": true,
+      "graphs_and_processes_match": true,
+      "findings": 2
+    },
+    {
+      "stage": "after",
+      "input_hashes_match": true,
+      "raw_trace_reanalysis_matches": true,
+      "graphs_and_processes_match": true,
+      "findings": 0
+    }
+  ],
+  "archive_sha256": "4203d5097b41cdd5a27ac04b6dd30847ff5b8ccd25762d768fa5db30f858355a"
+}

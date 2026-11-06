@@ -1,0 +1,148 @@
+    60	def project_path(path, cwd, root):
+    61	    absolute = posixpath.normpath(path if path.startswith("/") else posixpath.join(cwd, path))
+    62	    root = posixpath.normpath(root)
+    63	    if absolute == root or not absolute.startswith(root.rstrip("/") + "/"):
+    64	        return None
+    65	    return posixpath.relpath(absolute, root)
+    92	def load_processes(trace_dir):
+    93	    processes, parent = {}, {}
+    94	    for path in sorted(Path(trace_dir).iterdir()):
+    95	        match = re.fullmatch(r"t\.(\d+)", path.name)
+    96	        if not match:
+    97	            continue
+    98	        pid = int(match[1])
+    99	        processes[pid] = {"pid": pid, "trace_file": path.name,
+   100	                          "events": trace_events(path), "executables": []}
+   101	    if not processes:
+   102	        raise Unsupported("No per-process t.PID trace files found")
+   103	    for pid, proc in processes.items():
+   104	        for event in proc["events"]:
+   105	            name, args, ret = event["call"], event["args"], event["return"]
+   106	            if name in {"clone", "clone3", "fork", "vfork"} and ret > 0:
+   107	                if ret in parent and parent[ret] != pid:
+   108	                    raise Unsupported("Ambiguous process parent")
+   109	                if "CLONE_FS" in event["raw"]:
+   110	                    raise Unsupported("Shared-thread working directory is outside the teaching profile")
+   111	                parent[ret] = pid
+   112	            if name in {"execve", "execveat"} and ret == 0:
+   113	                proc["executables"].append(quoted_path(args[0 if name == "execve" else 1]))
+   114	    for child in parent:
+   115	        if child not in processes:
+   116	            raise Unsupported(f"Missing trace for child PID {child}")
+   117	    make_pids = {pid for pid, proc in processes.items()
+   118	                 if any(posixpath.basename(exe) in {"make", "gmake"} for exe in proc["executables"])}
+   119	    if len(make_pids) != 1:
+   120	        raise Unsupported("Teaching profile requires one Make process; recursive Make is not yet supported")
+   121	    return processes, parent, make_pids
+   122
+   123
+   124	def execution_graph(trace_dir, root):
+   125	    processes, parent, make_pids = load_processes(trace_dir)
+   126	    if not root.startswith("/"):
+   127	        raise ValueError("Project root must be an absolute Linux path")
+   128	    root = posixpath.normpath(root)
+   129	    jobs, visited = {}, set()
+   130
+   131	    def job_for(pid):
+   132	        if pid in make_pids:
+   133	            return None
+   134	        seen, current = set(), pid
+   135	        while current in parent:
+   136	            if current in seen:
+   137	                raise Unsupported("Process parent cycle")
+   138	            seen.add(current)
+   139	            if parent[current] in make_pids:
+   140	                return current
+   237	def declaration_graph(database, root):
+   238	    targets, phony, in_files, seen_files, not_target = {}, set(), False, False, False
+   239	    for number, line in enumerate(Path(database).read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+   240	        if line.strip() == "# Files":
+   241	            in_files, seen_files = True, True
+   242	            continue
+   243	        if in_files and line.startswith("# files hash-table stats"):
+   244	            in_files = False
+   245	        if not in_files:
+   246	            continue
+   247	        if line.startswith("# Not a target:"):
+   248	            not_target = True
+   249	            continue
+   250	        if not line or line.startswith(("#", "\t", " ")):
+   251	            continue
+   252	        parts = re.split(r"(?<!\\):", line, maxsplit=1)
+   253	        if len(parts) != 2:
+   254	            continue
+   255	        names, right = parts[0], parts[1].lstrip(":")
+   256	        skip, not_target = not_target, False
+   257	        if "%" in names or "$(" in names or "${" in names:
+   258	            continue
+   259	        try:
+   260	            raw_names, deps = shlex.split(names), shlex.split(right)
+   261	        except ValueError as exc:
+   262	            raise Unsupported(f"Unresolved Make database syntax on line {number}: {exc}")
+   263	        if raw_names == [".PHONY"]:
+   264	            phony.update(deps)
+   265	            continue
+   266	        if skip:
+   267	            continue
+   268	        order_only = deps[deps.index("|") + 1:] if "|" in deps else []
+   269	        regular = deps[:deps.index("|")] if "|" in deps else deps
+   270	        for name in raw_names:
+   271	            target = project_path(name, root, root)
+   272	            if target:
+   273	                entry = targets.setdefault(target, {"dependencies": {}, "order_only": [], "raw_name": name})
+   274	                entry["order_only"].extend(order_only)
+   275	                for dep in regular:
+   276	                    relative = project_path(dep, root, root)
+   277	                    if relative:
+   278	                        entry["dependencies"][relative] = {
+   279	                            "source": "make_database", "artifact": "make-db.txt",
+   280	                            "line": number, "declaration": line}
+   281	    if not seen_files or not targets:
+   282	        raise Unsupported("No parseable Files section in Make database")
+   283	    normalized_phony = {project_path(name, root, root) for name in phony}
+   284
+   285	    def expand(dep, trail):
+   286	        if dep not in normalized_phony:
+   287	            return {dep}
+   288	        if dep in trail:
+   289	            raise Unsupported("Cycle in phony prerequisites")
+   290	        result = set()
+   291	        for child in targets.get(dep, {}).get("dependencies", {}):
+   292	            result.update(expand(child, trail | {dep}))
+   293	        return result
+   294
+   295	    for target, entry in targets.items():
+   296	        expanded = {}
+   297	        for dep, evidence in entry["dependencies"].items():
+   298	            for leaf in expand(dep, set()):
+   299	                expanded.setdefault(leaf, evidence)
+   300	        entry["dependencies"] = expanded
+   301	    return {target: entry for target, entry in targets.items() if target not in normalized_phony}
+   302
+   303
+   304	def analyze(trace_dir, database, root):
+   305	    actual, processes = execution_graph(trace_dir, root)
+   306	    declared = declaration_graph(database, root)
+   307	    findings = []
+   308	    for target, item in sorted(actual.items()):
+   309	        observed = item["dependencies"]
+   310	        specified = declared.get(target, {}).get("dependencies", {})
+   311	        for dep in sorted(set(observed) - set(specified)):
+   312	            findings.append({"type": "MISSING", "target": target, "dependency": dep,
+   313	                             "evidence": [observed[dep], item["output_evidence"]],
+   314	                             "declared_dependencies": sorted(specified)})
+   315	        for dep in sorted(set(specified) - set(observed)):
+   316	            findings.append({"type": "REDUNDANT", "target": target, "dependency": dep,
+   317	                             "evidence": [specified[dep]],
+   318	                             "scope": "Not observed in this recipe job under this build configuration"})
+   319	    actual_edges = [{"target": target, "dependency": dep, "kind": "ACTUAL_READ_OPEN",
+   320	                     "evidence": evidence}
+   321	                    for target, item in sorted(actual.items())
+   322	                    for dep, evidence in sorted(item["dependencies"].items())]
+   323	    declared_edges = [{"target": target, "dependency": dep, "kind": "DECLARED",
+   324	                       "evidence": evidence}
+   325	                      for target, item in sorted(declared.items())
+   326	                      for dep, evidence in sorted(item["dependencies"].items())]
+   327	    return {"findings": findings, "actual_graph": actual_edges,
+   328	            "declared_graph": declared_edges, "processes": processes,
+   329	            "observed_targets": sorted(actual), "filter": "Project-local paths only"}
