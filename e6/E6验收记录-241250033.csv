@@ -1,0 +1,6 @@
+﻿轨道,检查项,预期结果,实际结果,证据路径,通过
+A,修复前,精确MD(config.h)与RD(unused.h),SUCCEEDED；clean/build=0；入口=1；精确两条,evidence/241250033-20261102/before/findings.json,是
+A,修复后,findings为空且仅Makefile变化,findings=[]；入口=0；changed_inputs=[Makefile],evidence/241250033-20261102/verification.json,是
+共同,新增测试,测试通过且镜像已重建,新增依赖完全一致测试；重建后16 passed,evidence/241250033-20261102/tests-final.txt,是
+A,原始证据,结论可定位到trace和Make声明,逐条定位且原始trace重新分析匹配,evidence/241250033-20261102/raw-evidence-audit.json,是
+共同,项目检查,make check通过,77项主测试和7项DRAFT基线测试通过,evidence/241250033-20261102/make-check.txt,是

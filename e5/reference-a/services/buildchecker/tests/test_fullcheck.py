@@ -104,6 +104,31 @@ class TestFullCheck(unittest.TestCase):
         self.assertEqual({(x["type"], x["target"], x["dependency"]) for x in result["findings"]},
                          {("MISSING", "unit.o", "needed.h"), ("REDUNDANT", "unit.o", "unused.h")})
 
+    def test_matching_dependencies_have_no_findings_and_preserve_graphs_and_job(self):
+        self.write("t.20", 'execve("/usr/bin/make", ["make", "main.o"], []) = 0\n'
+                   'clone(child_stack=NULL, flags=SIGCHLD) = 21\n')
+        self.write("t.21", 'execve("/usr/bin/cc", ["cc", "-c", "main.c", "-o", "main.o"], []) = 0\n'
+                   'openat(AT_FDCWD, "main.c", O_RDONLY) = 3\n'
+                   'openat(AT_FDCWD, "config.h", O_RDONLY) = 4\n'
+                   'openat(AT_FDCWD, "main.o", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 5\n')
+        db=self.write("db.txt", '# Files\nmain.o: main.c config.h\n# files hash-table stats:\n')
+        result=analyze(self.folder, db, self.root)
+
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(result["observed_targets"], ["main.o"])
+        expected_edges = {("main.o", "main.c"), ("main.o", "config.h")}
+        for graph, kind in (("actual_graph", "ACTUAL_READ_OPEN"), ("declared_graph", "DECLARED")):
+            with self.subTest(graph=graph):
+                self.assertEqual({(edge["target"], edge["dependency"]) for edge in result[graph]},
+                                 expected_edges)
+                self.assertEqual({edge["kind"] for edge in result[graph]}, {kind})
+        self.assertEqual({edge["evidence"]["pid"] for edge in result["actual_graph"]}, {21})
+        processes = {proc["pid"]: proc for proc in result["processes"]}
+        self.assertEqual(set(processes), {20, 21})
+        self.assertIsNone(processes[20]["job_pid"])
+        self.assertEqual(processes[21]["parent"], 20)
+        self.assertEqual(processes[21]["job_pid"], 21)
+
     def test_make_database_without_files_section_is_not_an_empty_success(self):
         db=self.write("db.txt", 'unit.o: unit.c needed.h\n')
         with self.assertRaisesRegex(Unsupported, "Files section"):

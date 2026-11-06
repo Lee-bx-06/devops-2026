@@ -1,0 +1,102 @@
+name: E7 A quality gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      fail_demo:
+        description: "Intentional failing oracle for the teaching demonstration"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e7-a-devops-241250033
+  cancel-in-progress: false
+
+jobs:
+  quality-gate:
+    name: e7-a-quality-gate
+    runs-on: [self-hosted, Linux, X64, devops-241250033]
+    timeout-minutes: 30
+    env:
+      IMAGE: e7-buildchecker:241250033-ci
+      FAIL_DEMO: ${{ inputs.fail_demo }}
+    steps:
+      - name: Reject external PRs before checking out code
+        env:
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CURRENT_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          if [[ -n "$PR_HEAD_REPO" && "$PR_HEAD_REPO" != "$CURRENT_REPO" ]]; then
+            echo "This course runner only accepts branches in $CURRENT_REPO."
+            exit 1
+          fi
+
+      - name: Check out the exact triggering revision
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Prepare evidence and check Python syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work/ci
+          git rev-parse HEAD > work/ci/commit.txt
+          git config --local user.name "241250033"
+          git config --local user.email "52848497+mcjiansheng@users.noreply.github.com"
+          python3 -c 'import json,os,platform; print(json.dumps({"hostname":platform.node(),"platform":platform.platform(),"runner_name":os.environ.get("RUNNER_NAME"),"student":"谢浩天 241250033"},ensure_ascii=False,indent=2))' > work/ci/host.json
+          python3 scripts/doctor.py --out work/ci/env.json > work/ci/doctor.log
+          docker version > work/ci/docker-version.txt
+          python3 -m compileall -q services/buildchecker/buildchecker scripts tests/e7
+
+      - name: Test the independent oracle
+        run: python3 -m unittest discover -s tests/e7 -v
+
+      - name: Scan tracked sources and Git history
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/secret_scan.py . --history 2>&1 | tee work/ci/source-scan.log
+
+      - name: Build the service image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build --progress=plain -f services/buildchecker/Dockerfile -t "$IMAGE" . 2>&1 | tee work/ci/build.log
+          docker image inspect "$IMAGE" > work/ci/service-image-inspect.json
+
+      - name: Scan built image
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/secret_scan.py . --image "$IMAGE" 2>&1 | tee work/ci/image-scan.log
+
+      - name: Run the real component and fault gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "$FAIL_DEMO" == "true" ]]; then
+            args+=(--inject-bad-oracle)
+          fi
+          python3 scripts/run_e7_a_gate.py --image "$IMAGE" --out work/ci/gate "${args[@]}" 2>&1 | tee work/ci/gate-console.log
+
+      - name: Archive evidence even when checks fail
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: e7-a-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: work/ci/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
