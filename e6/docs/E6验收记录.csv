@@ -1,0 +1,4 @@
+轨道,检查项,预期结果,实际结果,证据路径,通过
+A,修复前,精确MD(config.h)与RD(unused.h),MISSING(main.o,config.h) + REDUNDANT(main.o,unused.h),work/e6-before/evidence/findings.json,是
+A,修复后,findings为空且仅Makefile变化,findings=[] 且 changed_inputs=["Makefile"],work/e6-after/evidence/findings.json,是
+共同,新增测试,测试通过且镜像已重建,15 passed -> 16 passed,work/build-02/unit-tests/stdout.log,是
