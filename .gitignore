@@ -9,6 +9,7 @@ venv/
 *.log
 *.out
 logs/
+
 # 产物目录：依赖图、MD/RD 报告、Patch 要提交，日志与打包文件不提交
 artifacts/**/*.log
 artifacts/**/*.out
