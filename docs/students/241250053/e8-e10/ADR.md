@@ -31,4 +31,3 @@ docker run --rm --network none ... python3 -m unittest discover -s labs/e8e10 -p
 ```
 
 三阶段退出码均为 0；10 项测试通过；E10 `gate.json` 为 `passed=true`，两个拒绝案例均证明源字节保持，接受案例的 BuildChecker 重检无 `MISSING`。
-
