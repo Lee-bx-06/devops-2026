@@ -39,4 +39,58 @@ class ProfileTests(unittest.TestCase):
         (self.p/'Makefile').write_text((self.p/'Makefile').read_text().replace('-O0','-include unknown.h'))
         with self.assertRaisesRegex(ValueError,'UNSUPPORTED_FLAGS'):scan(self.p)
 
+class StudentE8B241250053(unittest.TestCase):
+    def test_patch_keeps_recipe_bytes(self):
+        from lab import run
+        with tempfile.TemporaryDirectory() as directory:
+            p=Path(directory)/'sample'
+            fixture(p)
+            before=(p/'Makefile').read_bytes()
+            diff,plan=patch(p,scan(p))
+            candidate=Path(directory)/'candidate.patch'
+            candidate.write_text(diff)
+            run(['git','apply',str(candidate.resolve())],p)
+            after=(p/'Makefile').read_bytes()
+            recipes=lambda data:[line for line in data.splitlines() if line.startswith(b'\t')]
+            self.assertEqual(recipes(before),recipes(after))
+            self.assertIn(b'main.o: main.c unused.h config.h',after)
+            self.assertEqual(plan[0]['style'],'direct')
+
+class StudentE9B241250053(unittest.TestCase):
+    def test_macro_style_patch_updates_definition(self):
+        from lab import run
+        with tempfile.TemporaryDirectory() as directory:
+            p=Path(directory)/'sample'
+            fixture(p,'macro')
+            diff,plan=patch(p,scan(p))
+            candidate=Path(directory)/'candidate.patch'
+            candidate.write_text(diff)
+            run(['git','apply',str(candidate.resolve())],p)
+            text=(p/'Makefile').read_text()
+            self.assertIn('DEPS = main.c unused.h config.h',text)
+            self.assertIn('main.o: $(DEPS)',text)
+            self.assertEqual(plan[0]['style'],'macro')
+            self.assertFalse(any(x['type']=='MISSING' for x in scan(p)['findings']))
+
+class StudentE10B241250053(unittest.TestCase):
+    def test_build_failure_keeps_original_makefile(self):
+        from lab import validate
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            p=root/'sample'
+            fixture(p)
+            diff,_=patch(p,scan(p))
+            candidate=root/'candidate.patch'
+            candidate.write_text(diff)
+            before=(p/'Makefile').read_bytes()
+            (p/'main.c').write_text('this is invalid C;\n')
+            result=validate(p,candidate,root/'validation')
+            self.assertTrue(result['checks']['patch_applies'])
+            self.assertFalse(result['checks'].get('build',False))
+            self.assertIn('COMMAND_FAILED',result['error'])
+            self.assertFalse(result['accepted'])
+            self.assertTrue(result['rollback'])
+            self.assertTrue(result['source_unchanged'])
+            self.assertEqual((p/'Makefile').read_bytes(),before)
+
 if __name__=='__main__':unittest.main()
