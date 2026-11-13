@@ -1,0 +1,12 @@
+检查项,预期结果,实际结果,证据文件/路径
+本地门禁-5个场景全部通过,全部passed=true,全部passed=true,evidence/local-gate/gate-result.json
+本地门禁-整体工具退出码,exit_code=0,0,evidence/local-gate/gate-result.json
+本地门禁-超时场景容器清理,容器已清理,容器已清理,evidence/local-gate/runtime-timeout/fault-injection.json
+GitLab CI-失败拦截,Pipeline失败,失败,Pipeline 352929 (https://git.nju.edu.cn/Varecia/devops-26-personal/-/pipelines/352929)
+GitLab CI-失败日志,包含1 failed 25 passed,包含1 failed 25 passed,evidence/job-711050.log
+GitLab CI-修复恢复,Pipeline成功,成功,Pipeline 352933 (https://git.nju.edu.cn/Varecia/devops-26-personal/-/pipelines/352933)
+GitLab CI-修复日志,包含26 passed,包含26 passed,evidence/job-711057.log
+GitLab CI-MR合并状态,merged,merged,evidence/mr-final-state.json
+GitLab CI-分支保护,main分支保护开启,Maintainers可合并,evidence/protected-branches.json
+GitLab CI-合并提交SHA,存在且对应成功Pipeline,71901fd812fa2542c8be46569ba4fa155fa3b129,evidence/mr-final-state.json
+同行复核-B2 PR #55,确认5场景/门禁/超时清理/证据SHA/CI逻辑,待复核,REPORT-241250068.md 第5节

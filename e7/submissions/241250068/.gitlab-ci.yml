@@ -1,0 +1,20 @@
+
+stages:
+  - test
+
+run_unit_tests:
+  stage: test
+  image: python:3.13-slim
+  before_script:
+    - pip install pytest
+  script:
+    - cd services/draft
+    - pytest tests/ -v --tb=short
+  artifacts:
+    when: always
+    paths:
+      - services/draft/test-results/
+    expire_in: 1 week
+  only:
+    - main
+    - merge_requests
