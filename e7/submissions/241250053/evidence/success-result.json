@@ -1,0 +1,71 @@
+{
+  "status": "SUCCEEDED",
+  "detector": "DRAFT_TEACHING_REPLAY",
+  "trace_id": "e6-b-af9ad7fadbf54abd90e41b7a53e6abf2",
+  "candidate_source": "Manual model response replay; no model/API call in this command",
+  "candidate_sha256": "5e28da373adeb6e649ddf00f122b08d0d5c39ab41b041d3e6e72370c910c0452",
+  "attempts": [
+    {
+      "iteration": 1,
+      "tag": "e6-draft-replay:af9ad7fadbf54abd90e41b7a53e6abf2-1",
+      "command": [
+        "docker",
+        "build",
+        "--progress=plain",
+        "-f",
+        "/evidence/iter-01/Dockerfile",
+        "-t",
+        "e6-draft-replay:af9ad7fadbf54abd90e41b7a53e6abf2-1",
+        "/evidence/project"
+      ],
+      "build_exit_code": 1,
+      "failure_class": "MISSING_MAKE"
+    },
+    {
+      "iteration": 2,
+      "tag": "e6-draft-replay:af9ad7fadbf54abd90e41b7a53e6abf2-2",
+      "command": [
+        "docker",
+        "build",
+        "--progress=plain",
+        "-f",
+        "/evidence/iter-02/Dockerfile",
+        "-t",
+        "e6-draft-replay:af9ad7fadbf54abd90e41b7a53e6abf2-2",
+        "/evidence/project"
+      ],
+      "build_exit_code": 0,
+      "image_id": "sha256:4201c07b7a28f9eec52dff672e691f27771494613a90c687a4733aeb45c74fac"
+    }
+  ],
+  "input_sha256": {
+    ".dockerignore": "b218b8e27f7c9fb5034824c56d09fc489f7d6c699144840cac25b3b7d9e40912",
+    "Dockerfile.broken": "c44bb1ddfaa8bf16d305450134dbca4f3334fc015d5ec41a0bc8a8461bc48e5a",
+    "Makefile": "cd27c92e7878d8209c37403311ef13ac3fcee595f331f29b5d0071fd2872f988",
+    "README.md": "5cd8e3cfe0936b234e7f73bdbee5c175a44e0f968b209db562cd4665cc74ba6b",
+    "main.c": "fa50e637359cebb6ff9002f53f63c8f01dec749c1e782f624c6561bbb1e63142"
+  },
+  "verification": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "1",
+      "--memory",
+      "128m",
+      "--pids-limit",
+      "64",
+      "--cidfile",
+      "/evidence/verify-container-id.txt",
+      "sha256:4201c07b7a28f9eec52dff672e691f27771494613a90c687a4733aeb45c74fac"
+    ],
+    "exit_code": 0,
+    "expected_output": "hello E3",
+    "actual_output": "hello E3\n",
+    "output_matches": true
+  },
+  "elapsed_ms": 1250
+}
