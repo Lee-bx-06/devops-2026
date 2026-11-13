@@ -1,0 +1,91 @@
+2026-11-13T09:36:54.013037Z 00O [0KRunning with gitlab-runner 19.5.3 (33227fd4)[0;m
+2026-11-13T09:36:54.013049Z 00O [0K  on linux-docker D4Cxz9WoY, system ID: r_nZIhUiKJAvXX[0;m
+2026-11-13T09:36:54.013051Z 00O [0K  UUID: 019fb868-82ec-71d4-8f7d-70ad12847b90[0;m
+2026-11-13T09:36:54.013055Z 00O [0K  feature flags: FF_NETWORK_PER_BUILD:true[0;m
+2026-11-13T09:36:54.013074Z 00O [0K[36;1mResolving secrets[0;m[0;m
+2026-11-13T09:36:54.013210Z 00O section_start:1794562614:prepare_executor[0K
+2026-11-13T09:36:54.013213Z 00O+[0K[36;1mPreparing the "docker" executor[0;m[0;m
+2026-11-13T09:36:54.025163Z 00O [0KUsing Docker executor with image python:3.13-slim ...[0;m
+2026-11-13T09:36:54.280560Z 00O [0KUsing effective pull policy of [always] for container python:3.13-slim[0;m
+2026-11-13T09:36:54.281153Z 00O [0KPulling docker image python:3.13-slim ...[0;m
+2026-11-13T09:36:56.297745Z 00O [0KUsing docker image sha256:c0e8df9380519cf514d5fbb5aeaa7aa5de5f32c50330badcadc05cdabaae5566 for python:3.13-slim with digest python@sha256:09a17cad02668ae61ece136b4fd36ac3849e14f670ebedb637ea3e15580525bc ...[0;m
+2026-11-13T09:36:56.297760Z 00O section_end:1794562616:prepare_executor[0K
+2026-11-13T09:36:56.297904Z 00O+section_start:1794562616:prepare_script[0K
+2026-11-13T09:36:56.297911Z 00O+[0K[36;1mPreparing environment[0;m[0;m
+2026-11-13T09:36:56.298495Z 00O [0KUsing effective pull policy of [always] for container sha256:925e216a7c7f5cca366a734f683207e8e2137a918e7f2c8ce7d67bc79166b544[0;m
+2026-11-13T09:36:56.416586Z 01O Running on runner-d4cxz9woy-project-25297-concurrent-0 via 381c79f00a7e...
+2026-11-13T09:36:56.419528Z 01O Running on CPU: Intel(R) Xeon(R) Platinum 8358 CPU @ 2.60GHz (avx, avx2, avx512f)
+2026-11-13T09:36:56.492935Z 00O section_end:1794562616:prepare_script[0K
+2026-11-13T09:36:56.493417Z 00O+section_start:1794562616:get_sources[0K
+2026-11-13T09:36:56.493422Z 00O+[0K[36;1mGetting source from Git repository[0;m[0;m
+2026-11-13T09:36:56.632906Z 01O [32;1mGitaly correlation ID: 01M7A48R99ZW8RBHW0B47P4J4Z[0;m
+2026-11-13T09:36:56.637154Z 01O [32;1mFetching changes with git depth set to 20...[0;m
+2026-11-13T09:36:56.639541Z 01O Initialized empty Git repository in /builds/Varecia/devops-26-personal/.git/
+2026-11-13T09:36:56.641175Z 01O [32;1mCreated fresh repository.[0;m
+2026-11-13T09:36:56.840479Z 01O [32;1mChecking out cbec096c as detached HEAD (ref is refs/merge-requests/1/head)...[0;m
+2026-11-13T09:36:56.880591Z 01O 
+2026-11-13T09:36:56.880598Z 01O [32;1mSkipping Git submodules setup[0;m
+2026-11-13T09:36:56.957902Z 00O section_end:1794562616:get_sources[0K
+2026-11-13T09:36:56.959040Z 00O+section_start:1794562616:step_script[0K
+2026-11-13T09:36:56.959050Z 00O+[0K[36;1mExecuting "step_script" stage of the job script[0;m[0;m
+2026-11-13T09:36:56.959061Z 00O [0KUsing effective pull policy of [always] for container python:3.13-slim[0;m
+2026-11-13T09:36:56.959719Z 00O [0KUsing docker image sha256:c0e8df9380519cf514d5fbb5aeaa7aa5de5f32c50330badcadc05cdabaae5566 for python:3.13-slim with digest python@sha256:09a17cad02668ae61ece136b4fd36ac3849e14f670ebedb637ea3e15580525bc ...[0;m
+2026-11-13T09:36:57.093081Z 01O [32;1m$ pip install pytest[0;m
+2026-11-13T09:37:12.584112Z 01O Collecting pytest
+2026-11-13T09:37:13.043007Z 01O   Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+2026-11-13T09:37:13.168627Z 01O Collecting iniconfig>=2 (from pytest)
+2026-11-13T09:37:13.318196Z 01O   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+2026-11-13T09:37:13.464748Z 01O Collecting packaging>=24 (from pytest)
+2026-11-13T09:37:13.616967Z 01O   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-11-13T09:37:13.760979Z 01O Collecting pluggy<2,>=1.6 (from pytest)
+2026-11-13T09:37:13.916714Z 01O   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+2026-11-13T09:37:14.068121Z 01O Collecting pygments>=2.15 (from pytest)
+2026-11-13T09:37:14.224409Z 01O   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-11-13T09:37:14.388949Z 01O Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+2026-11-13T09:37:16.520294Z 01O Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+2026-11-13T09:37:16.912417Z 01O Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+2026-11-13T09:37:17.311630Z 01O Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-11-13T09:37:33.260998Z 01E WARNING: Connection interrupted while downloading.
+2026-11-13T09:37:33.261017Z 01E WARNING: Attempting to resume incomplete download (0 bytes/129 kB, attempt 1)
+2026-11-13T09:38:33.393087Z 01E WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPSConnection(host='files.pythonhosted.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")': /packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl
+2026-11-13T09:39:34.018998Z 01E WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPSConnection(host='files.pythonhosted.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")': /packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl
+2026-11-13T09:40:19.622504Z 01O Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-11-13T09:40:20.287995Z 01O Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-11-13T09:40:39.790623Z 01O    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸       1.0/1.3 MB 268.5 kB/s eta 0:00:01
+2026-11-13T09:40:39.790844Z 01E WARNING: Connection interrupted while downloading.
+2026-11-13T09:40:39.791016Z 01E WARNING: Attempting to resume incomplete download (1.0 MB/1.3 MB, attempt 1)
+2026-11-13T09:41:39.921999Z 01E WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPSConnection(host='files.pythonhosted.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")': /packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl
+2026-11-13T09:42:40.552320Z 01E WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPSConnection(host='files.pythonhosted.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")': /packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl
+2026-11-13T09:43:25.941238Z 01O Resuming download pygments-2.21.0-py3-none-any.whl (1.0 MB/1.3 MB)
+2026-11-13T09:43:26.170648Z 01O    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 884.5 kB/s  0:00:00
+2026-11-13T09:43:26.268198Z 01O Installing collected packages: pygments, pluggy, packaging, iniconfig, pytest
+2026-11-13T09:43:27.319018Z 01O 
+2026-11-13T09:43:27.320245Z 01O Successfully installed iniconfig-2.3.1 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.2.0
+2026-11-13T09:43:27.320386Z 01E WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+2026-11-13T09:43:27.321176Z 01E 
+2026-11-13T09:43:27.321181Z 01E [notice] A new release of pip is available: 26.2.2 -> 26.3
+2026-11-13T09:43:27.321182Z 01E [notice] To update, run: pip install --upgrade pip
+2026-11-13T09:43:27.389299Z 01O [32;1m$ cd services/draft[0;m
+2026-11-13T09:43:27.389308Z 01O [32;1m$ pytest tests/ -v --tb=short[0;m
+2026-11-13T09:43:27.768210Z 01O ============================= test session starts ==============================
+2026-11-13T09:43:27.768217Z 01O platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+2026-11-13T09:43:27.768219Z 01O rootdir: /builds/Varecia/devops-26-personal/services/draft
+2026-11-13T09:43:27.768219Z 01O configfile: pytest.ini
+2026-11-13T09:43:27.768220Z 01O collected 26 items
+2026-11-13T09:43:27.768220Z 01O 
+2026-11-13T09:43:27.768221Z 01O tests/test_autobuild.py ............                                     [ 46%]
+2026-11-13T09:43:27.774995Z 01O tests/test_cli.py ...                                                    [ 57%]
+2026-11-13T09:43:27.778371Z 01O tests/test_workflow_failures.py ...........                              [100%]
+2026-11-13T09:43:27.825620Z 01O 
+2026-11-13T09:43:27.825622Z 01O ============================== 26 passed in 0.18s ==============================
+2026-11-13T09:43:27.972619Z 00O section_end:1794563007:step_script[0K
+2026-11-13T09:43:27.973290Z 00O+section_start:1794563007:upload_artifacts_on_success[0K
+2026-11-13T09:43:27.973296Z 00O+[0K[36;1mUploading artifacts for successful job[0;m[0;m
+2026-11-13T09:43:28.135266Z 01O [32;1mUploading artifacts...[0;m
+2026-11-13T09:43:28.179008Z 01E [0;33mWARNING: services/draft/test-results/: no matching files. Ensure that the artifact path is relative to the working directory (/builds/Varecia/devops-26-personal)[0;m 
+2026-11-13T09:43:28.179016Z 01E [31;1mERROR: No files to upload                         [0;m 
+2026-11-13T09:43:28.258326Z 00O section_end:1794563008:upload_artifacts_on_success[0K
+2026-11-13T09:43:28.258665Z 00O+section_start:1794563008:cleanup_file_variables[0K
+2026-11-13T09:43:28.258670Z 00O+[0K[36;1mCleaning up project directory and file based variables[0;m[0;m
+2026-11-13T09:43:28.477755Z 00O section_end:1794563008:cleanup_file_variables[0K
+2026-11-13T09:43:28.610873Z 00O [32;1mJob succeeded[0;m
