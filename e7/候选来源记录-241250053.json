@@ -1,0 +1,15 @@
+{
+  "provider": "OpenAI Codex",
+  "model_version": "Not exposed in the E5 session",
+  "date": "2026-11-04",
+  "prompt_path": "e5/reference-b/work/241250053/e5-01/iter-01/prompt-error-driven.txt",
+  "raw_response_path": "e7/evidence/241250053-20261108/model-response.txt",
+  "candidate_path": "e7/evidence/241250053-20261108/candidate.Dockerfile",
+  "candidate_sha256": "5e28da373adeb6e649ddf00f122b08d0d5c39ab41b041d3e6e72370c910c0452",
+  "manual_changes": [
+    "The original E5 response used deb.debian.org; the saved candidate changes only the Debian source URI to the reachable Huawei Cloud mirror.",
+    "E7 reused the byte-identical LF-normalized E5/E6 candidate and did not change Dockerfile instructions."
+  ],
+  "selection_reason": "The candidate retains the digest-pinned FROM, WORKDIR, COPY, RUN make and CMD instructions, adds only the build toolchain repair, and passed the E7 success and fault gates.",
+  "is_recorded_replay": true
+}
