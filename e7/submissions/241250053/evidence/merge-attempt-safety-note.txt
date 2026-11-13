@@ -1,0 +1,4 @@
+MERGE_ATTEMPT_NOT_EXECUTED=1
+REASON=main has no effective repository rules and current credential has admin=false; attempting a merge could merge intentionally failing code.
+SAFE_EVIDENCE=PR remained OPEN with mergeable_state=blocked while both e7-b-quality-gate checks concluded failure.
+OWNER_ACTION_REQUIRED=Enable required e7-b-quality-gate, strict=true, enforce_admins=true, then repeat the failed merge attempt.
