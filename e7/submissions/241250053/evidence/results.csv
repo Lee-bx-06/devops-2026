@@ -1,0 +1,7 @@
+case,passed,exit_code,workflow_status,trace_id,error
+unit-tests,True,0,,,
+success,True,0,SUCCEEDED,e6-b-af9ad7fadbf54abd90e41b7a53e6abf2,
+wrong-output,True,1,FAILED,e6-b-1caba2c21eca46589b225a724e32f31d,
+invalid-candidate,True,1,FAILED,,
+build-failed,True,1,FAILED,e6-b-4d37ba9394bb4942b97f838022c5b89e,
+runtime-timeout,True,1,TIMED_OUT,e6-b-c8e7915d4b6d4ef0a0a5a4913b6933b7,
