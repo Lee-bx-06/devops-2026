@@ -1,0 +1,76 @@
+EVIDENCE_DIR=/root/241250053/devops-2026-e7-run-96a19af/e5/reference-b/work/241250053/e7-build-01
+
+
+#11 [stage-1  3/10] COPY --from=docker-cli /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/docker-buildx
+#11 CACHED
+
+#12 [stage-1  4/10] RUN apt-get update  && apt-get install -y --no-install-recommends git  && rm -rf /var/lib/apt/lists/*  && dpkg-query -W -f='${Package}=${Version}\n' git > /opt/toolchain.lock  && echo "docker-cli=$(docker --version)" >> /opt/toolchain.lock  && echo "python3=$(python3 -c 'import platform; print(platform.python_version())')" >> /opt/toolchain.lock  && echo "arch=$(dpkg --print-architecture)" >> /opt/toolchain.lock
+#12 CACHED
+
+#13 [stage-1  6/10] RUN pip install --no-cache-dir --require-hashes -r /tmp/requirements-dev.lock  && pip freeze | sed 's/^/pip:/' >> /opt/toolchain.lock
+#13 CACHED
+
+#14 [stage-1  5/10] COPY requirements-dev.lock /tmp/requirements-dev.lock
+#14 CACHED
+
+#15 [stage-1  7/10] RUN useradd --create-home --uid 10001 app && install -d -o app -g app /app
+#15 CACHED
+
+#16 [stage-1  8/10] WORKDIR /app
+#16 CACHED
+
+#17 [stage-1  9/10] COPY --chown=app:app services/draft/ /app/
+#17 DONE 0.0s
+
+#18 [stage-1 10/10] COPY --chown=app:app fixtures/ /app/fixtures/
+#18 DONE 0.0s
+
+#19 exporting to image
+#19 exporting layers 0.1s done
+#19 exporting manifest sha256:8223b9deab5df4a46d50cc00a9bf7fdc9f84ed6ca2b3f040be3acfe098e73c19 0.0s done
+#19 exporting config sha256:81168c30da373007b5361df805640ad5618eaa6fb74c2c66948dd4311546c3b8 0.0s done
+#19 exporting attestation manifest sha256:bfe36de5b2928858602c097895f679dfe6fa71bb9379694bbeffa607eea03951 0.0s done
+#19 exporting manifest list sha256:1d4cfb432f1ddf49bd430a4b60b8e3b26f072881b4ec7f220b019714646ef0cf 0.0s done
+#19 naming to docker.io/library/course1020-draft:local done
+#19 unpacking to docker.io/library/course1020-draft:local
+#19 unpacking to docker.io/library/course1020-draft:local 0.2s done
+#19 DONE 0.4s
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 126881848,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:f4f8b983b714f130e2cff99176baa26352db6a55d3622e10ada40f2b4720a4eb",
+                "sha256:7ef9ddba6965cfcb2dcd5bf24e61737a0031c2d9be2b3377339111ab1ad3f0f2",
+                "sha256:ef9f8c7c1d6b6b918d5e93cba9a7de4c837e3047ca733296bd396d9a413ae64f",
+                "sha256:fde42b5dd2510411f5cd411982dd5fa72f546553ccba3e5260f33a3da21bbf8f",
+                "sha256:b3dad2e5f38857bc2d30348a63733099d3158a8efc75ab6565150f1534128939",
+                "sha256:4debcbf6b736ab510cf164a20781cc3b2a23350a5999aeda3e36d3b2396010b3",
+                "sha256:a00ba55ea5e3a58802435df1a5ca28d99d6625c6c9cb14e778eb12cb015107de",
+                "sha256:4395bdbf32b1c22dec6093e95da14a38491ed2b171b17c11f2579b478abafd54",
+                "sha256:147db335ba5a3e7fbfa93ffe73fdf381571fd3e70e1a76f80250c4df05020de5",
+                "sha256:570c6d2c3a2c97b0b2b099f98a9659a54ed53013cde978b621f016a3cdfd198c",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:f26d2ed0f66784c6c6f4b6219fccc571941cfc73cf654f5e48fb3765401bdbae",
+                "sha256:7d956940112291adac12577d7a1d6a5ba8b0fe18a89c364ad8252c21fc5c986d"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-11-08T05:36:00.177466001Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:1d4cfb432f1ddf49bd430a4b60b8e3b26f072881b4ec7f220b019714646ef0cf",
+            "size": 856
+        }
+    }
+]
+
+...........................                                              [100%]
+27 passed in 0.24s
+

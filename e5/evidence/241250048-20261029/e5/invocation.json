@@ -1,0 +1,8 @@
+{
+  "track": "A",
+  "stage": "e5",
+  "time_utc": "2026-11-01T06:02:39.465005+00:00",
+  "image": "course1027-buildchecker:241250048",
+  "packaging_entrypoint": "cloud-v1",
+  "replay": false
+}

@@ -1,0 +1,9 @@
+编号,阶段,检查项,状态,证据路径,说明
+E6-01,B1,第一轮MISSING_MAKE,PASS,e5/reference-b/work/b01/e6-01/evidence/iter-01/,build_exit_code=1
+E6-02,B1,第二轮构建与同镜像运行,PASS,e5/reference-b/work/b01/e6-01/evidence/,build=0；exit=0；hello E3
+E6-03,B2,独立E6运行,PASS,e6/submissions/241250053/B2_E6_241250053_work_2e7d575.tar.gz,trace e6-b-5c213473b24f4a6fa39051bf63680fb3
+E6-04,B2,新增测试与代码提交,PASS,e6/submissions/241250053/test_e6_b2_241250053.py,多阶段候选在构建前拒绝；26 passed
+E6-05,B3,独立E6运行,PASS,e6/submissions/241250068/B09_241250068_E6_Evidence.zip,trace e6-b-bbaa076742bf4f41b05b70d4cea01c9d
+E6-06,B3,新增测试源码与正式Review,PASS,e6/submissions/241250068/B3_test_diff.patch 与 B3-REVIEW-PR53.md,25 passed；已在PR #53留下复核
+E6-07,共同,E6组报告,PASS,e6/E6-REPORT-B09.md,三人技术材料完整
+E6-08,共同,E6基线CI,PASS,main@5efb40d0573b5043070806769edcbfc89d2ce5d7,e7-b-quality-gate成功；最终报告PR合并后更新最终SHA

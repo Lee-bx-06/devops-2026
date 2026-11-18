@@ -1,0 +1,2 @@
+30:#8 0.150 /bin/sh: 1: make: not found
+34:0.150 /bin/sh: 1: make: not found

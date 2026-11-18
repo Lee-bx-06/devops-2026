@@ -1,0 +1,10 @@
+{
+  "student_id": "241250033",
+  "source_sha": "8d6f9d0946f10f558f71ab82ca5d2fcd615d5dfd",
+  "time_utc": "2026-10-28T03:11:43.844041+00:00",
+  "image_tag": "e4-buildchecker:241250033",
+  "image_id": "sha256:d62766b5c3b27ed8a9f13884368d61f41f3259bcc43f30cae57c3a662129ee26",
+  "fixture": "e4/fixtures/md-rd",
+  "entrypoint": "e5/collect_a.py",
+  "reference": "DevOps_E4_E7_GitHub_20261028: E5 A manual capture"
+}

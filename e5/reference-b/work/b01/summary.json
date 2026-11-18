@@ -1,0 +1,98 @@
+{
+  "group": "B01",
+  "track": "B",
+  "source_commit": "88d97a799e08eb6acd1bcfb4b9c2127e078d7a20",
+  "environment": {
+    "os": "Ubuntu 22.04.5 LTS",
+    "architecture": "x86_64",
+    "cpus": 2,
+    "memory_gib": 3.6,
+    "available_disk_gib": 67.1,
+    "docker": "29.1.3",
+    "docker_compose": "2.40.3",
+    "buildx": "0.30.1",
+    "python": "3.10.12",
+    "make": "4.3"
+  },
+  "service_tests": {
+    "status": "PASS",
+    "passed": 24,
+    "image_id": "sha256:fe80cbdf404cb336555b9c5d0c3da311dbc6b153adcb4e2447a49d8f82dcf5df"
+  },
+  "candidate": {
+    "provider": "OpenAI Codex",
+    "is_recorded_replay": false,
+    "sha256": "5e28da373adeb6e649ddf00f122b08d0d5c39ab41b041d3e6e72370c910c0452"
+  },
+  "e5": {
+    "status": "PASS",
+    "baseline_docker_exit_code": 1,
+    "missing_make": true,
+    "evidence_collection_exit_code": 0,
+    "manual_build_exit_code": 0,
+    "manual_verify_exit_code": 0,
+    "actual_output": "hello E3\n",
+    "image_id": "sha256:490e1f9633ffd4d7acd2d568c5fdd3e16b77a0cafb4821a16bb297d5746d7f19"
+  },
+  "e6": {
+    "status": "PASS",
+    "trace_id": "e6-b-a3ff8e26b8b74670959b024ae3b9be78",
+    "baseline_failure_class": "MISSING_MAKE",
+    "baseline_build_exit_code": 1,
+    "candidate_build_exit_code": 0,
+    "verify_exit_code": 0,
+    "output_matches": true,
+    "actual_output": "hello E3\n",
+    "image_id": "sha256:cd1759adc087e51df671f7d6e83878c8e935881c400ea05564083eb31d7f8516"
+  },
+  "e7": {
+    "status": "PASS",
+    "gate_exit_code": 0,
+    "cases": [
+      {"case": "unit-tests", "passed": true, "exit_code": 0},
+      {"case": "success", "passed": true, "exit_code": 0, "workflow_status": "SUCCEEDED"},
+      {"case": "wrong-output", "passed": true, "exit_code": 1, "workflow_status": "FAILED"},
+      {"case": "invalid-candidate", "passed": true, "exit_code": 1, "workflow_status": "FAILED"},
+      {"case": "build-failed", "passed": true, "exit_code": 1, "workflow_status": "FAILED"},
+      {"case": "runtime-timeout", "passed": true, "exit_code": 1, "workflow_status": "TIMED_OUT"}
+    ],
+    "runtime_timeout_container_cleaned": true
+  },
+  "github": {
+    "normal": {
+      "pull_request": 48,
+      "pull_request_url": "https://github.com/Lee-bx-06/devops-2026/pull/48",
+      "push_run_id": 41793244984,
+      "pr_run_id": 41793369526,
+      "conclusion": "SUCCESS",
+      "merged_at": "2026-11-04T07:36:56Z",
+      "merge_commit": "62fae917a00506e2237e6d31a84b7efec47837d1"
+    },
+    "rejection": {
+      "pull_request": 49,
+      "pull_request_url": "https://github.com/Lee-bx-06/devops-2026/pull/49",
+      "run_id": 41793559427,
+      "conclusion": "FAILURE",
+      "failed_tests": 1,
+      "passed_tests": 24,
+      "merge_attempt_http_status": 405
+    },
+    "recovery": {
+      "run_id": 41793936302,
+      "conclusion": "SUCCESS",
+      "passed_tests": 25,
+      "merged_at": "2026-11-04T07:42:12Z",
+      "merge_commit": "f10c8de210af2c557539b3a6066f13c2f7b7861c"
+    },
+    "branch_protection": {
+      "required_check": "e7-b-quality-gate",
+      "app_id": 15368,
+      "strict": true,
+      "enforce_admins": true,
+      "required_approvals": 0
+    }
+  },
+  "pending": [
+    "B2 and B3 independent review and contribution records"
+  ]
+}
