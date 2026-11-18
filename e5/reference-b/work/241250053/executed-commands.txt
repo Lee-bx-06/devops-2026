@@ -1,0 +1,13 @@
+git clone --branch main --single-branch https://github.com/Lee-bx-06/devops-2026.git /root/241250053/devops-2026-e5-final
+cd /root/241250053/devops-2026-e5-final/e5/reference-b
+git rev-parse HEAD
+git config user.name 241250053
+git config user.email 3407953470@qq.com
+python3 scripts/lab_cloud.py doctor
+python3 scripts/lab_cloud.py build --out work/241250053/build-01 --build-timeout 1200
+python3 scripts/lab_cloud.py e5 --out work/241250053/e5-01 --build-timeout 600
+sha256sum work/241250053/candidate/Dockerfile
+docker build --progress=plain -f work/241250053/candidate/Dockerfile -t course1020-b2-241250053:e5 fixtures/draft
+docker image inspect --format '{{.Id}}' course1020-b2-241250053:e5
+docker run --rm --network none course1020-b2-241250053:e5
+grep -nF 'make: not found' work/241250053/e5-01/iter-01/build-retry.log

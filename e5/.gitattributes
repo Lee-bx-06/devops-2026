@@ -1,0 +1,2 @@
+# Keep raw command output byte-for-byte, including Make's trailing whitespace.
+evidence/** -text -whitespace

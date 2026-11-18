@@ -1,0 +1,11 @@
+编号,成员,检查项,状态,证据路径或URL,说明
+E7-01,B1,本地六项门禁,PASS,e7/submissions/241250052/e7-01/gate/,gate exit=0；六项passed=true
+E7-02,B1,GitHub正常失败恢复与合并拒绝,PASS,e7/submissions/241250052/REPORT-241250052.md,PR#48/#49/#50；HTTP405；strict/enforce_admins=true
+E7-03,B2,本地六项门禁与超时清理,PASS,e7/submissions/241250053/,六项passed=true；No such container
+E7-04,B2,E7专用PR与个人CI,PASS,https://github.com/Lee-bx-06/devops-2026/pull/55,已合并；run42452667828成功
+E7-05,B3,本地六项门禁,PASS,e7/submissions/241250068/gate-result.json,gate exit=0；27 passed；超时容器已清理
+E7-06,B3,GitLab失败与恢复,PASS,e7/submissions/241250068/,Pipeline352929失败；352933成功；MR!1合并
+E7-07,B3,E7专用PR,PASS,https://github.com/Lee-bx-06/devops-2026/pull/58,已合并
+E7-08,B2/B3,交叉Review,PASS,PR #55/#58,B2与B3均完成正式复核
+E7-09,B1,组级分支保护,PASS,https://github.com/Lee-bx-06/devops-2026/pull/48,e7-b-quality-gate/app15368；strict/enforce_admins=true
+E7-10,共同,最终E7报告,PASS,e7/E7-REPORT-B09.md,三人材料完整；待最终报告PR合并

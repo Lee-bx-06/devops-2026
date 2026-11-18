@@ -1,0 +1,21 @@
+[
+  "docker",
+  "run",
+  "--rm",
+  "--user",
+  "0:0",
+  "-e",
+  "HOME=/tmp",
+  "--network",
+  "none",
+  "--cap-add",
+  "SYS_PTRACE",
+  "--cidfile",
+  "/root/241250033/buildchecker/e5/reference-a/work/e5-20261029-01/service-container-id.txt",
+  "--mount",
+  "type=bind,src=/root/241250033/buildchecker/e5/reference-a/work/e5-20261029-01/evidence,dst=/evidence",
+  "course1027-buildchecker:241250033",
+  "bash",
+  "-c",
+  "set -eu\ncp -R /app/fixtures/md-rd/. /evidence/\ncd /evidence\nmkdir trace\nmake clean\nstrace -ff -s 4096 -o trace/t -e trace=%file,%process make -p app > make-db.txt 2> build-stderr.log\n./app > program-output.txt\ngrep -n config.h trace/t.*\ngrep -n \"^main.o:\" make-db.txt\ncat program-output.txt\n"
+]

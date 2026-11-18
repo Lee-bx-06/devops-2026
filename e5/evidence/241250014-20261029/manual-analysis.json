@@ -1,0 +1,68 @@
+{
+  "analysis_method": "manual review of raw E5 trace and Make database",
+  "source_sha": "a0cc363c61a92d8d296e43e7faf24d6f4ffd4872",
+  "capture_exit_code": 0,
+  "service_tests": {
+    "passed": 15,
+    "evidence": "build/unit-tests/stdout.log"
+  },
+  "targets": [
+    {
+      "target": "main.o",
+      "actual_project_dependencies": [
+        "main.c",
+        "config.h"
+      ],
+      "declared_dependencies": [
+        "main.c",
+        "unused.h"
+      ],
+      "missing": [
+        "config.h"
+      ],
+      "redundant": [
+        "unused.h"
+      ],
+      "read_evidence": [
+        "e5/evidence/trace/t.16:67",
+        "e5/evidence/trace/t.16:580"
+      ],
+      "output_evidence": "e5/evidence/trace/t.17:23",
+      "declaration_evidence": "e5/evidence/make-db.txt:1061"
+    },
+    {
+      "target": "app",
+      "actual_project_dependencies": [
+        "main.o"
+      ],
+      "declared_dependencies": [
+        "main.o"
+      ],
+      "missing": [],
+      "redundant": [],
+      "read_evidence": [
+        "e5/evidence/trace/t.20:82",
+        "e5/evidence/trace/t.20:83"
+      ],
+      "output_evidence": "e5/evidence/trace/t.20:71",
+      "declaration_evidence": "e5/evidence/make-db.txt:609"
+    }
+  ],
+  "processes": {
+    "make": 14,
+    "compile_driver": 15,
+    "cc1": 16,
+    "assembler": 17,
+    "link_driver": 18,
+    "collect2": 19,
+    "linker": 20
+  },
+  "unused_h_metadata_only": "e5/evidence/trace/t.14:46",
+  "unused_h_successful_open": null,
+  "program_output": "1",
+  "trace_files": 7,
+  "trace_lines": 1190,
+  "image": "course1027-buildchecker:241250014",
+  "image_id": "sha256:69671fe9cc7a43fabb87a874a29eaa40372e1f8f3c19603113d2af1db4c4fdb7",
+  "container_id": "65307826a62bd03d4d6251eb890bf507042c96b86e2e4d7671acd938b7b85770"
+}

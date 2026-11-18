@@ -1,0 +1,12 @@
+python3 scripts/lab_cloud.py doctor
+python3 scripts/lab_cloud.py build --out work/241250053/e7-build-01 --build-timeout 1200
+python3 scripts/lab_cloud.py gate --candidate work/241250053/e7-candidate/Dockerfile --out work/241250053/e7-own-01 --build-timeout 600
+python -m pytest -q e5/reference-b/services/draft/tests
+python e5/reference-b/scripts/secret_scan.py . --history
+
+GitHub CI sequence:
+1. push 96a19af49d072600305bfdfbbaa1aaf809894757 -> run 42450903831 success
+2. push b5d6170056006e5f0d949e6af387f83fd8db86c0 -> run 42451759777 failure
+3. push 1150e8ffb4a0395c9ad940251078a732ba617091 -> run 42452024528 success
+
+The failed merge command was intentionally not executed because main had zero effective rules and the current credential had admin=false. Running it could have merged intentionally failing code.

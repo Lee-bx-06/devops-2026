@@ -1,0 +1,9 @@
+Repository: https://github.com/Lee-bx-06/devops-2026
+Branch: main
+E7 integration base SHA: 4ca1f967899262b450021d03817449b9f29c8d1c
+B2 E7 PR: https://github.com/Lee-bx-06/devops-2026/pull/55
+B3 E7 PR: https://github.com/Lee-bx-06/devops-2026/pull/58
+B1 normal CI: https://github.com/Lee-bx-06/devops-2026/actions/runs/41793369526
+B1 rejection CI: https://github.com/Lee-bx-06/devops-2026/actions/runs/41793559427
+B1 recovery CI: https://github.com/Lee-bx-06/devops-2026/actions/runs/41793936302
+Required check: e7-b-quality-gate/app15368

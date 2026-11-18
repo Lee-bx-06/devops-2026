@@ -1,0 +1,9 @@
+[
+  "docker",
+  "run",
+  "--rm",
+  "--network",
+  "none",
+  "course1020-draft:local",
+  "pytest"
+]

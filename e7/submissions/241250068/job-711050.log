@@ -1,0 +1,86 @@
+2026-11-13T09:28:23.667095Z 00O [0KRunning with gitlab-runner 19.5.3 (33227fd4)[0;m
+2026-11-13T09:28:23.667114Z 00O [0K  on linux-docker D4Cxz9WoY, system ID: r_nZIhUiKJAvXX[0;m
+2026-11-13T09:28:23.667116Z 00O [0K  UUID: 019fb868-82ec-71d4-8f7d-70ad12847b90[0;m
+2026-11-13T09:28:23.667123Z 00O [0K  feature flags: FF_NETWORK_PER_BUILD:true[0;m
+2026-11-13T09:28:23.667150Z 00O [0K[36;1mResolving secrets[0;m[0;m
+2026-11-13T09:28:23.667388Z 00O section_start:1794562103:prepare_executor[0K
+2026-11-13T09:28:23.667393Z 00O+[0K[36;1mPreparing the "docker" executor[0;m[0;m
+2026-11-13T09:28:23.677819Z 00O [0KUsing Docker executor with image python:3.13-slim ...[0;m
+2026-11-13T09:28:23.958191Z 00O [0KUsing effective pull policy of [always] for container python:3.13-slim[0;m
+2026-11-13T09:28:23.959020Z 00O [0KPulling docker image python:3.13-slim ...[0;m
+2026-11-13T09:28:26.159195Z 00O [0KUsing docker image sha256:c0e8df9380519cf514d5fbb5aeaa7aa5de5f32c50330badcadc05cdabaae5566 for python:3.13-slim with digest python@sha256:09a17cad02668ae61ece136b4fd36ac3849e14f670ebedb637ea3e15580525bc ...[0;m
+2026-11-13T09:28:26.159207Z 00O section_end:1794562106:prepare_executor[0K
+2026-11-13T09:28:26.159318Z 00O+section_start:1794562106:prepare_script[0K
+2026-11-13T09:28:26.159322Z 00O+[0K[36;1mPreparing environment[0;m[0;m
+2026-11-13T09:28:26.159848Z 00O [0KUsing effective pull policy of [always] for container sha256:925e216a7c7f5cca366a734f683207e8e2137a918e7f2c8ce7d67bc79166b544[0;m
+2026-11-13T09:28:26.269000Z 01O Running on runner-d4cxz9woy-project-25297-concurrent-0 via 381c79f00a7e...
+2026-11-13T09:28:26.272039Z 01O Running on CPU: Intel(R) Xeon(R) Platinum 8358 CPU @ 2.60GHz (avx, avx2, avx512f)
+2026-11-13T09:28:26.351390Z 00O section_end:1794562106:prepare_script[0K
+2026-11-13T09:28:26.351869Z 00O+section_start:1794562106:get_sources[0K
+2026-11-13T09:28:26.351875Z 00O+[0K[36;1mGetting source from Git repository[0;m[0;m
+2026-11-13T09:28:26.497893Z 01O [32;1mGitaly correlation ID: 01M7A3S5YH9B7RW0E2SFQ9QB38[0;m
+2026-11-13T09:28:26.503057Z 01O [32;1mFetching changes with git depth set to 20...[0;m
+2026-11-13T09:28:26.505368Z 01O Initialized empty Git repository in /builds/Varecia/devops-26-personal/.git/
+2026-11-13T09:28:26.507078Z 01O [32;1mCreated fresh repository.[0;m
+2026-11-13T09:28:26.718491Z 01O [32;1mChecking out 90bd4970 as detached HEAD (ref is refs/merge-requests/1/head)...[0;m
+2026-11-13T09:28:26.758324Z 01O 
+2026-11-13T09:28:26.758330Z 01O [32;1mSkipping Git submodules setup[0;m
+2026-11-13T09:28:26.835679Z 00O section_end:1794562106:get_sources[0K
+2026-11-13T09:28:26.836616Z 00O+section_start:1794562106:step_script[0K
+2026-11-13T09:28:26.836632Z 00O+[0K[36;1mExecuting "step_script" stage of the job script[0;m[0;m
+2026-11-13T09:28:26.836643Z 00O [0KUsing effective pull policy of [always] for container python:3.13-slim[0;m
+2026-11-13T09:28:26.837244Z 00O [0KUsing docker image sha256:c0e8df9380519cf514d5fbb5aeaa7aa5de5f32c50330badcadc05cdabaae5566 for python:3.13-slim with digest python@sha256:09a17cad02668ae61ece136b4fd36ac3849e14f670ebedb637ea3e15580525bc ...[0;m
+2026-11-13T09:28:26.951168Z 01O [32;1m$ pip install pytest[0;m
+2026-11-13T09:29:48.276540Z 01E WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPSConnection(host='pypi.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")': /simple/pytest/
+2026-11-13T09:30:48.839567Z 01E WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPSConnection(host='pypi.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")': /simple/pytest/
+2026-11-13T09:30:56.507244Z 01O Collecting pytest
+2026-11-13T09:30:56.821824Z 01O   Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+2026-11-13T09:30:56.916267Z 01O Collecting iniconfig>=2 (from pytest)
+2026-11-13T09:30:56.991526Z 01O   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+2026-11-13T09:30:57.088566Z 01O Collecting packaging>=24 (from pytest)
+2026-11-13T09:30:57.164087Z 01O   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-11-13T09:30:57.256292Z 01O Collecting pluggy<2,>=1.6 (from pytest)
+2026-11-13T09:30:57.341876Z 01O   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+2026-11-13T09:30:57.455086Z 01O Collecting pygments>=2.15 (from pytest)
+2026-11-13T09:30:57.538117Z 01O   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-11-13T09:30:57.621639Z 01O Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+2026-11-13T09:30:57.985710Z 01O Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+2026-11-13T09:30:58.085564Z 01O Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+2026-11-13T09:30:58.183896Z 01O Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-11-13T09:30:58.314957Z 01O Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-11-13T09:30:58.816075Z 01O    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 2.3 MB/s  0:00:00
+2026-11-13T09:30:58.911998Z 01O Installing collected packages: pygments, pluggy, packaging, iniconfig, pytest
+2026-11-13T09:30:59.927056Z 01O 
+2026-11-13T09:30:59.928619Z 01O Successfully installed iniconfig-2.3.1 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.2.0
+2026-11-13T09:30:59.928656Z 01E WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+2026-11-13T09:31:00.003580Z 01O [32;1m$ cd services/draft[0;m
+2026-11-13T09:31:00.003590Z 01O [32;1m$ pytest tests/ -v --tb=short[0;m
+2026-11-13T09:31:00.419889Z 01O ============================= test session starts ==============================
+2026-11-13T09:31:00.419896Z 01O platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+2026-11-13T09:31:00.419897Z 01O rootdir: /builds/Varecia/devops-26-personal/services/draft
+2026-11-13T09:31:00.419898Z 01O configfile: pytest.ini
+2026-11-13T09:31:00.419899Z 01O collected 26 items
+2026-11-13T09:31:00.419899Z 01O 
+2026-11-13T09:31:00.419900Z 01O tests/test_autobuild.py ...F........                                     [ 46%]
+2026-11-13T09:31:00.439100Z 01O tests/test_cli.py ...                                                    [ 57%]
+2026-11-13T09:31:00.442662Z 01O tests/test_workflow_failures.py ...........                              [100%]
+2026-11-13T09:31:00.491493Z 01O 
+2026-11-13T09:31:00.491494Z 01O =================================== FAILURES ===================================
+2026-11-13T09:31:00.491495Z 01O _______________ CandidateTests.test_intentional_failure_for_gate _______________
+2026-11-13T09:31:00.491495Z 01O tests/test_autobuild.py:51: in test_intentional_failure_for_gate
+2026-11-13T09:31:00.491496Z 01O     self.assertEqual(1, 2, "这是一个故意写错的预期，用于验证门禁。")
+2026-11-13T09:31:00.491497Z 01O E   AssertionError: 1 != 2 : 这是一个故意写错的预期，用于验证门禁。
+2026-11-13T09:31:00.491498Z 01O =========================== short test summary info ============================
+2026-11-13T09:31:00.491499Z 01O FAILED tests/test_autobuild.py::CandidateTests::test_intentional_failure_for_gate - AssertionError: 1 != 2 : 这是一个故意写错的预期，用于验证门禁。
+2026-11-13T09:31:00.491500Z 01O ========================= 1 failed, 25 passed in 0.20s =========================
+2026-11-13T09:31:00.650954Z 00O section_end:1794562260:step_script[0K
+2026-11-13T09:31:00.651701Z 00O+section_start:1794562260:upload_artifacts_on_failure[0K
+2026-11-13T09:31:00.651708Z 00O+[0K[36;1mUploading artifacts for failed job[0;m[0;m
+2026-11-13T09:31:00.820362Z 01O [32;1mUploading artifacts...[0;m
+2026-11-13T09:31:00.865993Z 01E [0;33mWARNING: services/draft/test-results/: no matching files. Ensure that the artifact path is relative to the working directory (/builds/Varecia/devops-26-personal)[0;m 
+2026-11-13T09:31:00.866022Z 01E [31;1mERROR: No files to upload                         [0;m 
+2026-11-13T09:31:00.951213Z 00O section_end:1794562260:upload_artifacts_on_failure[0K
+2026-11-13T09:31:00.951521Z 00O+section_start:1794562260:cleanup_file_variables[0K
+2026-11-13T09:31:00.951526Z 00O+[0K[36;1mCleaning up project directory and file based variables[0;m[0;m
+2026-11-13T09:31:01.171773Z 00O section_end:1794562261:cleanup_file_variables[0K
+2026-11-13T09:31:01.327220Z 00O [31;1mERROR: Job failed: exit code 1[0;m
