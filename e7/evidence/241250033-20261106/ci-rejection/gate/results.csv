@@ -1,0 +1,3 @@
+case,passed,exit_code,detector_status,trace_id,error
+unit-tests,False,1,,,
+runner,False,,,,Service unit tests failed

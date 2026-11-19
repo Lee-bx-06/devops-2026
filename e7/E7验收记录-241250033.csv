@@ -1,0 +1,10 @@
+轨道,检查项,预期,实际结果,证据路径或链接,PASS或FAIL
+A,原始三次,精确MD与RD一致,三次精确两条且输入相同,evidence/241250033-20261106/local/raw-evidence-audit.json,PASS
+A,修复,findings为空且仅Makefile变化,findings=[]，changed_inputs=[Makefile],evidence/241250033-20261106/local/fixed-findings.json,PASS
+A,故障,构建失败、多输出、超时正确识别,8项gate全部passed=true,evidence/241250033-20261106/local/gate-result.json,PASS
+共同,新增测试,输入预期明确且测试通过,oracle 6→8；最终服务17 passed,evidence/241250033-20261106/local/oracle-tests.log,PASS
+共同,正常CI,通过且artifact已下载,42152501816 success，devops runner,evidence/241250033-20261106/ci-normal/run.json,PASS
+共同,保护,检查名正确且strict和enforce_admins为true,e7-a-quality-gate / 15368 / true / true,evidence/241250033-20261106/ci-rejection/protection.json,PASS
+共同,拒绝合并,OPEN/BLOCKED且合并退出1,OPEN/BLOCKED，退出1,evidence/241250033-20261106/ci-rejection/merge-rejection.log,PASS
+共同,恢复,同一PR最新检查通过,PR1，42153111254 success,evidence/241250033-20261106/ci-recovery/run.json,PASS
+共同,合并,MERGED及mergeCommit及mergedAt齐全,MERGED / 939c205 / 2026-11-06T02:56:01Z,evidence/241250033-20261106/ci-recovery/PR-merged.json,PASS

@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "image": "e7-buildchecker:241250033-ci",
+  "cases": [
+    {
+      "case": "unit-tests",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "case": "original-1",
+      "passed": true,
+      "exit_code": 1,
+      "detector_status": "SUCCEEDED",
+      "trace_id": "e6-b023f8cdf2f04109959c52954ba916b5"
+    },
+    {
+      "case": "original-2",
+      "passed": true,
+      "exit_code": 1,
+      "detector_status": "SUCCEEDED",
+      "trace_id": "e6-4d3e5032e8f5404aa2617cda4191773e"
+    },
+    {
+      "case": "original-3",
+      "passed": true,
+      "exit_code": 1,
+      "detector_status": "SUCCEEDED",
+      "trace_id": "e6-98c94167fa864f42b4f3ecf5b697a436"
+    },
+    {
+      "case": "fixed",
+      "passed": true,
+      "exit_code": 0,
+      "detector_status": "SUCCEEDED",
+      "trace_id": "e6-e5be1db3c03c4c778724c6001839f3b4"
+    },
+    {
+      "case": "build-failed",
+      "passed": true,
+      "exit_code": 1,
+      "detector_status": "FAILED",
+      "trace_id": "e6-185d69488b8a4ff29663e1b3cd08528e"
+    },
+    {
+      "case": "unsupported",
+      "passed": true,
+      "exit_code": 1,
+      "detector_status": "FAILED",
+      "trace_id": "e6-fdfdf910a9ea49cc8016ba99dfbc2c8b"
+    },
+    {
+      "case": "timeout",
+      "passed": true,
+      "exit_code": 1,
+      "detector_status": "TIMED_OUT",
+      "trace_id": "e6-aef62d96388747338b11b077b7ef83e9"
+    }
+  ],
+  "oracle_scope": "Small explicit teaching fixtures; not full paper benchmark",
+  "repeated_original_cases": 3,
+  "intentional_failure": false
+}

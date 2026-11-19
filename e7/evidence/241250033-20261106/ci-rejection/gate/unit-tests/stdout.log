@@ -1,0 +1,16 @@
+F................                                                        [100%]
+=================================== FAILURES ===================================
+__________________ test_intentionally_wrong_version_exit_code __________________
+
+    def test_intentionally_wrong_version_exit_code():
+>       assert main(["version"]) == 1, "Intentional teaching fault: version actually returns zero"
+E       AssertionError: Intentional teaching fault: version actually returns zero
+E       assert 0 == 1
+E        +  where 0 = main(['version'])
+
+tests/test_ci_reject_demo.py:9: AssertionError
+----------------------------- Captured stdout call -----------------------------
+buildchecker 0.2.0-teaching
+=========================== short test summary info ============================
+FAILED tests/test_ci_reject_demo.py::test_intentionally_wrong_version_exit_code
+1 failed, 16 passed in 0.06s
